@@ -40,7 +40,9 @@ module enclosure(
     tolerance = .1,
 
     show_top = true,
-    show_bottom = true
+    show_bottom = true,
+    show_wheels = true,
+    show_switch_actuator = true
 ) {
     e = 0.0321;
 
@@ -161,8 +163,6 @@ module enclosure(
         }
     }
 
-    _wheels();
-
     module _switch_actuator() {
         // TODO: extract from poly555
         SWITCH_BASE_WIDTH = 4.4;
@@ -226,7 +226,13 @@ module enclosure(
         }
     }
 
-    _switch_actuator();
+    if (show_wheels) {
+        _wheels();
+    }
+
+    if (show_switch_actuator) {
+        _switch_actuator();
+    }
 
     if (show_bottom) {
         translate([0, 0, -e]) {
@@ -256,6 +262,8 @@ module enclosure(
 enclosure(
     show_bottom = false,
     show_top = true,
+    show_wheels = true,
+    show_switch_actuator = true,
     fillet = 2
 );
 
