@@ -1,4 +1,5 @@
 // TODO: extract parts to common repo
+use <../../poly555/openscad/lib/basic_shapes.scad>;
 use <../../poly555/openscad/lib/enclosure.scad>;
 
 include <battery.scad>;
@@ -39,6 +40,8 @@ module enclosure(
     bottom_height = floor_ceiling + 3;
     top_height = height - bottom_height;
 
+    pcb_y = wall + gutter * 2 + BATTERY_LENGTH;
+
     module _half(h, lip) {
         enclosure_half(
             width = width, length = length, height = h,
@@ -53,13 +56,13 @@ module enclosure(
         );
     }
 
-    module _exposures() {
+    module _component_exposure_cavities() {
         $fn = 36;
 
         z = height - floor_ceiling - e;
         _height = height - z + e;
 
-        translate([wall + gutter, wall + gutter * 2 + BATTERY_LENGTH, z]) {
+        translate([wall + gutter, pcb_y, z]) {
             translate(PCB_LED_POSITION) {
                 cylinder(d = LED_DIAMETER + tolerance * 2, h = _height);
             }
@@ -82,6 +85,19 @@ module enclosure(
         }
     }
 
+    module _accent_cavities(depth = .4, _fillet = 1) {
+        _gutter = gutter + 1;
+        _length = (length - _gutter * 2) * .5;
+        y = length - _length - _gutter;
+
+        translate([_gutter, y, height - depth]) {
+            rounded_xy_cube(
+                [width - _gutter * 2, _length, depth + e],
+                radius = _fillet
+            );
+        }
+    }
+
     if (show_bottom) {
         _half(bottom_height, false);
     }
@@ -94,14 +110,16 @@ module enclosure(
                 }
             }
 
-            _exposures();
+            _component_exposure_cavities();
+            _accent_cavities();
         }
     }
 }
 
-# enclosure(
+enclosure(
     show_bottom = false,
-    show_top = true
+    show_top = true,
+    fillet = 2
 );
 
 translate([
