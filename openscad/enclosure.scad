@@ -16,8 +16,13 @@ ENCLOSURE_LENGTH = PCB_LENGTH
     + BATTERY_LENGTH
     + ENCLOSURE_GUTTER * 3
     + ENCLOSURE_WALL * 2;
-ENCLOSURE_HEIGHT = BATTERY_HEIGHT
-    + ENCLOSURE_WALL * 2;
+ENCLOSURE_HEIGHT =
+    max(
+        BATTERY_HEIGHT,
+        PCB_BOTTOM_CLEARANCE + PCB_HEIGHT
+            + PTV09A_POT_BASE_HEIGHT + PTV09A_POT_ACTUATOR_HEIGHT
+    )
+    + ENCLOSURE_FLOOR_CEILING * 2;
 
 module enclosure(
     width = ENCLOSURE_WIDTH,
@@ -28,6 +33,8 @@ module enclosure(
     inner_wall = 1.2,
     floor_ceiling = ENCLOSURE_FLOOR_CEILING,
     gutter = ENCLOSURE_GUTTER,
+
+    wheel_side_overexposure = 2,
 
     fillet = 2,
     tolerance = .1,
@@ -41,7 +48,11 @@ module enclosure(
     bottom_height = floor_ceiling + 3;
     top_height = height - bottom_height;
 
+    pcb_x = wall + gutter;
     pcb_y = wall + gutter * 2 + BATTERY_LENGTH;
+
+    wheel_diameter = 2 *
+        (pcb_x + PCB_POT_POSITIONS[0][0] + wheel_side_overexposure);
 
     module _half(h, lip) {
         enclosure_half(
@@ -58,19 +69,21 @@ module enclosure(
         );
     }
 
+    z_pcb_top = floor_ceiling + PCB_BOTTOM_CLEARANCE + PCB_HEIGHT;
+    z_pot = z_pcb_top + PTV09A_POT_BASE_HEIGHT + PTV09A_POT_ACTUATOR_HEIGHT
+        - PTV09A_POT_ACTUATOR_D_SHAFT_HEIGHT;
+
     module _component_walls(
         is_cavity = false,
         $fn = 36
     ) {
-        z_pcb_top = floor_ceiling + PCB_BOTTOM_CLEARANCE + PCB_HEIGHT
-            + (is_cavity ? -e : 0);
-        z_pot = z_pcb_top + PV09_POT_BASE_HEIGHT
-            + (is_cavity ? -e : 0);
+        z_pcb_top = z_pcb_top + (is_cavity ? -e : 0);
+        z_pot = z_pot + (is_cavity ? -e : 0);
 
         bleed = is_cavity ? tolerance : inner_wall;
         _height = is_cavity ? height + e : height - floor_ceiling + e;
 
-        translate([wall + gutter, pcb_y, 0]) {
+        translate([pcb_x, pcb_y, 0]) {
             translate([
                 PCB_LED_POSITION.x,
                 PCB_LED_POSITION.y,
@@ -99,7 +112,7 @@ module enclosure(
 
                 translate([xy.x, xy.y, z_pot]) {
                     cylinder(
-                        d = PV09_POT_ACTUATOR_DIAMETER + bleed * 2,
+                        d = PTV09A_POT_ACTUATOR_DIAMETER + bleed * 2,
                         h = _height - z_pot
                     );
                 }
@@ -121,8 +134,39 @@ module enclosure(
         }
     }
 
+    module _pot_cavities() {
+        z = z_pot - e;
+
+        for (xy = PCB_POT_POSITIONS) {
+            translate([wall + gutter + xy.x, pcb_y + xy.y, z]) {
+                cylinder(
+                    d = wheel_diameter + tolerance * 4, // intentionally loose
+                    h = height - z + e
+                );
+            };
+        }
+    }
+
+    module _wheels() {
+        z = z_pot - e;
+        wheel_height = height - z;
+
+        for (xy = PCB_POT_POSITIONS) {
+            translate([wall + gutter + xy.x, pcb_y + xy.y, z]) {
+                cylinder(
+                    d = wheel_diameter,
+                    h = wheel_height
+                );
+            };
+        }
+    }
+
+    _wheels();
+
     if (show_bottom) {
-        _half(bottom_height, false);
+        translate([0, 0, -e]) {
+            _half(bottom_height, false);
+        }
     }
 
     if (show_top) {
@@ -139,6 +183,7 @@ module enclosure(
 
             _component_walls(is_cavity = true);
             _accent_cavities();
+            _pot_cavities();
         }
     }
 }

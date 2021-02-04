@@ -15,10 +15,12 @@ PCB_POT_POSITIONS = [
     [58.736 - 2.52, 7.551 + 7]
 ];
 
-PV09_POT_ACTUATOR_DIAMETER = 6.8;
-PV09_POT_ACTUATOR_HEIGHT = 20;
-PV09_POT_BASE_WIDTH = 9.7;
-PV09_POT_BASE_HEIGHT = 6.8;
+PTV09A_POT_BASE_WIDTH = 9.7;
+PTV09A_POT_BASE_HEIGHT = 6.8;
+PTV09A_POT_ACTUATOR_DIAMETER = 6.8;
+PTV09A_POT_ACTUATOR_HEIGHT = 20 - PTV09A_POT_BASE_HEIGHT;
+PTV09A_POT_ACTUATOR_D_SHAFT_HEIGHT = 8; // TODO: measure
+PTV09A_POT_ACTUATOR_D_SHAFT_DEPTH = 2; // TODO: measure
 
 PCB_LED_POSITION = [13.716 - 2.54 / 2, 40.698];
 LED_DIAMETER = 5;
@@ -61,14 +63,29 @@ module pcb(
     if (show_pots) {
         for (xy = PCB_POT_POSITIONS) {
             translate([xy.x - 7.35 + 2.52, xy.y + 1.5 - 7, e_z]) {
-                % cube([PV09_POT_BASE_WIDTH, 11, PV09_POT_BASE_HEIGHT]);
+                % cube([PTV09A_POT_BASE_WIDTH, 11, PTV09A_POT_BASE_HEIGHT]);
             }
 
-            translate([xy.x, xy.y, e_z]) {
-                % cylinder(
-                    d = PV09_POT_ACTUATOR_DIAMETER,
-                    h = PV09_POT_ACTUATOR_HEIGHT
-                );
+            translate([xy.x, xy.y, e_z + PTV09A_POT_BASE_HEIGHT]) {
+                % difference() {
+                    cylinder(
+                        d = PTV09A_POT_ACTUATOR_DIAMETER,
+                        h = PTV09A_POT_ACTUATOR_HEIGHT
+                    );
+
+                    translate([
+                        PTV09A_POT_ACTUATOR_DIAMETER / -2,
+                        PTV09A_POT_ACTUATOR_DIAMETER / -2 - e,
+                        PTV09A_POT_ACTUATOR_HEIGHT
+                            - PTV09A_POT_ACTUATOR_D_SHAFT_HEIGHT
+                    ]) {
+                        cube([
+                            PTV09A_POT_ACTUATOR_DIAMETER,
+                            PTV09A_POT_ACTUATOR_D_SHAFT_DEPTH + e,
+                            PTV09A_POT_ACTUATOR_D_SHAFT_HEIGHT + e
+                        ]);
+                    }
+                }
             }
         }
     }
