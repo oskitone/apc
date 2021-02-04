@@ -4,7 +4,30 @@ use <../../poly555/openscad/lib/switch.scad>;
 PCB_WIDTH = 63.2714;
 PCB_LENGTH = 46.0756;
 PCB_HEIGHT = 1.6;
-PCB_MOUNT_HOLE_DIAMETER = 3.2;
+
+PCB_BOTTOM_CLEARANCE = 1;
+
+PCB_SPEAKER_POSITION = [PCB_WIDTH / 2, 31.046];
+SPEAKER_DIAMETER = 29.85;
+
+PCB_POT_POSITIONS = [
+    [9.51 - 2.52, 7.551 + 7],
+    [58.736 - 2.52, 7.551 + 7]
+];
+
+PV09_POT_ACTUATOR_DIAMETER = 6.8;
+PV09_POT_ACTUATOR_HEIGHT = 20;
+
+PCB_LED_POSITION = [13.716 - 2.54 / 2, 40.698];
+LED_DIAMETER = 5;
+LED_HEIGHT = 9.6;
+
+PCB_SWITCH_POSITION = [3.556, 34.602];
+
+PCB_VOLUME_POT_POSITION = [59.944 - 2.54, 30.919 + 2.54];
+VOLUME_POT_ACTUATOR_HEIGHT = 7.8;
+VOLUME_POT_ACTUATOR_DIAMETER = 6.15;
+
 
 module pcb(
     show_speaker = true,
@@ -28,43 +51,47 @@ module pcb(
 
     // 36MS30008-PN
     if (show_speaker) {
-        translate([PCB_WIDTH / 2, 31.046, e_z]) {
-            % cylinder(d = 29.85, h = 12.7 + e);
+        translate([PCB_SPEAKER_POSITION.x, PCB_SPEAKER_POSITION.y, e_z]) {
+            % cylinder(d = SPEAKER_DIAMETER, h = 12.7 + e);
         }
     }
 
     if (show_pots) {
-        y = 7.551;
-
-        for (x = [9.51, 58.736]) {
+        for (xy = PCB_POT_POSITIONS) {
             base_width = 9.7;
             base_height = 6.8;
 
-            translate([x - 7.35, y + 1.5, e_z]) {
+            translate([xy.x - 7.35 + 2.52, xy.y + 1.5 - 7, e_z]) {
                 % cube([base_width, 11, base_height]);
             }
 
-            translate([x - 2.52, y + 7, e_z]) {
-                % cylinder(d = 6.8, h = 20);
+            translate([xy.x, xy.y, e_z]) {
+                % cylinder(
+                    d = PV09_POT_ACTUATOR_DIAMETER,
+                    h = PV09_POT_ACTUATOR_HEIGHT
+                );
             }
         }
     }
 
     if (show_led) {
-        translate([13.716 - 2.54 / 2, 40.698, e_z]) {
-            % cylinder(d = 5, h = 9.6 + e);
+        translate([PCB_LED_POSITION.x, PCB_LED_POSITION.y, e_z]) {
+            % cylinder(d = LED_DIAMETER, h = LED_HEIGHT + e);
         }
     }
 
     if (show_switch) {
-        translate([3.556, 34.602, e_z]) {
+        translate([PCB_SWITCH_POSITION.x, PCB_SWITCH_POSITION.y, e_z]) {
             % switch();
         }
     }
 
     if (show_volume_pot) {
-        translate([59.944 - 2.54, 30.919 + 2.54, e_z]) {
-            % cylinder(d = 6.15, h = 7.8);
+        translate([PCB_VOLUME_POT_POSITION.x, PCB_VOLUME_POT_POSITION.y, e_z]) {
+            % cylinder(
+                d = VOLUME_POT_ACTUATOR_DIAMETER,
+                h = VOLUME_POT_ACTUATOR_HEIGHT
+            );
         }
     }
 }
