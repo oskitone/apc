@@ -34,7 +34,7 @@ module enclosure(
     floor_ceiling = ENCLOSURE_FLOOR_CEILING,
     gutter = ENCLOSURE_GUTTER,
 
-    wheel_side_overexposure = 2,
+    side_overexposure = 2,
 
     fillet = 2,
     tolerance = .1,
@@ -52,7 +52,7 @@ module enclosure(
     pcb_y = wall + gutter * 2 + BATTERY_LENGTH;
 
     wheel_diameter = 2 *
-        (pcb_x + PCB_POT_POSITIONS[0][0] + wheel_side_overexposure);
+        (pcb_x + PCB_POT_POSITIONS[0][0] + side_overexposure);
 
     module _half(h, lip) {
         enclosure_half(
@@ -162,6 +162,71 @@ module enclosure(
     }
 
     _wheels();
+
+    module _switch_actuator() {
+        // TODO: extract from poly555
+        SWITCH_BASE_WIDTH = 4.4;
+        SWITCH_BASE_LENGTH = 8.7;
+        SWITCH_BASE_HEIGHT = 4.5;
+        SWITCH_ACTUATOR_WIDTH = 2;
+        SWITCH_ACTUATOR_LENGTH = 2.1;
+        SWITCH_ACTUATOR_HEIGHT = 3.8;
+        SWITCH_ACTUATOR_TRAVEL = 1.5;
+        SWITCH_ORIGIN = [SWITCH_BASE_WIDTH / 2, 6.36];
+
+        _wall = wall;
+
+        _width = pcb_x + PCB_SWITCH_POSITION[0] + SWITCH_BASE_WIDTH / 2
+            + side_overexposure;
+        _length = SWITCH_ACTUATOR_LENGTH + _wall * 2;
+        _height = SWITCH_BASE_HEIGHT * 2 + SWITCH_ACTUATOR_HEIGHT;
+
+        x = -side_overexposure;
+        y = pcb_y + PCB_SWITCH_POSITION[1] - SWITCH_ORIGIN[1]
+            + SWITCH_BASE_LENGTH / 2
+            - SWITCH_ACTUATOR_TRAVEL / 2
+            - _length / 2;
+
+        module _actuator() {
+            base_cavity_width = SWITCH_BASE_WIDTH + tolerance;
+
+            actuator_cavity_width =
+                (SWITCH_BASE_WIDTH - SWITCH_ACTUATOR_WIDTH) / 2
+                + SWITCH_ACTUATOR_WIDTH
+                + tolerance;
+            actuator_cavity_length = SWITCH_ACTUATOR_LENGTH + tolerance * 2;
+
+            difference() {
+                cube([_width, _length, _height]);
+
+                translate([_width - base_cavity_width, -e, -e]) {
+                    cube([
+                        base_cavity_width + e,
+                        _length + e * 2,
+                        SWITCH_BASE_HEIGHT + e
+                    ]);
+                }
+
+                translate([
+                    _width - actuator_cavity_width,
+                    (_length - actuator_cavity_length) / 2,
+                    SWITCH_BASE_HEIGHT - e
+                ]) {
+                    cube([
+                        actuator_cavity_width + e,
+                        actuator_cavity_length,
+                        SWITCH_ACTUATOR_HEIGHT + e + tolerance // just in case
+                    ]);
+                }
+            }
+        }
+
+        translate([x, y, z_pcb_top]) {
+            _actuator();
+        }
+    }
+
+    _switch_actuator();
 
     if (show_bottom) {
         translate([0, 0, -e]) {
