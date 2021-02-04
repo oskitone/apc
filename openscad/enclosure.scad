@@ -16,13 +16,25 @@ ENCLOSURE_LENGTH = PCB_LENGTH
     + BATTERY_LENGTH
     + ENCLOSURE_GUTTER * 3
     + ENCLOSURE_WALL * 2;
+
+// TODO: expose LIP_BOX_DEFAULT_LIP_HEIGHT
+ENCLOSURE_BOTTOM_HEIGHT = ENCLOSURE_FLOOR_CEILING + 3;
+
+PCB_X = ENCLOSURE_WALL + ENCLOSURE_GUTTER;
+PCB_Y = ENCLOSURE_WALL + ENCLOSURE_GUTTER * 2 + BATTERY_LENGTH;
+PCB_Z = max(
+    PCB_BOTTOM_CLEARANCE,
+    ENCLOSURE_BOTTOM_HEIGHT - ENCLOSURE_FLOOR_CEILING - PCB_HEIGHT
+);
+
 ENCLOSURE_HEIGHT =
     max(
         BATTERY_HEIGHT,
-        PCB_BOTTOM_CLEARANCE + PCB_HEIGHT
-            + PTV09A_POT_BASE_HEIGHT + PTV09A_POT_ACTUATOR_HEIGHT
+        PCB_Z + PCB_HEIGHT + PTV09A_POT_BASE_HEIGHT + PTV09A_POT_ACTUATOR_HEIGHT
     )
     + ENCLOSURE_FLOOR_CEILING * 2;
+
+ENCLSOURE_TOP_HEIGHT = ENCLOSURE_HEIGHT - ENCLOSURE_BOTTOM_HEIGHT;
 
 module enclosure(
     width = ENCLOSURE_WIDTH,
@@ -46,15 +58,8 @@ module enclosure(
 ) {
     e = 0.0321;
 
-    // TODO: expose LIP_BOX_DEFAULT_LIP_HEIGHT
-    bottom_height = floor_ceiling + 3;
-    top_height = height - bottom_height;
-
-    pcb_x = wall + gutter;
-    pcb_y = wall + gutter * 2 + BATTERY_LENGTH;
-
     wheel_diameter = 2 *
-        (pcb_x + PCB_POT_POSITIONS[0][0] + side_overexposure);
+        (PCB_X + PCB_POT_POSITIONS[0][0] + side_overexposure);
 
     module _half(h, lip) {
         enclosure_half(
@@ -71,7 +76,7 @@ module enclosure(
         );
     }
 
-    z_pcb_top = floor_ceiling + PCB_BOTTOM_CLEARANCE + PCB_HEIGHT;
+    z_pcb_top = floor_ceiling + PCB_Z + PCB_HEIGHT;
     z_pot = z_pcb_top + PTV09A_POT_BASE_HEIGHT + PTV09A_POT_ACTUATOR_HEIGHT
         - PTV09A_POT_ACTUATOR_D_SHAFT_HEIGHT;
 
@@ -85,7 +90,7 @@ module enclosure(
         bleed = is_cavity ? tolerance : inner_wall;
         _height = is_cavity ? height + e : height - floor_ceiling + e;
 
-        translate([pcb_x, pcb_y, 0]) {
+        translate([PCB_X, PCB_Y, 0]) {
             translate([
                 PCB_LED_POSITION.x,
                 PCB_LED_POSITION.y,
@@ -140,7 +145,7 @@ module enclosure(
         z = z_pot - e;
 
         for (xy = PCB_POT_POSITIONS) {
-            translate([wall + gutter + xy.x, pcb_y + xy.y, z]) {
+            translate([wall + gutter + xy.x, PCB_Y + xy.y, z]) {
                 cylinder(
                     d = wheel_diameter + tolerance * 4, // intentionally loose
                     h = height - z + e
@@ -154,7 +159,7 @@ module enclosure(
         wheel_height = height - z;
 
         for (xy = PCB_POT_POSITIONS) {
-            translate([wall + gutter + xy.x, pcb_y + xy.y, z]) {
+            translate([wall + gutter + xy.x, PCB_Y + xy.y, z]) {
                 cylinder(
                     d = wheel_diameter,
                     h = wheel_height
@@ -176,13 +181,13 @@ module enclosure(
 
         _wall = wall;
 
-        _width = pcb_x + PCB_SWITCH_POSITION[0] + SWITCH_BASE_WIDTH / 2
+        _width = PCB_X + PCB_SWITCH_POSITION[0] + SWITCH_BASE_WIDTH / 2
             + side_overexposure;
         _length = SWITCH_ACTUATOR_LENGTH + _wall * 2;
         _height = SWITCH_BASE_HEIGHT * 2 + SWITCH_ACTUATOR_HEIGHT;
 
         x = -side_overexposure;
-        y = pcb_y + PCB_SWITCH_POSITION[1] - SWITCH_ORIGIN[1]
+        y = PCB_Y + PCB_SWITCH_POSITION[1] - SWITCH_ORIGIN[1]
             + SWITCH_BASE_LENGTH / 2
             - SWITCH_ACTUATOR_TRAVEL / 2
             - _length / 2;
@@ -236,7 +241,7 @@ module enclosure(
 
     if (show_bottom) {
         translate([0, 0, -e]) {
-            _half(bottom_height, false);
+            _half(ENCLOSURE_BOTTOM_HEIGHT, false);
         }
     }
 
@@ -245,7 +250,7 @@ module enclosure(
             union() {
                 translate([0, 0, height]) {
                     mirror([0, 0, 1]) {
-                        _half(top_height, true);
+                        _half(ENCLSOURE_TOP_HEIGHT, true);
                     }
                 }
 
@@ -270,7 +275,7 @@ enclosure(
 translate([
     ENCLOSURE_WALL + ENCLOSURE_GUTTER,
     ENCLOSURE_LENGTH - ENCLOSURE_WALL - ENCLOSURE_GUTTER - PCB_LENGTH,
-    ENCLOSURE_FLOOR_CEILING + PCB_BOTTOM_CLEARANCE
+    ENCLOSURE_FLOOR_CEILING + PCB_Z
 ]) {
     # pcb();
 }
