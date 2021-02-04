@@ -36,6 +36,9 @@ ENCLOSURE_HEIGHT =
 
 ENCLSOURE_TOP_HEIGHT = ENCLOSURE_HEIGHT - ENCLOSURE_BOTTOM_HEIGHT;
 
+EXPOSED_SWITCH_ACTUATOR_LENGTH = SWITCH_ACTUATOR_LENGTH + ENCLOSURE_WALL * 2;
+EXPOSED_SWITCH_ACTUATOR_HEIGHT = SWITCH_BASE_HEIGHT * 2 + SWITCH_ACTUATOR_HEIGHT;
+
 module enclosure(
     width = ENCLOSURE_WIDTH,
     length = ENCLOSURE_LENGTH,
@@ -169,28 +172,14 @@ module enclosure(
     }
 
     module _switch_actuator(_fillet = 1) {
-        // TODO: extract from poly555
-        SWITCH_BASE_WIDTH = 4.4;
-        SWITCH_BASE_LENGTH = 8.7;
-        SWITCH_BASE_HEIGHT = 4.5;
-        SWITCH_ACTUATOR_WIDTH = 2;
-        SWITCH_ACTUATOR_LENGTH = 2.1;
-        SWITCH_ACTUATOR_HEIGHT = 3.8;
-        SWITCH_ACTUATOR_TRAVEL = 1.5;
-        SWITCH_ORIGIN = [SWITCH_BASE_WIDTH / 2, 6.36];
-
-        _wall = wall;
-
         _width = PCB_X + PCB_SWITCH_POSITION[0] + SWITCH_BASE_WIDTH / 2
             + side_overexposure;
-        _length = SWITCH_ACTUATOR_LENGTH + _wall * 2;
-        _height = SWITCH_BASE_HEIGHT * 2 + SWITCH_ACTUATOR_HEIGHT;
 
         x = -side_overexposure;
         y = PCB_Y + PCB_SWITCH_POSITION[1] - SWITCH_ORIGIN[1]
             + SWITCH_BASE_LENGTH / 2
             - SWITCH_ACTUATOR_TRAVEL / 2
-            - _length / 2;
+            - EXPOSED_SWITCH_ACTUATOR_LENGTH / 2;
 
         module _actuator() {
             base_cavity_width = SWITCH_BASE_WIDTH + tolerance;
@@ -209,28 +198,38 @@ module enclosure(
                 depth = .4,
                 rib_gutter = 1.234
             ) {
-                available_length = _length - rib_gutter * 2 - rib_length;
+                available_length = EXPOSED_SWITCH_ACTUATOR_LENGTH
+                    - rib_gutter * 2 - rib_length;
                 count = round(available_length / (rib_length + rib_gutter));
 
                 for (i = [0 : count - 0]) {
                     y = rib_gutter + i * (available_length / count);
+
                     translate([-e, y, -e]) {
-                        cube([depth + e, rib_length, _height + e * 2]);
+                        cube([
+                            depth + e,
+                            rib_length,
+                            EXPOSED_SWITCH_ACTUATOR_HEIGHT + e * 2
+                        ]);
                     }
                 }
             }
 
             translate([
                 side_overexposure + wall,
-                (_length - web_length) / 2,
+                (EXPOSED_SWITCH_ACTUATOR_LENGTH - web_length) / 2,
                 0
             ]) {
-                cube([web_width, web_length, _height]);
+                cube([web_width, web_length, EXPOSED_SWITCH_ACTUATOR_HEIGHT]);
             }
 
             difference() {
                 rounded_cube(
-                    [_width, _length, _height],
+                    [
+                        _width,
+                        EXPOSED_SWITCH_ACTUATOR_LENGTH,
+                        EXPOSED_SWITCH_ACTUATOR_HEIGHT
+                    ],
                     radius = _fillet,
                     $fn = 12
                 );
@@ -240,14 +239,14 @@ module enclosure(
                 translate([_width - base_cavity_width, -e, -e]) {
                     cube([
                         base_cavity_width + e,
-                        _length + e * 2,
+                        EXPOSED_SWITCH_ACTUATOR_LENGTH + e * 2,
                         SWITCH_BASE_HEIGHT + e
                     ]);
                 }
 
                 translate([
                     _width - actuator_cavity_width,
-                    (_length - actuator_cavity_length) / 2,
+                    (EXPOSED_SWITCH_ACTUATOR_LENGTH - actuator_cavity_length) / 2,
                     SWITCH_BASE_HEIGHT - e
                 ]) {
                     cube([
@@ -261,6 +260,27 @@ module enclosure(
 
         translate([x, y, z_pcb_top]) {
             _actuator();
+        }
+    }
+
+    module _switch_actuator_cavity() {
+        y_tolerance = tolerance * 2; // intentionally loose
+
+        // TODO: fix and extract against y in _switch_actuator
+        y = PCB_Y + PCB_SWITCH_POSITION[1] - SWITCH_ORIGIN[1]
+            + SWITCH_BASE_LENGTH / 2
+            /* - SWITCH_ACTUATOR_TRAVEL / 2 */
+            - EXPOSED_SWITCH_ACTUATOR_LENGTH / 2
+            - SWITCH_ACTUATOR_TRAVEL
+            - y_tolerance;
+
+        length = EXPOSED_SWITCH_ACTUATOR_LENGTH
+            + SWITCH_ACTUATOR_TRAVEL
+            + y_tolerance * 2;
+        height = EXPOSED_SWITCH_ACTUATOR_HEIGHT + z_pcb_top + e;
+
+        translate([-e, y, -e]) {
+            cube([wall + e * 2, length, height]);
         }
     }
 
@@ -293,6 +313,7 @@ module enclosure(
             _component_walls(is_cavity = true);
             _accent_cavities();
             _pot_cavities();
+            _switch_actuator_cavity();
         }
     }
 }
