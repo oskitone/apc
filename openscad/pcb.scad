@@ -34,6 +34,7 @@ VOLUME_POT_ACTUATOR_DIAMETER = 6.15;
 
 
 module pcb(
+    show_board = true,
     show_speaker = true,
     show_pots = true,
     show_led = true,
@@ -45,11 +46,13 @@ module pcb(
 
     e_z = PCB_HEIGHT - e;
 
-    cube([PCB_WIDTH, PCB_LENGTH, PCB_HEIGHT]);
+    if (show_board) {
+        cube([PCB_WIDTH, PCB_LENGTH, PCB_HEIGHT]);
 
-    % translate([0, 0, e_z]) {
-        linear_extrude(silkscreen_height + e) offset(delta = .2) {
-            import("../pcb.svg");
+        % translate([0, 0, e_z]) {
+            linear_extrude(silkscreen_height + e) offset(delta = .2) {
+                import("../pcb.svg");
+            }
         }
     }
 
