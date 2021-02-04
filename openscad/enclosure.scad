@@ -25,6 +25,7 @@ module enclosure(
     height = ENCLOSURE_HEIGHT,
 
     wall = ENCLOSURE_WALL,
+    inner_wall = 1.2,
     floor_ceiling = ENCLOSURE_FLOOR_CEILING,
     gutter = ENCLOSURE_GUTTER,
 
@@ -52,33 +53,54 @@ module enclosure(
             fillet = fillet,
             tolerance = tolerance,
             include_tongue_and_groove = true,
-            tongue_and_groove_end_length = undef
+            tongue_and_groove_end_length = undef,
+            $fn = 12
         );
     }
 
-    module _component_exposure_cavities() {
-        $fn = 36;
+    module _component_walls(
+        is_cavity = false,
+        $fn = 36
+    ) {
+        z_pcb_top = floor_ceiling + PCB_BOTTOM_CLEARANCE + PCB_HEIGHT
+            + (is_cavity ? -e : 0);
+        z_pot = z_pcb_top + PV09_POT_BASE_HEIGHT
+            + (is_cavity ? -e : 0);
 
-        z = height - floor_ceiling - e;
-        _height = height - z + e;
+        bleed = is_cavity ? tolerance : inner_wall;
+        _height = is_cavity ? height + e : height - floor_ceiling + e;
 
-        translate([wall + gutter, pcb_y, z]) {
-            translate(PCB_LED_POSITION) {
-                cylinder(d = LED_DIAMETER + tolerance * 2, h = _height);
+        translate([wall + gutter, pcb_y, 0]) {
+            translate([
+                PCB_LED_POSITION.x,
+                PCB_LED_POSITION.y,
+                z_pcb_top
+            ]) {
+                cylinder(
+                    d = LED_DIAMETER + bleed * 2,
+                    h = _height - z_pcb_top
+                );
             }
 
-            translate(PCB_SPEAKER_POSITION) {
-                cylinder(d = SPEAKER_DIAMETER + tolerance * 2, h = _height);
+            translate([
+                PCB_SPEAKER_POSITION.x,
+                PCB_SPEAKER_POSITION.y,
+                z_pcb_top
+            ]) {
+                cylinder(
+                    d = SPEAKER_DIAMETER + bleed * 2,
+                    h = _height - z_pcb_top
+                );
             }
 
             for (xy = PCB_POT_POSITIONS) {
                 base_width = 9.7;
                 base_height = 6.8;
 
-                translate([xy.x, xy.y, 0]) {
+                translate([xy.x, xy.y, z_pot]) {
                     cylinder(
-                        d = PV09_POT_ACTUATOR_DIAMETER + tolerance * 2,
-                        h = _height
+                        d = PV09_POT_ACTUATOR_DIAMETER + bleed * 2,
+                        h = _height - z_pot
                     );
                 }
             };
@@ -93,7 +115,8 @@ module enclosure(
         translate([_gutter, y, height - depth]) {
             rounded_xy_cube(
                 [width - _gutter * 2, _length, depth + e],
-                radius = _fillet
+                radius = _fillet,
+                $fn = 12
             );
         }
     }
@@ -104,13 +127,17 @@ module enclosure(
 
     if (show_top) {
         difference() {
-            translate([0, 0, height]) {
-                mirror([0, 0, 1]) {
-                    _half(top_height, true);
+            union() {
+                translate([0, 0, height]) {
+                    mirror([0, 0, 1]) {
+                        _half(top_height, true);
+                    }
                 }
+
+                _component_walls();
             }
 
-            _component_exposure_cavities();
+            _component_walls(is_cavity = true);
             _accent_cavities();
         }
     }

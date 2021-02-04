@@ -17,6 +17,8 @@ PCB_POT_POSITIONS = [
 
 PV09_POT_ACTUATOR_DIAMETER = 6.8;
 PV09_POT_ACTUATOR_HEIGHT = 20;
+PV09_POT_BASE_WIDTH = 9.7;
+PV09_POT_BASE_HEIGHT = 6.8;
 
 PCB_LED_POSITION = [13.716 - 2.54 / 2, 40.698];
 LED_DIAMETER = 5;
@@ -58,11 +60,8 @@ module pcb(
 
     if (show_pots) {
         for (xy = PCB_POT_POSITIONS) {
-            base_width = 9.7;
-            base_height = 6.8;
-
             translate([xy.x - 7.35 + 2.52, xy.y + 1.5 - 7, e_z]) {
-                % cube([base_width, 11, base_height]);
+                % cube([PV09_POT_BASE_WIDTH, 11, PV09_POT_BASE_HEIGHT]);
             }
 
             translate([xy.x, xy.y, e_z]) {
