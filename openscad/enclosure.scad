@@ -168,7 +168,7 @@ module enclosure(
         }
     }
 
-    module _switch_actuator() {
+    module _switch_actuator(_fillet = 1) {
         // TODO: extract from poly555
         SWITCH_BASE_WIDTH = 4.4;
         SWITCH_BASE_LENGTH = 8.7;
@@ -201,8 +201,41 @@ module enclosure(
                 + tolerance;
             actuator_cavity_length = SWITCH_ACTUATOR_LENGTH + tolerance * 2;
 
+            web_width = gutter - tolerance * 2;
+            web_length = SWITCH_BASE_LENGTH + SWITCH_ACTUATOR_TRAVEL * 4;
+
+            module _rib_cavities(
+                rib_length = .8,
+                depth = .4,
+                rib_gutter = 1.234
+            ) {
+                available_length = _length - rib_gutter * 2 - rib_length;
+                count = round(available_length / (rib_length + rib_gutter));
+
+                for (i = [0 : count - 0]) {
+                    y = rib_gutter + i * (available_length / count);
+                    translate([-e, y, -e]) {
+                        cube([depth + e, rib_length, _height + e * 2]);
+                    }
+                }
+            }
+
+            translate([
+                side_overexposure + wall,
+                (_length - web_length) / 2,
+                0
+            ]) {
+                cube([web_width, web_length, _height]);
+            }
+
             difference() {
-                cube([_width, _length, _height]);
+                rounded_cube(
+                    [_width, _length, _height],
+                    radius = _fillet,
+                    $fn = 12
+                );
+
+                _rib_cavities();
 
                 translate([_width - base_cavity_width, -e, -e]) {
                     cube([
