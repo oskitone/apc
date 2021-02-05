@@ -2,33 +2,11 @@
 use <../../poly555/openscad/lib/basic_shapes.scad>;
 use <../../poly555/openscad/lib/enclosure.scad>;
 
+include <shared_constants.scad>;
+
 include <battery.scad>;
 include <pcb.scad>;
-
-DEFAULT_TOLERANCE = .1;
-
-ENCLOSURE_WALL = 2.4;
-ENCLOSURE_FLOOR_CEILING = 1.8;
-ENCLOSURE_GUTTER = 2;
-ENCLOSURE_SIDE_OVEREXPOSURE = 2;
-
-ENCLOSURE_WIDTH = PCB_WIDTH
-    + ENCLOSURE_GUTTER * 2
-    + ENCLOSURE_WALL * 2;
-ENCLOSURE_LENGTH = PCB_LENGTH
-    + BATTERY_LENGTH
-    + ENCLOSURE_GUTTER * 3
-    + ENCLOSURE_WALL * 2;
-
-// TODO: expose LIP_BOX_DEFAULT_LIP_HEIGHT
-ENCLOSURE_BOTTOM_HEIGHT = ENCLOSURE_FLOOR_CEILING + 3;
-
-PCB_X = ENCLOSURE_WALL + ENCLOSURE_GUTTER;
-PCB_Y = ENCLOSURE_WALL + ENCLOSURE_GUTTER * 2 + BATTERY_LENGTH;
-PCB_Z = max(
-    PCB_BOTTOM_CLEARANCE,
-    ENCLOSURE_BOTTOM_HEIGHT - ENCLOSURE_FLOOR_CEILING - PCB_HEIGHT
-);
+include <wheels.scad>;
 
 ENCLOSURE_HEIGHT =
     max(
@@ -53,6 +31,13 @@ SWITCH_CLUTCH_WEB_WIDTH = SWITCH_CLUTCH_WIDTH
 
 SWITCH_POSITION = round($t);
 
+Z_PCB_TOP = ENCLOSURE_FLOOR_CEILING + PCB_Z + PCB_HEIGHT;
+Z_POT = Z_PCB_TOP + PTV09A_POT_BASE_HEIGHT + PTV09A_POT_ACTUATOR_HEIGHT
+    - PTV09A_POT_ACTUATOR_D_SHAFT_HEIGHT;
+
+WHEEL_DIAMETER = 2 *
+    (PCB_X + PCB_POT_POSITIONS[0][0] + ENCLOSURE_SIDE_OVEREXPOSURE);
+
 module enclosure(
     width = ENCLOSURE_WIDTH,
     length = ENCLOSURE_LENGTH,
@@ -70,13 +55,9 @@ module enclosure(
 
     show_top = true,
     show_bottom = true,
-    show_wheels = true,
     show_switch_clutch = true
 ) {
     e = 0.0321;
-
-    wheel_diameter = 2 *
-        (PCB_X + PCB_POT_POSITIONS[0][0] + side_overexposure);
 
     module _half(h, lip) {
         enclosure_half(
@@ -93,16 +74,12 @@ module enclosure(
         );
     }
 
-    z_pcb_top = floor_ceiling + PCB_Z + PCB_HEIGHT;
-    z_pot = z_pcb_top + PTV09A_POT_BASE_HEIGHT + PTV09A_POT_ACTUATOR_HEIGHT
-        - PTV09A_POT_ACTUATOR_D_SHAFT_HEIGHT;
-
     module _component_walls(
         is_cavity = false,
         $fn = 36
     ) {
-        z_pcb_top = z_pcb_top + (is_cavity ? -e : 0);
-        z_pot = z_pot + (is_cavity ? -e : 0);
+        Z_PCB_TOP = Z_PCB_TOP + (is_cavity ? -e : 0);
+        Z_POT = Z_POT + (is_cavity ? -e : 0);
 
         bleed = is_cavity ? tolerance : inner_wall;
         _height = is_cavity ? height + e : height - floor_ceiling + e;
@@ -111,22 +88,22 @@ module enclosure(
             translate([
                 PCB_LED_POSITION.x,
                 PCB_LED_POSITION.y,
-                z_pcb_top
+                Z_PCB_TOP
             ]) {
                 cylinder(
                     d = LED_DIAMETER + bleed * 2,
-                    h = _height - z_pcb_top
+                    h = _height - Z_PCB_TOP
                 );
             }
 
             translate([
                 PCB_SPEAKER_POSITION.x,
                 PCB_SPEAKER_POSITION.y,
-                z_pcb_top
+                Z_PCB_TOP
             ]) {
                 cylinder(
                     d = SPEAKER_DIAMETER + bleed * 2,
-                    h = _height - z_pcb_top
+                    h = _height - Z_PCB_TOP
                 );
             }
 
@@ -134,10 +111,10 @@ module enclosure(
                 base_width = 9.7;
                 base_height = 6.8;
 
-                translate([xy.x, xy.y, z_pot]) {
+                translate([xy.x, xy.y, Z_POT]) {
                     cylinder(
                         d = PTV09A_POT_ACTUATOR_DIAMETER + bleed * 2,
-                        h = _height - z_pot
+                        h = _height - Z_POT
                     );
                 }
             };
@@ -159,27 +136,13 @@ module enclosure(
     }
 
     module _pot_cavities() {
-        z = z_pot - e;
+        z = Z_POT - e;
 
         for (xy = PCB_POT_POSITIONS) {
             translate([wall + gutter + xy.x, PCB_Y + xy.y, z]) {
                 cylinder(
-                    d = wheel_diameter + tolerance * 4, // intentionally loose
+                    d = WHEEL_DIAMETER + tolerance * 4, // intentionally loose
                     h = height - z + e
-                );
-            };
-        }
-    }
-
-    module _wheels() {
-        z = z_pot - e;
-        wheel_height = height - z;
-
-        for (xy = PCB_POT_POSITIONS) {
-            translate([wall + gutter + xy.x, PCB_Y + xy.y, z]) {
-                cylinder(
-                    d = wheel_diameter,
-                    h = wheel_height
                 );
             };
         }
@@ -239,7 +202,7 @@ module enclosure(
                     cube([
                         SWITCH_CLUTCH_WEB_WIDTH,
                         length,
-                        ENCLOSURE_HEIGHT - z_pcb_top - floor_ceiling
+                        ENCLOSURE_HEIGHT - Z_PCB_TOP - floor_ceiling
                     ]);
                 }
             }
@@ -286,7 +249,7 @@ module enclosure(
             }
         }
 
-        translate([x, y, z_pcb_top]) {
+        translate([x, y, Z_PCB_TOP]) {
             _clutch();
         }
     }
@@ -299,7 +262,7 @@ module enclosure(
         length = SWITCH_CLUTCH_LENGTH
             + SWITCH_ACTUATOR_TRAVEL
             + y_tolerance * 2;
-        height = SWITCH_CLUTCH_HEIGHT + z_pcb_top + e;
+        height = SWITCH_CLUTCH_HEIGHT + Z_PCB_TOP + e;
 
         translate([-e, y, -e]) {
             cube([wall + e * 2, length, height]);
@@ -320,10 +283,6 @@ module enclosure(
         ]) {
             cube([width, length, _height + e]);
         }
-    }
-
-    if (show_wheels) {
-        _wheels();
     }
 
     if (show_switch_clutch) {
@@ -361,9 +320,8 @@ module enclosure(
 }
 
 enclosure(
-    show_bottom = false,
+    show_bottom = true,
     show_top = true,
-    show_wheels = true,
     show_switch_clutch = true,
     fillet = 2
 );
@@ -383,6 +341,13 @@ translate([
         switch_position = SWITCH_POSITION
     );
 }
+
+wheels(
+    diameter = WHEEL_DIAMETER,
+    height = ENCLOSURE_HEIGHT - Z_POT,
+    y = PCB_Y,
+    z = Z_POT - .0123 // TODO: e
+);
 
 translate([
     ENCLOSURE_WALL + ENCLOSURE_GUTTER,
