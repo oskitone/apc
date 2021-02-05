@@ -85,6 +85,19 @@ module enclosure(
     z_pot = z_pcb_top + PTV09A_POT_BASE_HEIGHT + PTV09A_POT_ACTUATOR_HEIGHT
         - PTV09A_POT_ACTUATOR_D_SHAFT_HEIGHT;
 
+    // TODO: extract and tidy
+    // TODO: fix obstruction with speaker
+    switch_actuator_width =  PCB_X + PCB_SWITCH_POSITION[0]
+        + SWITCH_BASE_WIDTH / 2
+        + side_overexposure;
+    switch_base_cavity_width = SWITCH_BASE_WIDTH + tolerance;
+    web_x = side_overexposure + wall + tolerance * 2;
+    web_cavity_y_overlap = 1;
+    web_width = switch_actuator_width - switch_base_cavity_width - web_x + e;
+    web_length = SWITCH_BASE_LENGTH + SWITCH_ACTUATOR_TRAVEL
+        + web_cavity_y_overlap * 2;
+    web_height = height - z_pcb_top - floor_ceiling;
+
     module _component_walls(
         is_cavity = false,
         $fn = 36
@@ -182,23 +195,15 @@ module enclosure(
     );
 
     module _switch_actuator(_fillet = 1) {
-        _width = PCB_X + PCB_SWITCH_POSITION[0] + SWITCH_BASE_WIDTH / 2
-            + side_overexposure;
-
         x = -side_overexposure;
         y = get_switch_actuator_y(SWITCH_POSITION);
 
         module _actuator() {
-            base_cavity_width = SWITCH_BASE_WIDTH + tolerance;
-
             actuator_cavity_width =
                 (SWITCH_BASE_WIDTH - SWITCH_ACTUATOR_WIDTH) / 2
                 + SWITCH_ACTUATOR_WIDTH
                 + tolerance;
             actuator_cavity_length = SWITCH_ACTUATOR_LENGTH + tolerance * 2;
-
-            web_width = gutter - tolerance * 2;
-            web_length = SWITCH_BASE_LENGTH + SWITCH_ACTUATOR_TRAVEL * 4;
 
             module _rib_cavities(
                 rib_length = .8,
@@ -222,18 +227,22 @@ module enclosure(
                 }
             }
 
-            translate([
-                side_overexposure + wall,
-                (EXPOSED_SWITCH_ACTUATOR_LENGTH - web_length) / 2,
-                0
-            ]) {
-                cube([web_width, web_length, EXPOSED_SWITCH_ACTUATOR_HEIGHT]);
+            module _web() {
+                translate([
+                    web_x,
+                    (EXPOSED_SWITCH_ACTUATOR_LENGTH - web_length) / 2,
+                    0
+                ]) {
+                    cube([web_width, web_length, web_height]);
+                }
             }
+
+            _web();
 
             difference() {
                 rounded_cube(
                     [
-                        _width,
+                        switch_actuator_width,
                         EXPOSED_SWITCH_ACTUATOR_LENGTH,
                         EXPOSED_SWITCH_ACTUATOR_HEIGHT
                     ],
@@ -243,16 +252,20 @@ module enclosure(
 
                 _rib_cavities();
 
-                translate([_width - base_cavity_width, -e, -e]) {
+                translate([
+                    switch_actuator_width - switch_base_cavity_width,
+                    -e,
+                    -e
+                ]) {
                     cube([
-                        base_cavity_width + e,
+                        switch_base_cavity_width + e,
                         EXPOSED_SWITCH_ACTUATOR_LENGTH + e * 2,
                         SWITCH_BASE_HEIGHT + e
                     ]);
                 }
 
                 translate([
-                    _width - actuator_cavity_width,
+                    switch_actuator_width - actuator_cavity_width,
                     (EXPOSED_SWITCH_ACTUATOR_LENGTH - actuator_cavity_length) / 2,
                     SWITCH_BASE_HEIGHT - e
                 ]) {
@@ -285,6 +298,21 @@ module enclosure(
         }
     }
 
+    module _switch_actuator_wall() {
+        width = inner_wall;
+        length = SWITCH_BASE_LENGTH;
+        _height = ENCLSOURE_TOP_HEIGHT - EXPOSED_SWITCH_ACTUATOR_HEIGHT
+            - floor_ceiling;
+
+        translate([
+            web_x - side_overexposure + web_width + tolerance * 2,
+            PCB_Y + PCB_SWITCH_POSITION[1] - SWITCH_ORIGIN[1],
+            height - floor_ceiling - _height
+        ]) {
+            cube([width, length, _height + e]);
+        }
+    }
+
     if (show_wheels) {
         _wheels();
     }
@@ -302,6 +330,8 @@ module enclosure(
     }
 
     if (show_top) {
+        _switch_actuator_wall();
+
         difference() {
             union() {
                 translate([0, 0, height]) {
