@@ -5,9 +5,12 @@ use <../../poly555/openscad/lib/enclosure.scad>;
 include <battery.scad>;
 include <pcb.scad>;
 
+DEFAULT_TOLERANCE = .1;
+
 ENCLOSURE_WALL = 2.4;
 ENCLOSURE_FLOOR_CEILING = 1.8;
 ENCLOSURE_GUTTER = 2;
+ENCLOSURE_SIDE_OVEREXPOSURE = 2;
 
 ENCLOSURE_WIDTH = PCB_WIDTH
     + ENCLOSURE_GUTTER * 2
@@ -39,6 +42,15 @@ ENCLSOURE_TOP_HEIGHT = ENCLOSURE_HEIGHT - ENCLOSURE_BOTTOM_HEIGHT;
 EXPOSED_SWITCH_ACTUATOR_LENGTH = SWITCH_ACTUATOR_LENGTH + ENCLOSURE_WALL * 2;
 EXPOSED_SWITCH_ACTUATOR_HEIGHT = SWITCH_BASE_HEIGHT * 2 + SWITCH_ACTUATOR_HEIGHT;
 
+// TODO: fix obstruction with speaker
+EXPOSED_SWITCH_ACTUATOR_WIDTH =  PCB_X + PCB_SWITCH_POSITION[0]
+    + SWITCH_BASE_WIDTH / 2
+    + ENCLOSURE_SIDE_OVEREXPOSURE;
+EXPOSED_SWITCH_ACTUATOR_WEB_X = ENCLOSURE_SIDE_OVEREXPOSURE + ENCLOSURE_WALL
+    + DEFAULT_TOLERANCE * 2;
+EXPOSED_SWITCH_ACTUATOR_WEB_WIDTH = EXPOSED_SWITCH_ACTUATOR_WIDTH
+    - SWITCH_BASE_WIDTH - DEFAULT_TOLERANCE - EXPOSED_SWITCH_ACTUATOR_WEB_X;
+
 SWITCH_POSITION = round($t);
 
 module enclosure(
@@ -51,10 +63,10 @@ module enclosure(
     floor_ceiling = ENCLOSURE_FLOOR_CEILING,
     gutter = ENCLOSURE_GUTTER,
 
-    side_overexposure = 2,
+    side_overexposure = ENCLOSURE_SIDE_OVEREXPOSURE,
 
     fillet = 2,
-    tolerance = .1,
+    tolerance = DEFAULT_TOLERANCE,
 
     show_top = true,
     show_bottom = true,
@@ -84,19 +96,6 @@ module enclosure(
     z_pcb_top = floor_ceiling + PCB_Z + PCB_HEIGHT;
     z_pot = z_pcb_top + PTV09A_POT_BASE_HEIGHT + PTV09A_POT_ACTUATOR_HEIGHT
         - PTV09A_POT_ACTUATOR_D_SHAFT_HEIGHT;
-
-    // TODO: extract and tidy
-    // TODO: fix obstruction with speaker
-    switch_actuator_width =  PCB_X + PCB_SWITCH_POSITION[0]
-        + SWITCH_BASE_WIDTH / 2
-        + side_overexposure;
-    switch_base_cavity_width = SWITCH_BASE_WIDTH + tolerance;
-    web_x = side_overexposure + wall + tolerance * 2;
-    web_cavity_y_overlap = 1;
-    web_width = switch_actuator_width - switch_base_cavity_width - web_x + e;
-    web_length = SWITCH_BASE_LENGTH + SWITCH_ACTUATOR_TRAVEL
-        + web_cavity_y_overlap * 2;
-    web_height = height - z_pcb_top - floor_ceiling;
 
     module _component_walls(
         is_cavity = false,
@@ -228,12 +227,20 @@ module enclosure(
             }
 
             module _web() {
+                overlap = 1;
+                length = SWITCH_BASE_LENGTH + SWITCH_ACTUATOR_TRAVEL
+                    + overlap * 2;
+
                 translate([
-                    web_x,
-                    (EXPOSED_SWITCH_ACTUATOR_LENGTH - web_length) / 2,
+                    EXPOSED_SWITCH_ACTUATOR_WEB_X,
+                    (EXPOSED_SWITCH_ACTUATOR_LENGTH - length) / 2,
                     0
                 ]) {
-                    cube([web_width, web_length, web_height]);
+                    cube([
+                        EXPOSED_SWITCH_ACTUATOR_WEB_WIDTH,
+                        length,
+                        ENCLOSURE_HEIGHT - z_pcb_top - floor_ceiling
+                    ]);
                 }
             }
 
@@ -242,7 +249,7 @@ module enclosure(
             difference() {
                 rounded_cube(
                     [
-                        switch_actuator_width,
+                        EXPOSED_SWITCH_ACTUATOR_WIDTH,
                         EXPOSED_SWITCH_ACTUATOR_LENGTH,
                         EXPOSED_SWITCH_ACTUATOR_HEIGHT
                     ],
@@ -253,19 +260,20 @@ module enclosure(
                 _rib_cavities();
 
                 translate([
-                    switch_actuator_width - switch_base_cavity_width,
+                    EXPOSED_SWITCH_ACTUATOR_WIDTH - SWITCH_BASE_WIDTH
+                        - DEFAULT_TOLERANCE - e,
                     -e,
                     -e
                 ]) {
                     cube([
-                        switch_base_cavity_width + e,
+                        SWITCH_BASE_WIDTH + DEFAULT_TOLERANCE + e,
                         EXPOSED_SWITCH_ACTUATOR_LENGTH + e * 2,
                         SWITCH_BASE_HEIGHT + e
                     ]);
                 }
 
                 translate([
-                    switch_actuator_width - actuator_cavity_width,
+                    EXPOSED_SWITCH_ACTUATOR_WIDTH - actuator_cavity_width,
                     (EXPOSED_SWITCH_ACTUATOR_LENGTH - actuator_cavity_length) / 2,
                     SWITCH_BASE_HEIGHT - e
                 ]) {
@@ -305,7 +313,8 @@ module enclosure(
             - floor_ceiling;
 
         translate([
-            web_x - side_overexposure + web_width + tolerance * 2,
+            EXPOSED_SWITCH_ACTUATOR_WEB_X - side_overexposure
+                + EXPOSED_SWITCH_ACTUATOR_WEB_WIDTH + tolerance * 2,
             PCB_Y + PCB_SWITCH_POSITION[1] - SWITCH_ORIGIN[1],
             height - floor_ceiling - _height
         ]) {
