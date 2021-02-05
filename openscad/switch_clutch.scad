@@ -1,3 +1,6 @@
+// TODO: extract parts to common repo
+use <../../poly555/openscad/lib/basic_shapes.scad>;
+
 include <shared_constants.scad>;
 
 SWITCH_CLUTCH_LENGTH = SWITCH_ACTUATOR_LENGTH + ENCLOSURE_WALL * 2;
@@ -20,7 +23,7 @@ function get_switch_clutch_y(position = 0) = (
         - SWITCH_CLUTCH_LENGTH / 2
 );
 
-module _switch_clutch(
+module switch_clutch(
     _fillet = 1,
     side_overexposure = ENCLOSURE_SIDE_OVEREXPOSURE,
     tolerance = DEFAULT_TOLERANCE,

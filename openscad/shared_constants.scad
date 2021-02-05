@@ -1,6 +1,4 @@
-use <../../poly555/openscad/lib/basic_shapes.scad>;
-use <../../poly555/openscad/lib/enclosure.scad>;
-
+// TODO: remove any includes. this file should have no dependencies...
 include <battery.scad>;
 include <pcb.scad>;
 

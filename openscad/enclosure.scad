@@ -4,10 +4,18 @@ use <../../poly555/openscad/lib/enclosure.scad>;
 
 include <shared_constants.scad>;
 
-include <battery.scad>;
-include <pcb.scad>;
-include <switch_clutch.scad>;
-include <wheels.scad>;
+ENCLOSURE_WALL = 2.4;
+ENCLOSURE_FLOOR_CEILING = 1.8;
+ENCLOSURE_GUTTER = 2;
+ENCLOSURE_SIDE_OVEREXPOSURE = 2;
+
+ENCLOSURE_WIDTH = PCB_WIDTH
+    + ENCLOSURE_GUTTER * 2
+    + ENCLOSURE_WALL * 2;
+ENCLOSURE_LENGTH = PCB_LENGTH
+    + BATTERY_LENGTH
+    + ENCLOSURE_GUTTER * 3
+    + ENCLOSURE_WALL * 2;
 
 ENCLOSURE_HEIGHT =
     max(
@@ -16,16 +24,13 @@ ENCLOSURE_HEIGHT =
     )
     + ENCLOSURE_FLOOR_CEILING * 2;
 
+// TODO: expose LIP_BOX_DEFAULT_LIP_HEIGHT
+ENCLOSURE_BOTTOM_HEIGHT = ENCLOSURE_FLOOR_CEILING + 3;
 ENCLSOURE_TOP_HEIGHT = ENCLOSURE_HEIGHT - ENCLOSURE_BOTTOM_HEIGHT;
-
-SWITCH_POSITION = round($t);
 
 Z_PCB_TOP = ENCLOSURE_FLOOR_CEILING + PCB_Z + PCB_HEIGHT;
 Z_POT = Z_PCB_TOP + PTV09A_POT_BASE_HEIGHT + PTV09A_POT_ACTUATOR_HEIGHT
     - PTV09A_POT_ACTUATOR_D_SHAFT_HEIGHT;
-
-WHEEL_DIAMETER = 2 *
-    (PCB_X + PCB_POT_POSITIONS[0][0] + ENCLOSURE_SIDE_OVEREXPOSURE);
 
 module enclosure(
     width = ENCLOSURE_WIDTH,
@@ -193,48 +198,4 @@ module enclosure(
             _switch_clutch_cavity();
         }
     }
-}
-
-enclosure(
-    show_bottom = true,
-    show_top = true,
-    fillet = 2
-);
-
-translate([
-    ENCLOSURE_WALL + ENCLOSURE_GUTTER,
-    ENCLOSURE_LENGTH - ENCLOSURE_WALL - ENCLOSURE_GUTTER - PCB_LENGTH,
-    ENCLOSURE_FLOOR_CEILING + PCB_Z
-]) {
-    # pcb(
-        show_board = true,
-        show_speaker = true,
-        show_pots = true,
-        show_led = true,
-        show_switch = true,
-        show_volume_pot = true,
-        switch_position = SWITCH_POSITION
-    );
-}
-
-wheels(
-    diameter = WHEEL_DIAMETER,
-    height = ENCLOSURE_HEIGHT - Z_POT,
-    y = PCB_Y,
-    z = Z_POT - .0123 // TODO: e
-);
-
-translate([0, 0, .023]) { // TODO: e
-    _switch_clutch(
-        switch_position = SWITCH_POSITION,
-        web_height = ENCLOSURE_HEIGHT - Z_PCB_TOP - ENCLOSURE_FLOOR_CEILING
-    );
-}
-
-translate([
-    ENCLOSURE_WALL + ENCLOSURE_GUTTER,
-    ENCLOSURE_WALL + ENCLOSURE_GUTTER,
-    ENCLOSURE_FLOOR_CEILING + .03 // TODO: e
-]) {
-    battery();
 }

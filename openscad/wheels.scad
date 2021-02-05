@@ -1,10 +1,13 @@
 include <shared_constants.scad>;
 
+WHEEL_DIAMETER = 2 *
+    (PCB_X + PCB_POT_POSITIONS[0][0] + ENCLOSURE_SIDE_OVEREXPOSURE);
+
 module wheels(
-    diameter,
-    height,
-    y,
-    z
+    diameter = 20,
+    height = 10,
+    y = 0,
+    z = 0
 ) {
     e = .04321;
 
