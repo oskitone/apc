@@ -48,7 +48,9 @@ module pcb(
     show_pots = true,
     show_led = true,
     show_switch = true,
-    show_volume_pot = true
+    show_volume_pot = true,
+
+    switch_position = 0
 ) {
     e = .031;
     silkscreen_height = e;
@@ -110,7 +112,7 @@ module pcb(
 
     if (show_switch) {
         translate([PCB_SWITCH_POSITION.x, PCB_SWITCH_POSITION.y, e_z]) {
-            % switch();
+            % switch(switch_position);
         }
     }
 

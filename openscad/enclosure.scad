@@ -39,6 +39,8 @@ ENCLSOURE_TOP_HEIGHT = ENCLOSURE_HEIGHT - ENCLOSURE_BOTTOM_HEIGHT;
 EXPOSED_SWITCH_ACTUATOR_LENGTH = SWITCH_ACTUATOR_LENGTH + ENCLOSURE_WALL * 2;
 EXPOSED_SWITCH_ACTUATOR_HEIGHT = SWITCH_BASE_HEIGHT * 2 + SWITCH_ACTUATOR_HEIGHT;
 
+SWITCH_POSITION = round($t);
+
 module enclosure(
     width = ENCLOSURE_WIDTH,
     length = ENCLOSURE_LENGTH,
@@ -171,15 +173,20 @@ module enclosure(
         }
     }
 
+    function get_switch_actuator_y(position = 0) = (
+        PCB_Y + PCB_SWITCH_POSITION[1] - SWITCH_ORIGIN[1]
+            + SWITCH_BASE_LENGTH / 2
+            - SWITCH_ACTUATOR_TRAVEL / 2
+            + SWITCH_ACTUATOR_TRAVEL * position
+            - EXPOSED_SWITCH_ACTUATOR_LENGTH / 2
+    );
+
     module _switch_actuator(_fillet = 1) {
         _width = PCB_X + PCB_SWITCH_POSITION[0] + SWITCH_BASE_WIDTH / 2
             + side_overexposure;
 
         x = -side_overexposure;
-        y = PCB_Y + PCB_SWITCH_POSITION[1] - SWITCH_ORIGIN[1]
-            + SWITCH_BASE_LENGTH / 2
-            - SWITCH_ACTUATOR_TRAVEL / 2
-            - EXPOSED_SWITCH_ACTUATOR_LENGTH / 2;
+        y = get_switch_actuator_y(SWITCH_POSITION);
 
         module _actuator() {
             base_cavity_width = SWITCH_BASE_WIDTH + tolerance;
@@ -266,13 +273,7 @@ module enclosure(
     module _switch_actuator_cavity() {
         y_tolerance = tolerance * 2; // intentionally loose
 
-        // TODO: fix and extract against y in _switch_actuator
-        y = PCB_Y + PCB_SWITCH_POSITION[1] - SWITCH_ORIGIN[1]
-            + SWITCH_BASE_LENGTH / 2
-            /* - SWITCH_ACTUATOR_TRAVEL / 2 */
-            - EXPOSED_SWITCH_ACTUATOR_LENGTH / 2
-            - SWITCH_ACTUATOR_TRAVEL
-            - y_tolerance;
+        y = get_switch_actuator_y(0) - y_tolerance;
 
         length = EXPOSED_SWITCH_ACTUATOR_LENGTH
             + SWITCH_ACTUATOR_TRAVEL
@@ -289,7 +290,9 @@ module enclosure(
     }
 
     if (show_switch_actuator) {
-        _switch_actuator();
+        translate([0, 0, e]) {
+            _switch_actuator();
+        }
     }
 
     if (show_bottom) {
@@ -331,7 +334,15 @@ translate([
     ENCLOSURE_LENGTH - ENCLOSURE_WALL - ENCLOSURE_GUTTER - PCB_LENGTH,
     ENCLOSURE_FLOOR_CEILING + PCB_Z
 ]) {
-    # pcb();
+    # pcb(
+        show_board = true,
+        show_speaker = true,
+        show_pots = true,
+        show_led = true,
+        show_switch = true,
+        show_volume_pot = true,
+        switch_position = SWITCH_POSITION
+    );
 }
 
 translate([
