@@ -39,17 +39,17 @@ ENCLOSURE_HEIGHT =
 
 ENCLSOURE_TOP_HEIGHT = ENCLOSURE_HEIGHT - ENCLOSURE_BOTTOM_HEIGHT;
 
-EXPOSED_SWITCH_ACTUATOR_LENGTH = SWITCH_ACTUATOR_LENGTH + ENCLOSURE_WALL * 2;
-EXPOSED_SWITCH_ACTUATOR_HEIGHT = SWITCH_BASE_HEIGHT * 2 + SWITCH_ACTUATOR_HEIGHT;
+SWITCH_CLUTCH_LENGTH = SWITCH_ACTUATOR_LENGTH + ENCLOSURE_WALL * 2;
+SWITCH_CLUTCH_HEIGHT = SWITCH_BASE_HEIGHT * 2 + SWITCH_ACTUATOR_HEIGHT;
 
 // TODO: fix obstruction with speaker
-EXPOSED_SWITCH_ACTUATOR_WIDTH =  PCB_X + PCB_SWITCH_POSITION[0]
+SWITCH_CLUTCH_WIDTH =  PCB_X + PCB_SWITCH_POSITION[0]
     + SWITCH_BASE_WIDTH / 2
     + ENCLOSURE_SIDE_OVEREXPOSURE;
-EXPOSED_SWITCH_ACTUATOR_WEB_X = ENCLOSURE_SIDE_OVEREXPOSURE + ENCLOSURE_WALL
+SWITCH_CLUTCH_WEB_X = ENCLOSURE_SIDE_OVEREXPOSURE + ENCLOSURE_WALL
     + DEFAULT_TOLERANCE * 2;
-EXPOSED_SWITCH_ACTUATOR_WEB_WIDTH = EXPOSED_SWITCH_ACTUATOR_WIDTH
-    - SWITCH_BASE_WIDTH - DEFAULT_TOLERANCE - EXPOSED_SWITCH_ACTUATOR_WEB_X;
+SWITCH_CLUTCH_WEB_WIDTH = SWITCH_CLUTCH_WIDTH
+    - SWITCH_BASE_WIDTH - DEFAULT_TOLERANCE - SWITCH_CLUTCH_WEB_X;
 
 SWITCH_POSITION = round($t);
 
@@ -71,7 +71,7 @@ module enclosure(
     show_top = true,
     show_bottom = true,
     show_wheels = true,
-    show_switch_actuator = true
+    show_switch_clutch = true
 ) {
     e = 0.0321;
 
@@ -185,31 +185,31 @@ module enclosure(
         }
     }
 
-    function get_switch_actuator_y(position = 0) = (
+    function get_switch_clutch_y(position = 0) = (
         PCB_Y + PCB_SWITCH_POSITION[1] - SWITCH_ORIGIN[1]
             + SWITCH_BASE_LENGTH / 2
             - SWITCH_ACTUATOR_TRAVEL / 2
             + SWITCH_ACTUATOR_TRAVEL * position
-            - EXPOSED_SWITCH_ACTUATOR_LENGTH / 2
+            - SWITCH_CLUTCH_LENGTH / 2
     );
 
-    module _switch_actuator(_fillet = 1) {
+    module _switch_clutch(_fillet = 1) {
         x = -side_overexposure;
-        y = get_switch_actuator_y(SWITCH_POSITION);
+        y = get_switch_clutch_y(SWITCH_POSITION);
 
-        module _actuator() {
-            actuator_cavity_width =
+        module _clutch() {
+            cavity_width =
                 (SWITCH_BASE_WIDTH - SWITCH_ACTUATOR_WIDTH) / 2
                 + SWITCH_ACTUATOR_WIDTH
                 + tolerance;
-            actuator_cavity_length = SWITCH_ACTUATOR_LENGTH + tolerance * 2;
+            cavity_length = SWITCH_ACTUATOR_LENGTH + tolerance * 2;
 
             module _rib_cavities(
                 rib_length = .8,
                 depth = .4,
                 rib_gutter = 1.234
             ) {
-                available_length = EXPOSED_SWITCH_ACTUATOR_LENGTH
+                available_length = SWITCH_CLUTCH_LENGTH
                     - rib_gutter * 2 - rib_length;
                 count = round(available_length / (rib_length + rib_gutter));
 
@@ -220,7 +220,7 @@ module enclosure(
                         cube([
                             depth + e,
                             rib_length,
-                            EXPOSED_SWITCH_ACTUATOR_HEIGHT + e * 2
+                            SWITCH_CLUTCH_HEIGHT + e * 2
                         ]);
                     }
                 }
@@ -232,12 +232,12 @@ module enclosure(
                     + overlap * 2;
 
                 translate([
-                    EXPOSED_SWITCH_ACTUATOR_WEB_X,
-                    (EXPOSED_SWITCH_ACTUATOR_LENGTH - length) / 2,
+                    SWITCH_CLUTCH_WEB_X,
+                    (SWITCH_CLUTCH_LENGTH - length) / 2,
                     0
                 ]) {
                     cube([
-                        EXPOSED_SWITCH_ACTUATOR_WEB_WIDTH,
+                        SWITCH_CLUTCH_WEB_WIDTH,
                         length,
                         ENCLOSURE_HEIGHT - z_pcb_top - floor_ceiling
                     ]);
@@ -249,9 +249,9 @@ module enclosure(
             difference() {
                 rounded_cube(
                     [
-                        EXPOSED_SWITCH_ACTUATOR_WIDTH,
-                        EXPOSED_SWITCH_ACTUATOR_LENGTH,
-                        EXPOSED_SWITCH_ACTUATOR_HEIGHT
+                        SWITCH_CLUTCH_WIDTH,
+                        SWITCH_CLUTCH_LENGTH,
+                        SWITCH_CLUTCH_HEIGHT
                     ],
                     radius = _fillet,
                     $fn = 12
@@ -260,26 +260,26 @@ module enclosure(
                 _rib_cavities();
 
                 translate([
-                    EXPOSED_SWITCH_ACTUATOR_WIDTH - SWITCH_BASE_WIDTH
+                    SWITCH_CLUTCH_WIDTH - SWITCH_BASE_WIDTH
                         - DEFAULT_TOLERANCE - e,
                     -e,
                     -e
                 ]) {
                     cube([
                         SWITCH_BASE_WIDTH + DEFAULT_TOLERANCE + e,
-                        EXPOSED_SWITCH_ACTUATOR_LENGTH + e * 2,
+                        SWITCH_CLUTCH_LENGTH + e * 2,
                         SWITCH_BASE_HEIGHT + e
                     ]);
                 }
 
                 translate([
-                    EXPOSED_SWITCH_ACTUATOR_WIDTH - actuator_cavity_width,
-                    (EXPOSED_SWITCH_ACTUATOR_LENGTH - actuator_cavity_length) / 2,
+                    SWITCH_CLUTCH_WIDTH - cavity_width,
+                    (SWITCH_CLUTCH_LENGTH - cavity_length) / 2,
                     SWITCH_BASE_HEIGHT - e
                 ]) {
                     cube([
-                        actuator_cavity_width + e,
-                        actuator_cavity_length,
+                        cavity_width + e,
+                        cavity_length,
                         SWITCH_ACTUATOR_HEIGHT + e + tolerance // just in case
                     ]);
                 }
@@ -287,34 +287,34 @@ module enclosure(
         }
 
         translate([x, y, z_pcb_top]) {
-            _actuator();
+            _clutch();
         }
     }
 
-    module _switch_actuator_cavity() {
+    module _switch_clutch_cavity() {
         y_tolerance = tolerance * 2; // intentionally loose
 
-        y = get_switch_actuator_y(0) - y_tolerance;
+        y = get_switch_clutch_y(0) - y_tolerance;
 
-        length = EXPOSED_SWITCH_ACTUATOR_LENGTH
+        length = SWITCH_CLUTCH_LENGTH
             + SWITCH_ACTUATOR_TRAVEL
             + y_tolerance * 2;
-        height = EXPOSED_SWITCH_ACTUATOR_HEIGHT + z_pcb_top + e;
+        height = SWITCH_CLUTCH_HEIGHT + z_pcb_top + e;
 
         translate([-e, y, -e]) {
             cube([wall + e * 2, length, height]);
         }
     }
 
-    module _switch_actuator_wall() {
+    module _switch_clutch_wall() {
         width = inner_wall;
         length = SWITCH_BASE_LENGTH;
-        _height = ENCLSOURE_TOP_HEIGHT - EXPOSED_SWITCH_ACTUATOR_HEIGHT
+        _height = ENCLSOURE_TOP_HEIGHT - SWITCH_CLUTCH_HEIGHT
             - floor_ceiling;
 
         translate([
-            EXPOSED_SWITCH_ACTUATOR_WEB_X - side_overexposure
-                + EXPOSED_SWITCH_ACTUATOR_WEB_WIDTH + tolerance * 2,
+            SWITCH_CLUTCH_WEB_X - side_overexposure
+                + SWITCH_CLUTCH_WEB_WIDTH + tolerance * 2,
             PCB_Y + PCB_SWITCH_POSITION[1] - SWITCH_ORIGIN[1],
             height - floor_ceiling - _height
         ]) {
@@ -326,9 +326,9 @@ module enclosure(
         _wheels();
     }
 
-    if (show_switch_actuator) {
+    if (show_switch_clutch) {
         translate([0, 0, e]) {
-            _switch_actuator();
+            _switch_clutch();
         }
     }
 
@@ -339,7 +339,7 @@ module enclosure(
     }
 
     if (show_top) {
-        _switch_actuator_wall();
+        _switch_clutch_wall();
 
         difference() {
             union() {
@@ -355,7 +355,7 @@ module enclosure(
             _component_walls(is_cavity = true);
             _accent_cavities();
             _pot_cavities();
-            _switch_actuator_cavity();
+            _switch_clutch_cavity();
         }
     }
 }
@@ -364,7 +364,7 @@ enclosure(
     show_bottom = false,
     show_top = true,
     show_wheels = true,
-    show_switch_actuator = true,
+    show_switch_clutch = true,
     fillet = 2
 );
 
