@@ -6,7 +6,6 @@ include <shared_constants.scad>;
 SWITCH_CLUTCH_LENGTH = SWITCH_ACTUATOR_LENGTH + ENCLOSURE_WALL * 2;
 SWITCH_CLUTCH_HEIGHT = SWITCH_BASE_HEIGHT * 2 + SWITCH_ACTUATOR_HEIGHT;
 
-// TODO: fix obstruction with speaker
 SWITCH_CLUTCH_WIDTH =  PCB_X + PCB_SWITCH_POSITION[0]
     + SWITCH_BASE_WIDTH / 2
     + ENCLOSURE_SIDE_OVEREXPOSURE;
@@ -82,6 +81,8 @@ module switch_clutch(
                 ]);
             }
         }
+
+        // TODO: DFM!
 
         _web();
 

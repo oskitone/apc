@@ -10,8 +10,6 @@ ENCLOSURE_BOTTOM_HEIGHT = ENCLOSURE_FLOOR_CEILING + 3;
 ENCLSOURE_TOP_HEIGHT = ENCLOSURE_HEIGHT - ENCLOSURE_BOTTOM_HEIGHT;
 
 Z_PCB_TOP = ENCLOSURE_FLOOR_CEILING + PCB_Z + PCB_HEIGHT;
-Z_POT = Z_PCB_TOP + PTV09A_POT_BASE_HEIGHT + PTV09A_POT_ACTUATOR_HEIGHT
-    - PTV09A_POT_ACTUATOR_D_SHAFT_HEIGHT;
 
 module enclosure(
     width = ENCLOSURE_WIDTH,
@@ -57,48 +55,61 @@ module enclosure(
         $fn = 36
     ) {
         Z_PCB_TOP = Z_PCB_TOP + (is_cavity ? -e : 0);
-        Z_POT = Z_POT + (is_cavity ? -e : 0);
 
         bleed = is_cavity ? tolerance : inner_wall;
 
         function get_height(z, expose = is_cavity) =
             height - z + (expose ? e : e - floor_ceiling);
 
-        translate([PCB_X, PCB_Y, 0]) {
-            translate([
-                PCB_LED_POSITION.x,
-                PCB_LED_POSITION.y,
-                Z_PCB_TOP
-            ]) {
-                cylinder(
-                    d = LED_DIAMETER + bleed * 2,
-                    h = get_height(Z_PCB_TOP)
-                );
-            }
+        module _pot_walls() {
+            diameter = WHEEL_DIAMETER + bleed * 2;
+            y = PCB_Y + PCB_POT_POSITIONS[0][1];
+            z = Z_PCB_TOP + PTV09A_POT_BASE_HEIGHT;
 
-            translate([
-                PCB_SPEAKER_POSITION.x,
-                PCB_SPEAKER_POSITION.y,
-                Z_PCB_TOP
-            ]) {
-                cylinder(
-                    d = SPEAKER_DIAMETER + bleed * 2,
-                    h = get_height(Z_PCB_TOP, false) +
-                        (is_cavity ? floor_ceiling - grill_depth : 0)
-                );
-            }
-
-            for (xy = PCB_POT_POSITIONS) {
-                base_width = 9.7;
-                base_height = 6.8;
-
-                translate([xy.x, xy.y, Z_POT]) {
-                    cylinder(
-                        d = PTV09A_POT_ACTUATOR_DIAMETER + bleed * 2,
-                        h = get_height(Z_POT)
-                    );
+            intersection() {
+                translate([wall - e, y - diameter / 2 - e, 0]) {
+                    cube([width - wall * 2 - e * 2, diameter + e * 2, 100]);
                 }
-            };
+
+                for (xy = PCB_POT_POSITIONS) {
+                    base_width = 9.7;
+                    base_height = 6.8;
+
+                    translate([PCB_X + xy.x, y, z]) {
+                        cylinder(
+                            d = diameter,
+                            h = get_height(z)
+                        );
+                    }
+                };
+            }
+        }
+
+        translate([
+            PCB_X + PCB_LED_POSITION.x,
+            PCB_Y + PCB_LED_POSITION.y,
+            Z_PCB_TOP
+        ]) {
+            cylinder(
+                d = LED_DIAMETER + bleed * 2,
+                h = get_height(Z_PCB_TOP)
+            );
+        }
+
+        translate([
+            PCB_X + PCB_SPEAKER_POSITION.x,
+            PCB_Y + PCB_SPEAKER_POSITION.y,
+            Z_PCB_TOP
+        ]) {
+            cylinder(
+                d = SPEAKER_DIAMETER + bleed * 2,
+                h = get_height(Z_PCB_TOP, false) +
+                    (is_cavity ? floor_ceiling - grill_depth : 0)
+            );
+        }
+
+        if (!is_cavity) {
+            _pot_walls();
         }
     }
 
@@ -162,6 +173,8 @@ module enclosure(
 
     module _pot_cavities() {
         z = Z_POT - e;
+
+        // TODO: add shaft holes
 
         for (xy = PCB_POT_POSITIONS) {
             translate([wall + gutter + xy.x, PCB_Y + xy.y, z]) {
