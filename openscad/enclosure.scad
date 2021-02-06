@@ -1,6 +1,7 @@
 // TODO: extract parts to common repo
 use <../../poly555/openscad/lib/basic_shapes.scad>;
 use <../../poly555/openscad/lib/enclosure.scad>;
+use <../../poly555/openscad/lib/diagonal_grill.scad>;
 
 include <shared_constants.scad>;
 
@@ -42,6 +43,8 @@ module enclosure(
     floor_ceiling = ENCLOSURE_FLOOR_CEILING,
     gutter = ENCLOSURE_GUTTER,
 
+    grill_depth = 1,
+
     side_overexposure = ENCLOSURE_SIDE_OVEREXPOSURE,
 
     fillet = 2,
@@ -75,7 +78,9 @@ module enclosure(
         Z_POT = Z_POT + (is_cavity ? -e : 0);
 
         bleed = is_cavity ? tolerance : inner_wall;
-        _height = is_cavity ? height + e : height - floor_ceiling + e;
+
+        function get_height(z, expose = is_cavity) =
+            height - z + (expose ? e : e - floor_ceiling);
 
         translate([PCB_X, PCB_Y, 0]) {
             translate([
@@ -85,7 +90,7 @@ module enclosure(
             ]) {
                 cylinder(
                     d = LED_DIAMETER + bleed * 2,
-                    h = _height - Z_PCB_TOP
+                    h = get_height(Z_PCB_TOP)
                 );
             }
 
@@ -96,7 +101,8 @@ module enclosure(
             ]) {
                 cylinder(
                     d = SPEAKER_DIAMETER + bleed * 2,
-                    h = _height - Z_PCB_TOP
+                    h = get_height(Z_PCB_TOP, false) +
+                        (is_cavity ? floor_ceiling - grill_depth : 0)
                 );
             }
 
@@ -107,24 +113,69 @@ module enclosure(
                 translate([xy.x, xy.y, Z_POT]) {
                     cylinder(
                         d = PTV09A_POT_ACTUATOR_DIAMETER + bleed * 2,
-                        h = _height - Z_POT
+                        h = get_height(Z_POT)
                     );
                 }
             };
         }
     }
 
-    module _accent_cavities(depth = .4, _fillet = 1) {
+    module _grill(depth = grill_depth, coverage = .5, _fillet = 1) {
+        _depth = depth + e;
         _gutter = gutter + 1;
-        _length = (length - _gutter * 2) * .5;
-        y = length - _length - _gutter;
+        _length = (length - _gutter * 2) * coverage;
 
-        translate([_gutter, y, height - depth]) {
+        y = length - _length - _gutter;
+        z = height - depth;
+
+        module _rounding(height = _depth) {
             rounded_xy_cube(
-                [width - _gutter * 2, _length, depth + e],
+                [width - _gutter * 2, _length, height],
                 radius = _fillet,
                 $fn = 12
             );
+        }
+
+        module _diagonal_grill(height = _depth) {
+            diagonal_grill(
+                width - _gutter * 2, _length, height,
+                size = 2,
+                angle = 45
+            );
+        }
+
+        difference() {
+            translate([_gutter, y, z]) {
+                intersection() {
+                    _rounding();
+                    translate([0, 0, -e]) _diagonal_grill(_depth + e * 2);
+                }
+            }
+
+            translate([PCB_X, PCB_Y, 0]) {
+                for (xy = PCB_POT_POSITIONS) {
+                    base_width = 9.7;
+                    base_height = 6.8;
+
+                    translate([xy.x, xy.y, z - e]) {
+                        cylinder(
+                            d = WHEEL_DIAMETER + _gutter * 2,
+                            h = _depth + e * 2
+                        );
+                    }
+                };
+
+                translate([
+                    PCB_LED_POSITION.x,
+                    PCB_LED_POSITION.y,
+                    z - e
+                ]) {
+                    cylinder(
+                        d = LED_DIAMETER + _gutter * 2,
+                        h = _depth + e * 2
+                    );
+                }
+            }
         }
     }
 
@@ -173,6 +224,8 @@ module enclosure(
     }
 
     if (show_bottom) {
+        // TODO: ensure PCB is held into place
+
         translate([0, 0, -e]) {
             _half(ENCLOSURE_BOTTOM_HEIGHT, false);
         }
@@ -193,7 +246,7 @@ module enclosure(
             }
 
             _component_walls(is_cavity = true);
-            _accent_cavities();
+            _grill();
             _pot_cavities();
             _switch_clutch_cavity();
         }
