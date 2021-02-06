@@ -69,4 +69,16 @@ module assembly(
     }
 }
 
-assembly();
+intersection() {
+    assembly(
+        show_enclosure_top = true,
+        show_enclosure_bottom = true,
+
+        show_pcb = true,
+        show_wheels = true,
+        show_switch_clutch = true,
+        show_battery = true
+    );
+
+    /* cube([ENCLOSURE_WIDTH / 2, ENCLOSURE_LENGTH, ENCLOSURE_HEIGHT]); */
+}
