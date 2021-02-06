@@ -21,9 +21,11 @@ module enclosure(
     wall = ENCLOSURE_WALL,
     inner_wall = 1.2,
     floor_ceiling = ENCLOSURE_FLOOR_CEILING,
-    gutter = ENCLOSURE_GUTTER,
+    gutter = ENCLOSURE_INTERNAL_GUTTER,
 
     grill_depth = 1,
+    grill_gutter = 3,
+    grill_ring = 2,
 
     side_overexposure = ENCLOSURE_SIDE_OVEREXPOSURE,
 
@@ -102,15 +104,14 @@ module enclosure(
 
     module _grill(depth = grill_depth, coverage = .5, _fillet = 1) {
         _depth = depth + e;
-        _gutter = gutter + 1;
-        _length = (length - _gutter * 2) * coverage;
+        _length = (length - grill_gutter * 2) * coverage;
 
-        y = length - _length - _gutter;
+        y = length - _length - grill_gutter;
         z = height - depth;
 
         module _rounding(height = _depth) {
             rounded_xy_cube(
-                [width - _gutter * 2, _length, height],
+                [width - grill_gutter * 2, _length, height],
                 radius = _fillet,
                 $fn = 12
             );
@@ -118,14 +119,14 @@ module enclosure(
 
         module _diagonal_grill(height = _depth) {
             diagonal_grill(
-                width - _gutter * 2, _length, height,
+                width - grill_gutter * 2, _length, height,
                 size = 2,
                 angle = 45
             );
         }
 
         difference() {
-            translate([_gutter, y, z]) {
+            translate([grill_gutter, y, z]) {
                 intersection() {
                     _rounding();
                     translate([0, 0, -e]) _diagonal_grill(_depth + e * 2);
@@ -139,7 +140,7 @@ module enclosure(
 
                     translate([xy.x, xy.y, z - e]) {
                         cylinder(
-                            d = WHEEL_DIAMETER + _gutter * 2,
+                            d = WHEEL_DIAMETER + grill_ring * 2,
                             h = _depth + e * 2
                         );
                     }
@@ -151,7 +152,7 @@ module enclosure(
                     z - e
                 ]) {
                     cylinder(
-                        d = LED_DIAMETER + _gutter * 2,
+                        d = LED_DIAMETER + grill_ring * 2,
                         h = _depth + e * 2
                     );
                 }

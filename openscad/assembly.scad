@@ -24,8 +24,9 @@ module assembly(
 
     if (show_pcb) {
         translate([
-            ENCLOSURE_WALL + ENCLOSURE_GUTTER,
-            ENCLOSURE_LENGTH - ENCLOSURE_WALL - ENCLOSURE_GUTTER - PCB_LENGTH,
+            ENCLOSURE_WALL + ENCLOSURE_INTERNAL_GUTTER,
+            ENCLOSURE_LENGTH - ENCLOSURE_WALL - ENCLOSURE_INTERNAL_GUTTER
+                - PCB_LENGTH,
             ENCLOSURE_FLOOR_CEILING + PCB_Z
         ]) {
             # pcb(
@@ -60,8 +61,8 @@ module assembly(
 
     if (show_battery) {
         translate([
-            ENCLOSURE_WALL + ENCLOSURE_GUTTER,
-            ENCLOSURE_WALL + ENCLOSURE_GUTTER,
+            ENCLOSURE_WALL + ENCLOSURE_INTERNAL_GUTTER,
+            ENCLOSURE_WALL + ENCLOSURE_INTERNAL_GUTTER,
             ENCLOSURE_HEIGHT - ENCLOSURE_FLOOR_CEILING - BATTERY_HEIGHT - e
         ]) {
             battery();
