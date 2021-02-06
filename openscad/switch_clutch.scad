@@ -1,6 +1,7 @@
 // TODO: extract parts to common repo
 use <../../poly555/openscad/lib/basic_shapes.scad>;
 
+include <enclosure.scad>;
 include <shared_constants.scad>;
 
 SWITCH_CLUTCH_LENGTH = SWITCH_ACTUATOR_LENGTH + ENCLOSURE_WALL * 2;
@@ -28,12 +29,10 @@ module switch_clutch(
     tolerance = DEFAULT_TOLERANCE,
     floor_ceiling = ENCLOSURE_FLOOR_CEILING,
     switch_position = 0,
-    web_height = 10
+    web_height = 10,
+    web_overlap = 4
 ) {
     e = .045321;
-
-    x = -side_overexposure;
-    y = get_switch_clutch_y(switch_position);
 
     module _clutch() {
         cavity_width =
@@ -65,9 +64,8 @@ module switch_clutch(
         }
 
         module _web() {
-            overlap = 1;
             length = SWITCH_BASE_LENGTH + SWITCH_ACTUATOR_TRAVEL
-                + overlap * 2;
+                + web_overlap * 2;
 
             translate([
                 SWITCH_CLUTCH_WEB_X,
@@ -126,7 +124,17 @@ module switch_clutch(
         }
     }
 
-    translate([x, y, 0]) {// Z_PCB_TOP
-        _clutch();
+    translate([0, switch_position * SWITCH_ACTUATOR_TRAVEL, 0]) {
+        difference() {
+            translate([
+                -side_overexposure,
+                get_switch_clutch_y(0),
+                Z_PCB_TOP
+            ]) {
+                _clutch();
+            }
+
+            _pot_walls(ENCLOSURE_INNER_WALL + tolerance * 2, tolerance * 2);
+        }
     }
 }

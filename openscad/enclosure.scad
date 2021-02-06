@@ -9,7 +9,39 @@ include <shared_constants.scad>;
 ENCLOSURE_BOTTOM_HEIGHT = ENCLOSURE_FLOOR_CEILING + 3;
 ENCLSOURE_TOP_HEIGHT = ENCLOSURE_HEIGHT - ENCLOSURE_BOTTOM_HEIGHT;
 
-Z_PCB_TOP = ENCLOSURE_FLOOR_CEILING + PCB_Z + PCB_HEIGHT;
+module _pot_walls(
+    diameter_bleed = 0,
+    height_bleed = 0
+) {
+    e = .0321;
+
+    diameter = WHEEL_DIAMETER + diameter_bleed * 2;
+    y = PCB_Y + PCB_POT_POSITIONS[0][1];
+    z = ENCLOSURE_HEIGHT - WHEEL_HEIGHT - ENCLOSURE_FLOOR_CEILING
+        - height_bleed;
+
+    intersection() {
+        translate([ENCLOSURE_WALL - e, y - diameter / 2 - e, 0]) {
+            cube([
+                ENCLOSURE_WIDTH - ENCLOSURE_WALL * 2 - e * 2,
+                diameter + e * 2,
+                100
+            ]);
+        }
+
+        for (xy = PCB_POT_POSITIONS) {
+            base_width = 9.7;
+            base_height = 6.8;
+
+            translate([PCB_X + xy.x, y, z]) {
+                cylinder(
+                    d = diameter,
+                    h = ENCLOSURE_HEIGHT - z + (e - ENCLOSURE_FLOOR_CEILING)
+                );
+            }
+        };
+    }
+}
 
 module enclosure(
     width = ENCLOSURE_WIDTH,
@@ -17,7 +49,7 @@ module enclosure(
     height = ENCLOSURE_HEIGHT,
 
     wall = ENCLOSURE_WALL,
-    inner_wall = 1.2,
+    inner_wall = ENCLOSURE_INNER_WALL,
     floor_ceiling = ENCLOSURE_FLOOR_CEILING,
     gutter = ENCLOSURE_INTERNAL_GUTTER,
 
@@ -61,30 +93,6 @@ module enclosure(
         function get_height(z, expose = is_cavity) =
             height - z + (expose ? e : e - floor_ceiling);
 
-        module _pot_walls() {
-            diameter = WHEEL_DIAMETER + bleed * 2;
-            y = PCB_Y + PCB_POT_POSITIONS[0][1];
-            z = Z_PCB_TOP + PTV09A_POT_BASE_HEIGHT;
-
-            intersection() {
-                translate([wall - e, y - diameter / 2 - e, 0]) {
-                    cube([width - wall * 2 - e * 2, diameter + e * 2, 100]);
-                }
-
-                for (xy = PCB_POT_POSITIONS) {
-                    base_width = 9.7;
-                    base_height = 6.8;
-
-                    translate([PCB_X + xy.x, y, z]) {
-                        cylinder(
-                            d = diameter,
-                            h = get_height(z)
-                        );
-                    }
-                };
-            }
-        }
-
         translate([
             PCB_X + PCB_LED_POSITION.x,
             PCB_Y + PCB_LED_POSITION.y,
@@ -109,7 +117,7 @@ module enclosure(
         }
 
         if (!is_cavity) {
-            _pot_walls();
+            _pot_walls(inner_wall);
         }
     }
 
@@ -172,7 +180,7 @@ module enclosure(
     }
 
     module _pot_cavities() {
-        z = Z_POT - e;
+        z = ENCLOSURE_HEIGHT - WHEEL_HEIGHT - e;
 
         // TODO: add shaft holes
 

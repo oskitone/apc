@@ -3,9 +3,6 @@ include <enclosure.scad>;
 include <switch_clutch.scad>;
 include <wheels.scad>;
 
-Z_POT = Z_PCB_TOP + PTV09A_POT_BASE_HEIGHT + PTV09A_POT_ACTUATOR_HEIGHT
-    - PTV09A_POT_ACTUATOR_D_SHAFT_HEIGHT;
-
 module assembly(
     show_enclosure_top = true,
     show_enclosure_bottom = true,
@@ -47,14 +44,14 @@ module assembly(
     if (show_wheels) {
         wheels(
             diameter = WHEEL_DIAMETER,
-            height = ENCLOSURE_HEIGHT - Z_POT,
+            height = WHEEL_HEIGHT,
             y = PCB_Y,
-            z = Z_POT - e
+            z = ENCLOSURE_HEIGHT - WHEEL_HEIGHT- e
         );
     }
 
     if (show_switch_clutch) {
-        translate([0, 0, ENCLOSURE_BOTTOM_HEIGHT - e]) {
+        translate([0, 0, -e]) {
             switch_clutch(
                 switch_position = switch_position,
                 web_height = ENCLOSURE_HEIGHT - Z_PCB_TOP - ENCLOSURE_FLOOR_CEILING

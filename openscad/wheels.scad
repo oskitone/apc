@@ -1,8 +1,8 @@
 include <shared_constants.scad>;
 
-// TODO: fix obstruction with speaker
 WHEEL_DIAMETER = 2 *
     (PCB_X + PCB_POT_POSITIONS[0][0] + ENCLOSURE_SIDE_OVEREXPOSURE);
+WHEEL_HEIGHT = ENCLOSURE_HEIGHT - Z_POT;
 
 module wheels(
     diameter = 20,
