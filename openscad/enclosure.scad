@@ -224,7 +224,7 @@ module enclosure(
     }
 
     if (show_bottom) {
-        // TODO: ensure PCB is held into place
+        // TODO: ensure PCB and battery are held into place
 
         translate([0, 0, -e]) {
             _half(ENCLOSURE_BOTTOM_HEIGHT, false);

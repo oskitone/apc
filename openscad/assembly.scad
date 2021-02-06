@@ -62,7 +62,7 @@ module assembly(
         translate([
             ENCLOSURE_WALL + ENCLOSURE_GUTTER,
             ENCLOSURE_WALL + ENCLOSURE_GUTTER,
-            ENCLOSURE_FLOOR_CEILING + e
+            ENCLOSURE_HEIGHT - ENCLOSURE_FLOOR_CEILING - BATTERY_HEIGHT - e
         ]) {
             battery();
         }
