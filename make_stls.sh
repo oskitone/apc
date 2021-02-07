@@ -31,6 +31,7 @@ function export_stl() {
         -D 'SHOW_WHEELS=false' \
         -D 'SHOW_SWITCH_CLUTCH=false' \
         -D 'SHOW_BATTERY=false' \
+        -D 'SHOW_DFM=true' \
         -D "$override=true"
 
     echo

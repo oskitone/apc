@@ -81,6 +81,8 @@ module enclosure(
     show_top = true,
     show_bottom = true,
 
+    show_dfm = true,
+
     enclosure_bottom_position = 0
 ) {
     e = 0.0321;
@@ -248,7 +250,10 @@ module enclosure(
             translate([wall + gutter + xy.x, PCB_Y + xy.y, 0]) {
                 translate([0, 0, well_z]) {
                     _well();
-                    _well_dfm();
+
+                    if (show_dfm) {
+                        _well_dfm();
+                    }
                 }
 
                 translate([0, 0, shaft_to_base_z]) {

@@ -12,6 +12,8 @@ module assembly(
     show_switch_clutch = true,
     show_battery = true,
 
+    show_dfm = true,
+
     switch_position = round($t),
     enclosure_bottom_position = 0
 ) {
@@ -20,6 +22,7 @@ module assembly(
     enclosure(
         show_bottom = show_enclosure_bottom,
         show_top = show_enclosure_top,
+        show_dfm = show_dfm,
         fillet = 2,
         enclosure_bottom_position = enclosure_bottom_position
     );
@@ -78,6 +81,7 @@ SHOW_PCB = true;
 SHOW_WHEELS = true;
 SHOW_SWITCH_CLUTCH = true;
 SHOW_BATTERY = true;
+SHOW_DFM = false;
 
 intersection() {
     assembly(
@@ -86,7 +90,8 @@ intersection() {
         show_pcb = SHOW_PCB,
         show_wheels = SHOW_WHEELS,
         show_switch_clutch = SHOW_SWITCH_CLUTCH,
-        show_battery = SHOW_BATTERY
+        show_battery = SHOW_BATTERY,
+        show_dfm = SHOW_DFM
     );
 
     /* cube([ENCLOSURE_WIDTH / 2, ENCLOSURE_LENGTH * 2, ENCLOSURE_HEIGHT]); */
