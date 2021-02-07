@@ -96,14 +96,13 @@ module enclosure(
             tolerance = tolerance,
             include_tongue_and_groove = true,
             tongue_and_groove_end_length = undef,
-            $fn = 12
+            $fn = DEFAULT_ROUNDING
         );
     }
 
-    module _component_walls(
-        is_cavity = false,
-        $fn = 36
-    ) {
+    module _component_walls(is_cavity = false) {
+        $fn = is_cavity ? HIDEF_ROUNDING : DEFAULT_ROUNDING;
+
         Z_PCB_TOP = Z_PCB_TOP + (is_cavity ? -e : 0);
 
         bleed = is_cavity ? tolerance : inner_wall;
@@ -150,7 +149,7 @@ module enclosure(
             rounded_xy_cube(
                 [width - grill_gutter * 2, _length, height],
                 radius = _fillet,
-                $fn = 12
+                $fn = DEFAULT_ROUNDING
             );
         }
 
@@ -203,14 +202,16 @@ module enclosure(
                 translate([0, 0, well_z]) {
                     cylinder(
                         d = WHEEL_DIAMETER + tolerance * 4, // intentionally loose
-                        h = height - well_z + e
+                        h = height - well_z + e,
+                        $fn = HIDEF_ROUNDING
                     );
                 }
 
                 translate([0, 0, shaft_to_base_z]) {
                     cylinder(
                         d = PTV09A_POT_ACTUATOR_BASE_DIAMETER + tolerance,
-                        h = height - shaft_to_base_z + e
+                        h = height - shaft_to_base_z + e,
+                        $fn = HIDEF_ROUNDING
                     );
                 }
             };

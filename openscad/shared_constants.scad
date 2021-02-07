@@ -2,6 +2,9 @@
 include <battery.scad>;
 include <pcb.scad>;
 
+DEFAULT_ROUNDING = 24;
+HIDEF_ROUNDING = $preview ? DEFAULT_ROUNDING : 120;
+
 DEFAULT_TOLERANCE = .1;
 
 ENCLOSURE_WALL = 2.4;
