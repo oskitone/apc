@@ -29,7 +29,7 @@ module assembly(
             ENCLOSURE_WALL + ENCLOSURE_INTERNAL_GUTTER,
             ENCLOSURE_LENGTH - ENCLOSURE_WALL - ENCLOSURE_INTERNAL_GUTTER
                 - PCB_LENGTH,
-            ENCLOSURE_FLOOR_CEILING + PCB_Z
+            PCB_Z
         ]) {
             # pcb(
                 show_board = true,
@@ -65,7 +65,7 @@ module assembly(
         translate([
             ENCLOSURE_WALL + ENCLOSURE_INTERNAL_GUTTER,
             ENCLOSURE_WALL + ENCLOSURE_INTERNAL_GUTTER,
-            ENCLOSURE_HEIGHT - ENCLOSURE_FLOOR_CEILING - BATTERY_HEIGHT - e
+            PCB_Z
         ]) {
             battery();
         }
