@@ -15,32 +15,48 @@ module _pot_walls(
 ) {
     e = .0321;
 
-    diameter = WHEEL_DIAMETER + diameter_bleed * 2;
     y = PCB_Y + PCB_POT_POSITIONS[0][1];
-    z = ENCLOSURE_HEIGHT - WHEEL_HEIGHT - ENCLOSURE_FLOOR_CEILING
-        - height_bleed;
 
-    intersection() {
-        translate([ENCLOSURE_WALL - e, y - diameter / 2 - e, 0]) {
-            cube([
-                ENCLOSURE_WIDTH - ENCLOSURE_WALL * 2 - e * 2,
-                diameter + e * 2,
-                100
-            ]);
+    module _well() {
+        diameter = WHEEL_DIAMETER + diameter_bleed * 2;
+        z = ENCLOSURE_HEIGHT - WHEEL_HEIGHT - ENCLOSURE_FLOOR_CEILING
+            - height_bleed;
+
+        intersection() {
+            translate([ENCLOSURE_WALL - e, y - diameter / 2 - e, 0]) {
+                cube([
+                    ENCLOSURE_WIDTH - ENCLOSURE_WALL * 2 - e * 2,
+                    diameter + e * 2,
+                    100
+                ]);
+            }
+
+            for (xy = PCB_POT_POSITIONS) {
+                translate([PCB_X + xy.x, y, z]) {
+                    cylinder(
+                        d = diameter,
+                        h = ENCLOSURE_HEIGHT - z - ENCLOSURE_FLOOR_CEILING + e
+                    );
+                }
+            };
         }
+    }
+
+    module _shaft_to_base() {
+        z = PCB_Z + PCB_HEIGHT + PTV09A_POT_BASE_HEIGHT;
 
         for (xy = PCB_POT_POSITIONS) {
-            base_width = 9.7;
-            base_height = 6.8;
-
             translate([PCB_X + xy.x, y, z]) {
                 cylinder(
-                    d = diameter,
-                    h = ENCLOSURE_HEIGHT - z + (e - ENCLOSURE_FLOOR_CEILING)
+                    d = PTV09A_POT_ACTUATOR_DIAMETER + diameter_bleed * 2,
+                    h = ENCLOSURE_HEIGHT - z - ENCLOSURE_FLOOR_CEILING + e
                 );
             }
         };
     }
+
+    _well();
+    _shaft_to_base();
 }
 
 module enclosure(
@@ -156,9 +172,6 @@ module enclosure(
 
             translate([PCB_X, PCB_Y, 0]) {
                 for (xy = PCB_POT_POSITIONS) {
-                    base_width = 9.7;
-                    base_height = 6.8;
-
                     translate([xy.x, xy.y, z - e]) {
                         cylinder(
                             d = WHEEL_DIAMETER + grill_ring * 2,
@@ -183,7 +196,7 @@ module enclosure(
 
     module _pot_cavities() {
         well_z = ENCLOSURE_HEIGHT - WHEEL_HEIGHT - e;
-        exposure_cavity_z = well_z - floor_ceiling - e;
+        shaft_to_base_z = PCB_Z + PCB_HEIGHT + PTV09A_POT_BASE_HEIGHT - e;
 
         for (xy = PCB_POT_POSITIONS) {
             translate([wall + gutter + xy.x, PCB_Y + xy.y, 0]) {
@@ -194,11 +207,10 @@ module enclosure(
                     );
                 }
 
-                translate([0, 0, exposure_cavity_z]) {
+                translate([0, 0, shaft_to_base_z]) {
                     cylinder(
-                        d = PTV09A_POT_ACTUATOR_DIAMETER + tolerance,
-                        h = height - exposure_cavity_z + e,
-                        $fn = 36
+                        d = PTV09A_POT_ACTUATOR_BASE_DIAMETER + tolerance,
+                        h = height - shaft_to_base_z + e
                     );
                 }
             };

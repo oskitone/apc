@@ -29,7 +29,7 @@ module assembly(
             ENCLOSURE_WALL + ENCLOSURE_INTERNAL_GUTTER,
             ENCLOSURE_LENGTH - ENCLOSURE_WALL - ENCLOSURE_INTERNAL_GUTTER
                 - PCB_LENGTH,
-            PCB_Z
+            PCB_Z - e
         ]) {
             # pcb(
                 show_board = true,
