@@ -9,11 +9,13 @@ SWITCH_CLUTCH_HEIGHT = SWITCH_BASE_HEIGHT * 2 + SWITCH_ACTUATOR_HEIGHT;
 
 SWITCH_CLUTCH_WIDTH =  PCB_X + PCB_SWITCH_POSITION[0]
     + SWITCH_BASE_WIDTH / 2
-    + ENCLOSURE_SIDE_OVEREXPOSURE;
+    + ENCLOSURE_SIDE_OVEREXPOSURE
+    + ENCLOSURE_INNER_WALL;
 SWITCH_CLUTCH_WEB_X = ENCLOSURE_SIDE_OVEREXPOSURE + ENCLOSURE_WALL
     + DEFAULT_TOLERANCE * 2;
 SWITCH_CLUTCH_WEB_WIDTH = SWITCH_CLUTCH_WIDTH
-    - SWITCH_BASE_WIDTH - DEFAULT_TOLERANCE - SWITCH_CLUTCH_WEB_X;
+    - SWITCH_BASE_WIDTH - DEFAULT_TOLERANCE - SWITCH_CLUTCH_WEB_X
+    - ENCLOSURE_INNER_WALL;
 
 function get_switch_clutch_y(position = 0) = (
     PCB_Y + PCB_SWITCH_POSITION[1] - SWITCH_ORIGIN[1]
@@ -35,34 +37,6 @@ module switch_clutch(
     e = .045321;
 
     module _clutch() {
-        cavity_width =
-            (SWITCH_BASE_WIDTH - SWITCH_ACTUATOR_WIDTH) / 2
-            + SWITCH_ACTUATOR_WIDTH
-            + tolerance;
-        cavity_length = SWITCH_ACTUATOR_LENGTH + tolerance * 2;
-
-        module _rib_cavities(
-            rib_length = .8,
-            depth = .4,
-            rib_gutter = 1.234
-        ) {
-            available_length = SWITCH_CLUTCH_LENGTH
-                - rib_gutter * 2 - rib_length;
-            count = round(available_length / (rib_length + rib_gutter));
-
-            for (i = [0 : count - 0]) {
-                y = rib_gutter + i * (available_length / count);
-
-                translate([-e, y, -e]) {
-                    cube([
-                        depth + e,
-                        rib_length,
-                        SWITCH_CLUTCH_HEIGHT + e * 2
-                    ]);
-                }
-            }
-        }
-
         module _web() {
             length = SWITCH_BASE_LENGTH + SWITCH_ACTUATOR_TRAVEL
                 + web_overlap * 2;
@@ -80,48 +54,89 @@ module switch_clutch(
             }
         }
 
-        // TODO: DFM!
+        module _exposed_grip() {
+            module _rib_cavities(
+                rib_length = .8,
+                depth = .4,
+                rib_gutter = 1.234
+            ) {
+                available_length = SWITCH_CLUTCH_LENGTH
+                    - rib_gutter * 2 - rib_length;
+                count = round(available_length / (rib_length + rib_gutter));
 
-        _web();
+                for (i = [0 : count - 0]) {
+                    y = rib_gutter + i * (available_length / count);
 
-        difference() {
-            rounded_cube(
-                [
-                    SWITCH_CLUTCH_WIDTH,
-                    SWITCH_CLUTCH_LENGTH,
-                    SWITCH_CLUTCH_HEIGHT
-                ],
-                radius = _fillet,
-                $fn = 12
-            );
-
-            _rib_cavities();
-
-            translate([
-                SWITCH_CLUTCH_WIDTH - SWITCH_BASE_WIDTH
-                    - DEFAULT_TOLERANCE - e,
-                -e,
-                -e
-            ]) {
-                cube([
-                    SWITCH_BASE_WIDTH + DEFAULT_TOLERANCE + e,
-                    SWITCH_CLUTCH_LENGTH + e * 2,
-                    SWITCH_BASE_HEIGHT + e
-                ]);
+                    translate([-e, y, -e]) {
+                        cube([
+                            depth + e,
+                            rib_length,
+                            SWITCH_CLUTCH_HEIGHT + e * 2
+                        ]);
+                    }
+                }
             }
 
-            translate([
-                SWITCH_CLUTCH_WIDTH - cavity_width,
-                (SWITCH_CLUTCH_LENGTH - cavity_length) / 2,
-                SWITCH_BASE_HEIGHT - e
-            ]) {
-                cube([
-                    cavity_width + e,
-                    cavity_length,
-                    SWITCH_ACTUATOR_HEIGHT + e + tolerance // just in case
-                ]);
+            width = SWITCH_CLUTCH_WIDTH - SWITCH_CLUTCH_WEB_WIDTH
+                - SWITCH_BASE_WIDTH;
+
+            difference() {
+                rounded_cube(
+                    [
+                        width + _fillet,
+                        SWITCH_CLUTCH_LENGTH,
+                        SWITCH_CLUTCH_HEIGHT
+                    ],
+                    radius = _fillet,
+                    $fn = DEFAULT_ROUNDING
+                );
+
+                _rib_cavities();
             }
         }
+
+        module _actuator_clutch() {
+            actuator_cavity_length = SWITCH_ACTUATOR_LENGTH + tolerance * 2;
+            width = SWITCH_BASE_WIDTH + ENCLOSURE_INNER_WALL + e;
+
+            cavity_x = SWITCH_CLUTCH_WIDTH - width - e;
+            cavity_width = SWITCH_BASE_WIDTH + DEFAULT_TOLERANCE * 2;
+
+            difference() {
+                translate([SWITCH_CLUTCH_WIDTH - width - e, 0, 0]) {
+                    cube([
+                        width,
+                        SWITCH_CLUTCH_LENGTH,
+                        SWITCH_CLUTCH_HEIGHT
+                    ]);
+                }
+
+                translate([cavity_x, -e, -e]) {
+                    cube([
+                        cavity_width,
+                        SWITCH_CLUTCH_LENGTH + e * 2,
+                        SWITCH_BASE_HEIGHT + e
+                    ]);
+                }
+
+                translate([
+                    cavity_x,
+                    (SWITCH_CLUTCH_LENGTH - actuator_cavity_length) / 2,
+                    -e
+                ]) {
+                    cube([
+                        cavity_width,
+                        actuator_cavity_length,
+                        SWITCH_ACTUATOR_HEIGHT + SWITCH_BASE_HEIGHT + e
+                            + tolerance // just in case
+                    ]);
+                }
+            }
+        }
+
+        _web();
+        _exposed_grip();
+        _actuator_clutch();
     }
 
     translate([0, switch_position * SWITCH_ACTUATOR_TRAVEL, 0]) {
