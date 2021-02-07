@@ -39,5 +39,6 @@ function export_stl() {
 
 export_stl 'enclosure_top' 'SHOW_ENCLOSURE_TOP'
 export_stl 'enclosure_bottom' 'SHOW_ENCLOSURE_BOTTOM'
+export_stl 'switch_clutch' 'SHOW_SWITCH_CLUTCH'
 
 }
