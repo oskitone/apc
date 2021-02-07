@@ -72,15 +72,21 @@ module assembly(
     }
 }
 
+SHOW_ENCLOSURE_TOP = true;
+SHOW_ENCLOSURE_BOTTOM = true;
+SHOW_PCB = true;
+SHOW_WHEELS = true;
+SHOW_SWITCH_CLUTCH = true;
+SHOW_BATTERY = true;
+
 intersection() {
     assembly(
-        show_enclosure_top = true,
-        show_enclosure_bottom = true,
-
-        show_pcb = true,
-        show_wheels = true,
-        show_switch_clutch = true,
-        show_battery = true
+        show_enclosure_top = SHOW_ENCLOSURE_TOP,
+        show_enclosure_bottom = SHOW_ENCLOSURE_BOTTOM,
+        show_pcb = SHOW_PCB,
+        show_wheels = SHOW_WHEELS,
+        show_switch_clutch = SHOW_SWITCH_CLUTCH,
+        show_battery = SHOW_BATTERY
     );
 
     /* cube([ENCLOSURE_WIDTH / 2, ENCLOSURE_LENGTH * 2, ENCLOSURE_HEIGHT]); */

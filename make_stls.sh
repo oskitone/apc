@@ -17,17 +17,26 @@ mkdir -pv $dir
 
 function export_stl() {
     stub="$1"
+    override="$2"
 
     filename="$dir/$prefix-$stub-$timestamp-$commit_hash.stl"
 
     echo "Exporting $filename..."
 
-    $openscad "openscad/enclosure.scad" \
+    $openscad "openscad/assembly.scad" \
         -o "$filename" \
+        -D 'SHOW_ENCLOSURE_TOP=false' \
+        -D 'SHOW_ENCLOSURE_BOTTOM=false' \
+        -D 'SHOW_PCB=false' \
+        -D 'SHOW_WHEELS=false' \
+        -D 'SHOW_SWITCH_CLUTCH=false' \
+        -D 'SHOW_BATTERY=false' \
+        -D "$override=true"
 
     echo
 }
 
-export_stl $1
+export_stl 'enclosure_top' 'SHOW_ENCLOSURE_TOP'
+export_stl 'enclosure_bottom' 'SHOW_ENCLOSURE_BOTTOM'
 
 }
