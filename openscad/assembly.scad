@@ -12,14 +12,16 @@ module assembly(
     show_switch_clutch = true,
     show_battery = true,
 
-    switch_position = round($t)
+    switch_position = round($t),
+    enclosure_bottom_position = 0
 ) {
     e = .0123;
 
     enclosure(
         show_bottom = show_enclosure_bottom,
         show_top = show_enclosure_top,
-        fillet = 2
+        fillet = 2,
+        enclosure_bottom_position = enclosure_bottom_position
     );
 
     if (show_pcb) {
@@ -81,5 +83,5 @@ intersection() {
         show_battery = true
     );
 
-    /* cube([ENCLOSURE_WIDTH / 2, ENCLOSURE_LENGTH, ENCLOSURE_HEIGHT]); */
+    /* cube([ENCLOSURE_WIDTH / 2, ENCLOSURE_LENGTH * 2, ENCLOSURE_HEIGHT]); */
 }

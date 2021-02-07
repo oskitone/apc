@@ -63,7 +63,9 @@ module enclosure(
     tolerance = DEFAULT_TOLERANCE,
 
     show_top = true,
-    show_bottom = true
+    show_bottom = true,
+
+    enclosure_bottom_position = 0
 ) {
     e = 0.0321;
 
@@ -228,7 +230,7 @@ module enclosure(
     if (show_bottom) {
         // TODO: ensure PCB and battery are held into place
 
-        translate([0, 0, -e]) {
+        translate([0, ENCLOSURE_LENGTH * enclosure_bottom_position, -e]) {
             _half(ENCLOSURE_BOTTOM_HEIGHT, false);
         }
     }
