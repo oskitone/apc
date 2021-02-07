@@ -2,8 +2,8 @@
 include <battery.scad>;
 include <pcb.scad>;
 
-DEFAULT_ROUNDING = 24;
-HIDEF_ROUNDING = $preview ? DEFAULT_ROUNDING : 120;
+DEFAULT_ROUNDING = $preview ? undef : 24;
+HIDEF_ROUNDING = $preview ? undef : 120;
 
 DEFAULT_FDM_LAYER_HEIGHT = .2;
 
