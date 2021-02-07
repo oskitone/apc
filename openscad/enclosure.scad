@@ -182,16 +182,25 @@ module enclosure(
     }
 
     module _pot_cavities() {
-        z = ENCLOSURE_HEIGHT - WHEEL_HEIGHT - e;
-
-        // TODO: add shaft holes
+        well_z = ENCLOSURE_HEIGHT - WHEEL_HEIGHT - e;
+        exposure_cavity_z = well_z - floor_ceiling - e;
 
         for (xy = PCB_POT_POSITIONS) {
-            translate([wall + gutter + xy.x, PCB_Y + xy.y, z]) {
-                cylinder(
-                    d = WHEEL_DIAMETER + tolerance * 4, // intentionally loose
-                    h = height - z + e
-                );
+            translate([wall + gutter + xy.x, PCB_Y + xy.y, 0]) {
+                translate([0, 0, well_z]) {
+                    cylinder(
+                        d = WHEEL_DIAMETER + tolerance * 4, // intentionally loose
+                        h = height - well_z + e
+                    );
+                }
+
+                translate([0, 0, exposure_cavity_z]) {
+                    cylinder(
+                        d = PTV09A_POT_ACTUATOR_DIAMETER + tolerance,
+                        h = height - exposure_cavity_z + e,
+                        $fn = 36
+                    );
+                }
             };
         }
     }
