@@ -46,6 +46,53 @@ SWITCH_ACTUATOR_HEIGHT = 3.8;
 SWITCH_ACTUATOR_TRAVEL = 1.5;
 SWITCH_ORIGIN = [SWITCH_BASE_WIDTH / 2, 6.36];
 
+module pot(
+    show_base = true,
+    show_actator = true,
+
+    base_width = PTV09A_POT_BASE_WIDTH,
+    base_height = PTV09A_POT_BASE_HEIGHT,
+
+    actuator_diameter = PTV09A_POT_ACTUATOR_DIAMETER,
+    actuator_height = PTV09A_POT_ACTUATOR_HEIGHT,
+    actuator_d_shaft_height = PTV09A_POT_ACTUATOR_D_SHAFT_HEIGHT,
+    actuator_d_shaft_depth = PTV09A_POT_ACTUATOR_D_SHAFT_DEPTH,
+
+    diameter_bleed = 0,
+    actuator_height_bleed = 0
+) {
+    e = .0421;
+
+    if (show_base) {
+        translate([-7.35 + 2.52, + 1.5 - 7, 0]) {
+            cube([base_width, 11, base_height]);
+        }
+    }
+
+    if (show_actator) {
+        translate([0, 0, base_height]) {
+            difference() {
+                cylinder(
+                    d = actuator_diameter + diameter_bleed * 2,
+                    h = actuator_height + actuator_height_bleed
+                );
+
+                translate([
+                    actuator_diameter / -2 - diameter_bleed,
+                    actuator_diameter / -2 - e - diameter_bleed,
+                    actuator_height - actuator_d_shaft_height
+                ]) {
+                    cube([
+                        actuator_diameter + diameter_bleed * 2,
+                        actuator_d_shaft_depth + e,
+                        actuator_d_shaft_height + actuator_height_bleed + e
+                    ]);
+                }
+            }
+        }
+    }
+}
+
 module pcb(
     show_board = true,
     show_speaker = true,
@@ -80,30 +127,8 @@ module pcb(
 
     if (show_pots) {
         for (xy = PCB_POT_POSITIONS) {
-            translate([xy.x - 7.35 + 2.52, xy.y + 1.5 - 7, e_z]) {
-                % cube([PTV09A_POT_BASE_WIDTH, 11, PTV09A_POT_BASE_HEIGHT]);
-            }
-
-            translate([xy.x, xy.y, e_z + PTV09A_POT_BASE_HEIGHT]) {
-                % difference() {
-                    cylinder(
-                        d = PTV09A_POT_ACTUATOR_DIAMETER,
-                        h = PTV09A_POT_ACTUATOR_HEIGHT
-                    );
-
-                    translate([
-                        PTV09A_POT_ACTUATOR_DIAMETER / -2,
-                        PTV09A_POT_ACTUATOR_DIAMETER / -2 - e,
-                        PTV09A_POT_ACTUATOR_HEIGHT
-                            - PTV09A_POT_ACTUATOR_D_SHAFT_HEIGHT
-                    ]) {
-                        cube([
-                            PTV09A_POT_ACTUATOR_DIAMETER,
-                            PTV09A_POT_ACTUATOR_D_SHAFT_DEPTH + e,
-                            PTV09A_POT_ACTUATOR_D_SHAFT_HEIGHT + e
-                        ]);
-                    }
-                }
+            translate([xy.x, xy.y, e_z]) {
+                % pot();
             }
         }
     }
