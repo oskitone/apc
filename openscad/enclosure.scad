@@ -102,6 +102,7 @@ module enclosure(
         );
     }
 
+    // TODO: fix PCB sitting unevenly on walls -- should be perfectly flat
     module _component_walls(is_cavity = false) {
         $fn = is_cavity ? HIDEF_ROUNDING : DEFAULT_ROUNDING;
 
@@ -112,6 +113,7 @@ module enclosure(
         function get_height(z, expose = is_cavity) =
             height - z + (expose ? e : e - floor_ceiling);
 
+        // TODO: thicker wall around LED for less bleed
         translate([
             PCB_X + PCB_LED_POSITION.x,
             PCB_Y + PCB_LED_POSITION.y,
@@ -140,6 +142,8 @@ module enclosure(
         }
     }
 
+    // TODO: deeper grill for darker shadow
+    // TODO: extend grill to full speaker cavity height
     module _grill(depth = grill_depth, coverage = .5, _fillet = 1) {
         _depth = depth + e;
         _length = (length - grill_gutter * 2) * coverage;
@@ -268,7 +272,8 @@ module enclosure(
     }
 
     module _switch_clutch_cavity() {
-        y_tolerance = tolerance * 2; // intentionally loose
+        // TODO: increase and extract as clearance -- different from tolerance
+        y_tolerance = tolerance * 2;
 
         y = get_switch_clutch_y(0) - y_tolerance;
 
@@ -308,6 +313,7 @@ module enclosure(
 
     if (show_top) {
         _switch_clutch_wall();
+        // TODO: endstop tabs for PCB -- component walls aren't enough
 
         difference() {
             union() {
