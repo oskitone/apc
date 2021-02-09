@@ -57,9 +57,9 @@ module switch_clutch(
 
         module _exposed_grip() {
             module _rib_cavities(
-                rib_length = .8,
-                depth = .4,
-                rib_gutter = 1.234
+                rib_length = DEFAULT_RIB_LENGTH,
+                rib_gutter = DEFAULT_RIB_GUTTER,
+                depth = DEFAULT_RIB_LENGTH,
             ) {
                 available_length = SWITCH_CLUTCH_LENGTH
                     - rib_gutter * 2 - rib_length;

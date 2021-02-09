@@ -62,10 +62,20 @@ module wheel(
             _chamfer();
         }
 
+        translate([0, 0, height - ring / 2]) {
+            hull() {
+                donut(
+                    diameter = hub_diameter,
+                    thickness = ring,
+                    segments = $preview ? 24 : 36
+                );
+            }
+        }
+
         difference() {
             cylinder(
                 d = hub_diameter,
-                h = height
+                h = height - ring / 2
             );
 
             _chamfer();
@@ -80,11 +90,40 @@ module wheel(
     }
 
     module _tire() {
-        ring(
-            diameter = diameter,
-            height = height,
-            thickness = ring
-        );
+        module _donut() {
+            render() donut(
+                diameter = diameter,
+                thickness = ring,
+                segments = $preview ? 24 : 36
+            );
+        }
+
+        difference() {
+            union() {
+                for (z = [ring / 2, height - ring / 2]) {
+                    translate([0, 0, z]) {
+                        _donut();
+                    }
+                }
+
+                translate([0, 0, ring / 2]) {
+                    ring(
+                        diameter = diameter,
+                        height = height - ring,
+                        thickness = ring
+                    );
+                }
+            }
+
+            render() cylinder_grip(
+                diameter = diameter,
+                height = height,
+                count = round(
+                    diameter * PI / (DEFAULT_RIB_LENGTH + DEFAULT_RIB_GUTTER)
+                ),
+                size = .8
+            );
+        }
     }
 
     module _spokes() {
@@ -104,21 +143,12 @@ module wheel(
         }
     }
 
-    module _rounded_exposure() {
-        translate([0, 0, height]) {
-            donut(
-                diameter = diameter,
-                thickness = ring,
-                segments = $preview ? 12 : 36
-            );
-        }
-    }
-
     module _brodie_knob() {
         translate([0, diameter / 2 - brodie_knob_diameter / 2, 0]) {
             cylinder(
                 h = height + brodie_knob_height,
-                d = brodie_knob_diameter
+                d1 = 0,
+                d2 = brodie_knob_diameter
             );
 
             translate([0, 0, height + brodie_knob_height]) {
@@ -134,8 +164,7 @@ module wheel(
     if (!test_fit) {
         _tire();
         _spokes();
-        _rounded_exposure();
-        _brodie_knob();
+        /* _brodie_knob(); */
     }
 }
 
