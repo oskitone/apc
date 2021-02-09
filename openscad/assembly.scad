@@ -63,7 +63,7 @@ module assembly(
         translate([
             ENCLOSURE_WALL + ENCLOSURE_INTERNAL_GUTTER,
             ENCLOSURE_WALL + ENCLOSURE_INTERNAL_GUTTER,
-            PCB_Z
+            ENCLOSURE_FLOOR_CEILING
         ]) {
             battery();
         }
