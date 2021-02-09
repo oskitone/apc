@@ -69,9 +69,11 @@ module enclosure(
     floor_ceiling = ENCLOSURE_FLOOR_CEILING,
     gutter = ENCLOSURE_INTERNAL_GUTTER,
 
-    grill_depth = 1,
+    grill_depth = ENCLOSURE_GRILL_DEPTH,
     grill_gutter = 3,
     grill_ring = 2,
+    grill_coverage = .5,
+    grill_fillet = 1,
 
     side_overexposure = ENCLOSURE_SIDE_OVEREXPOSURE,
 
@@ -88,6 +90,7 @@ module enclosure(
     e = 0.0321;
 
     well_diameter = WHEEL_DIAMETER + WHEEL_DIAMETER_CLEARANCE * 2;
+    grill_length = (length - grill_gutter * 2) * grill_coverage;
 
     module _half(h, lip) {
         enclosure_half(
@@ -144,19 +147,30 @@ module enclosure(
         }
     }
 
-    // TODO: deeper grill for darker shadow
+    module _grill_cavities_plate() {
+        x = wall - e;
+        _width = width - x * 2;
+        _length = grill_length - wall + grill_gutter * 2 + e;
+        y = length - _length - wall + e;
+        z = height - grill_depth - floor_ceiling;
+
+        translate([x, y, z]) {
+            cube([_width, _length, grill_depth + e]);
+        }
+    }
+
     // TODO: extend grill to full speaker cavity height
-    module _grill(depth = grill_depth, coverage = .5, _fillet = 1) {
-        _depth = depth + e;
-        _length = (length - grill_gutter * 2) * coverage;
+    module _grill_cavities() {
+        _depth = grill_depth + e;
+        _length = grill_length;
 
         y = length - _length - grill_gutter;
-        z = height - depth;
+        z = height - grill_depth;
 
         module _rounding(height = _depth) {
             rounded_xy_cube(
                 [width - grill_gutter * 2, _length, height],
-                radius = _fillet,
+                radius = grill_fillet,
                 $fn = DEFAULT_ROUNDING
             );
         }
@@ -291,13 +305,13 @@ module enclosure(
         width = inner_wall;
         length = SWITCH_BASE_LENGTH;
         _height = ENCLSOURE_TOP_HEIGHT - SWITCH_CLUTCH_HEIGHT
-            - floor_ceiling;
+            - floor_ceiling - grill_depth;
 
         translate([
             SWITCH_CLUTCH_WEB_X - side_overexposure
                 + SWITCH_CLUTCH_WEB_WIDTH + tolerance * 2,
             PCB_Y + PCB_SWITCH_POSITION[1] - SWITCH_ORIGIN[1],
-            height - floor_ceiling - _height
+            height - floor_ceiling - _height - grill_depth
         ]) {
             cube([width, length, _height + e]);
         }
@@ -324,10 +338,11 @@ module enclosure(
                 }
 
                 _component_walls();
+                _grill_cavities_plate();
             }
 
             _component_walls(is_cavity = true);
-            _grill();
+            _grill_cavities();
             _wheel_cavities();
             _switch_clutch_cavity();
         }

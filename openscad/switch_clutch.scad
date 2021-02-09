@@ -26,12 +26,11 @@ function get_switch_clutch_y(position = 0) = (
 );
 
 module switch_clutch(
-    _fillet = 1,
+    switch_position = 0,
+    fillet = 1, // TODO: extract w/ grill_fillet
     side_overexposure = ENCLOSURE_SIDE_OVEREXPOSURE,
     tolerance = DEFAULT_TOLERANCE,
     floor_ceiling = ENCLOSURE_FLOOR_CEILING,
-    switch_position = 0,
-    web_height = 10,
     web_overlap = 4
 ) {
     e = .045321;
@@ -40,6 +39,9 @@ module switch_clutch(
         module _web() {
             length = SWITCH_BASE_LENGTH + SWITCH_ACTUATOR_TRAVEL
                 + web_overlap * 2;
+            height = ENCLOSURE_HEIGHT - Z_PCB_TOP - ENCLOSURE_FLOOR_CEILING
+                - ENCLOSURE_GRILL_DEPTH
+                - DEFAULT_FDM_LAYER_HEIGHT; // just to be safe
 
             translate([
                 SWITCH_CLUTCH_WEB_X,
@@ -49,7 +51,7 @@ module switch_clutch(
                 cube([
                     SWITCH_CLUTCH_WEB_WIDTH,
                     length,
-                    web_height
+                    height
                 ]);
             }
         }
@@ -83,11 +85,11 @@ module switch_clutch(
             difference() {
                 rounded_cube(
                     [
-                        width + _fillet,
+                        width + fillet,
                         SWITCH_CLUTCH_LENGTH,
                         SWITCH_CLUTCH_HEIGHT
                     ],
-                    radius = _fillet,
+                    radius = fillet,
                     $fn = DEFAULT_ROUNDING
                 );
 

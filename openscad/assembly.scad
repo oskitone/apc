@@ -56,10 +56,7 @@ module assembly(
     }
 
     if (show_switch_clutch) {
-        switch_clutch(
-            switch_position = switch_position,
-            web_height = ENCLOSURE_HEIGHT - Z_PCB_TOP - ENCLOSURE_FLOOR_CEILING
-        );
+        switch_clutch(switch_position);
     }
 
     if (show_battery) {
@@ -94,4 +91,5 @@ intersection() {
 
     /* cube([ENCLOSURE_WIDTH / 2, ENCLOSURE_LENGTH * 2, ENCLOSURE_HEIGHT]); */
     /* cube([ENCLOSURE_WIDTH, ENCLOSURE_LENGTH * 2, ENCLOSURE_HEIGHT / 2]); */
+    /* cube([ENCLOSURE_WIDTH, ENCLOSURE_LENGTH * .8, ENCLOSURE_HEIGHT]); */
 }
