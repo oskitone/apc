@@ -5,7 +5,7 @@ PCB_WIDTH = 63.2714;
 PCB_LENGTH = 46.0756;
 PCB_HEIGHT = 1.6;
 
-PCB_BOTTOM_CLEARANCE = 1; // TODO: measure
+PCB_BOTTOM_CLEARANCE = 3;
 
 PCB_SPEAKER_POSITION = [PCB_WIDTH / 2, 31.046];
 SPEAKER_DIAMETER = 29.85;
@@ -101,6 +101,7 @@ module pcb(
     show_led = true,
     show_switch = true,
     show_volume_pot = true,
+    show_bottom_clearance = true,
 
     switch_position = 0
 ) {
@@ -152,6 +153,12 @@ module pcb(
                 d = VOLUME_POT_ACTUATOR_DIAMETER,
                 h = VOLUME_POT_ACTUATOR_HEIGHT
             );
+        }
+    }
+
+    if (show_bottom_clearance) {
+        translate([0, 0, -PCB_BOTTOM_CLEARANCE - e]) {
+            % cube([PCB_WIDTH, PCB_LENGTH, PCB_BOTTOM_CLEARANCE]);
         }
     }
 }
