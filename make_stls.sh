@@ -33,12 +33,20 @@ function export_stl() {
         -D 'SHOW_BATTERY=false' \
         -D 'SHOW_DFM=true' \
         -D "$override=true"
-
-    echo
 }
 
-export_stl 'enclosure_top' 'SHOW_ENCLOSURE_TOP'
-export_stl 'enclosure_bottom' 'SHOW_ENCLOSURE_BOTTOM'
-export_stl 'switch_clutch' 'SHOW_SWITCH_CLUTCH'
+start=`date +%s`
+
+# The "& \" runs the next line in parallel!
+export_stl 'enclosure_bottom' 'SHOW_ENCLOSURE_BOTTOM' & \
+export_stl 'enclosure_top' 'SHOW_ENCLOSURE_TOP' & \
+export_stl 'switch_clutch' 'SHOW_SWITCH_CLUTCH' & \
+export_stl 'wheels' 'SHOW_WHEELS'
+
+end=`date +%s`
+runtime=$((end-start))
+
+echo
+echo "Finished in $runtime seconds"
 
 }
