@@ -110,19 +110,19 @@ module enclosure(
 
         Z_PCB_TOP = Z_PCB_TOP + (is_cavity ? -e : 0);
 
-        bleed = is_cavity ? tolerance : inner_wall;
+        led_bleed = is_cavity ? tolerance : 3;
+        speaker_bleed = is_cavity ? tolerance : inner_wall;
 
         function get_height(z, expose = is_cavity) =
             height - z + (expose ? e : e - floor_ceiling);
 
-        // TODO: thicker wall around LED for less bleed
         translate([
             PCB_X + PCB_LED_POSITION.x,
             PCB_Y + PCB_LED_POSITION.y,
             Z_PCB_TOP
         ]) {
             cylinder(
-                d = LED_DIAMETER + bleed * 2,
+                d = LED_DIAMETER + led_bleed * 2,
                 h = get_height(Z_PCB_TOP)
             );
         }
@@ -133,7 +133,7 @@ module enclosure(
             Z_PCB_TOP
         ]) {
             cylinder(
-                d = SPEAKER_DIAMETER + bleed * 2,
+                d = SPEAKER_DIAMETER + speaker_bleed * 2,
                 h = get_height(Z_PCB_TOP, false) +
                     (is_cavity ? floor_ceiling - grill_depth : 0)
             );
