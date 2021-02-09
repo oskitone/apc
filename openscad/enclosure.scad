@@ -122,7 +122,7 @@ module enclosure(
             Z_PCB_TOP
         ]) {
             cylinder(
-                d = LED_DIAMETER + led_bleed * 2,
+                d = LED_BASE_DIAMETER + led_bleed * 2,
                 h = get_height(Z_PCB_TOP)
             );
         }
