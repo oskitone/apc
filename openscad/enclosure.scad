@@ -87,6 +87,8 @@ module enclosure(
 ) {
     e = 0.0321;
 
+    well_diameter = WHEEL_DIAMETER + WHEEL_DIAMETER_CLEARANCE * 2;
+
     module _half(h, lip) {
         enclosure_half(
             width = width, length = length, height = h,
@@ -179,7 +181,7 @@ module enclosure(
                 for (xy = PCB_POT_POSITIONS) {
                     translate([xy.x, xy.y, z - e]) {
                         cylinder(
-                            d = WHEEL_DIAMETER + grill_ring * 2,
+                            d = well_diameter + grill_ring * 2,
                             h = _depth + e * 2
                         );
                     }
@@ -199,11 +201,10 @@ module enclosure(
         }
     }
 
-    module _pot_cavities() {
+    module _wheel_cavities() {
         well_z = ENCLOSURE_HEIGHT - WHEEL_HEIGHT - e;
         shaft_to_base_z = PCB_Z + PCB_HEIGHT + PTV09A_POT_BASE_HEIGHT - e;
 
-        well_diameter = WHEEL_DIAMETER + tolerance * 4; // intentionally loose
         exposure_diameter = PTV09A_POT_ACTUATOR_BASE_DIAMETER + tolerance * 2;
 
         module _well(_height = height - well_z + e) {
@@ -328,7 +329,7 @@ module enclosure(
 
             _component_walls(is_cavity = true);
             _grill();
-            _pot_cavities();
+            _wheel_cavities();
             _switch_clutch_cavity();
         }
     }
