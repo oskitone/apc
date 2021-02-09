@@ -23,18 +23,52 @@ module wheel(
     spokes_width = 2,
     spokes_height = WHEEL_HEIGHT * .67,
 
+    chamfer = .4,
+    shim_size = .4,
+    shim_count = 3,
+
+    test_fit = false,
+
     tolerance = DEFAULT_TOLERANCE,
     $fn = HIDEF_ROUNDING
 ) {
+    e = 0.043;
+
     module _hub() {
         pot_z = height - hub_ceiling -
             PTV09A_POT_BASE_HEIGHT - PTV09A_POT_ACTUATOR_HEIGHT;
+
+        module _chamfer() {
+            translate([0, 0, -e]) {
+                cylinder(
+                    d1 = PTV09A_POT_ACTUATOR_DIAMETER + tolerance * 2
+                        + chamfer * 2,
+                    d2 = PTV09A_POT_ACTUATOR_DIAMETER + tolerance * 2
+                        - PTV09A_POT_ACTUATOR_D_SHAFT_DEPTH * 2,
+                    h = chamfer + PTV09A_POT_ACTUATOR_D_SHAFT_DEPTH + e
+                );
+            }
+        }
+
+        difference() {
+            cylinder_grip(
+                diameter = PTV09A_POT_ACTUATOR_DIAMETER,
+                height = height - hub_ceiling,
+                count = shim_count,
+                rotation_offset = 180,
+                size = shim_size
+            );
+
+            _chamfer();
+        }
 
         difference() {
             cylinder(
                 d = hub_diameter,
                 h = height
             );
+
+            _chamfer();
 
             translate([0, 0, pot_z]) {
                 pot(
@@ -75,9 +109,7 @@ module wheel(
             donut(
                 diameter = diameter,
                 thickness = ring,
-                segments = $preview ? 24 : 120,
-                starting_angle = 0,
-                coverage = 360
+                segments = $preview ? 12 : 36
             );
         }
     }
@@ -98,17 +130,21 @@ module wheel(
     }
 
     _hub();
-    _tire();
-    _spokes();
-    _rounded_exposure();
-    _brodie_knob();
+
+    if (!test_fit) {
+        _tire();
+        _spokes();
+        _rounded_exposure();
+        _brodie_knob();
+    }
 }
 
 module wheels(
     diameter = WHEEL_DIAMETER,
     height = WHEEL_HEIGHT,
     y = 0,
-    z = 0
+    z = 0,
+    test_fit = false
 ) {
     e = .04321;
 
@@ -118,7 +154,24 @@ module wheels(
             y + xy.y,
             z
         ]) {
-            wheel();
+            wheel(test_fit = test_fit);
         };
     }
 }
+
+// .4 doesn't register in slicer but still seems best w/ DEFAULT_TOLERANCE
+// shrug
+/* shim_sizes = [.4, .5, .6];
+tolerances = [0, DEFAULT_TOLERANCE, DEFAULT_TOLERANCE * 2];
+
+for (i = [0 : len(shim_sizes) - 1]) {
+    for (ii = [0 : len(tolerances) - 1]) {
+        translate([i * 7.8, ii * 7.8, 0]) {
+            wheel(
+                test_fit = true,
+                shim_size = shim_sizes[i],
+                tolerance = tolerances[ii]
+            );
+        }
+    }
+} */
