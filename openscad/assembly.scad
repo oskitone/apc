@@ -56,12 +56,10 @@ module assembly(
     }
 
     if (show_switch_clutch) {
-        translate([0, 0, -e]) {
-            switch_clutch(
-                switch_position = switch_position,
-                web_height = ENCLOSURE_HEIGHT - Z_PCB_TOP - ENCLOSURE_FLOOR_CEILING
-            );
-        }
+        switch_clutch(
+            switch_position = switch_position,
+            web_height = ENCLOSURE_HEIGHT - Z_PCB_TOP - ENCLOSURE_FLOOR_CEILING
+        );
     }
 
     if (show_battery) {

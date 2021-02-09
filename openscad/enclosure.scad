@@ -273,15 +273,14 @@ module enclosure(
     }
 
     module _switch_clutch_cavity() {
-        // TODO: increase and extract as clearance -- different from tolerance
-        y_tolerance = tolerance * 2;
-
-        y = get_switch_clutch_y(0) - y_tolerance;
+        y = get_switch_clutch_y(0) - SWITCH_CLUTCH_SLIDE_CLEARANCE;
 
         length = SWITCH_CLUTCH_LENGTH
             + SWITCH_ACTUATOR_TRAVEL
-            + y_tolerance * 2;
-        height = SWITCH_CLUTCH_HEIGHT + Z_PCB_TOP + e;
+            + SWITCH_CLUTCH_SLIDE_CLEARANCE * 2;
+        height = SWITCH_CLUTCH_HEIGHT + Z_PCB_TOP
+            + SWITCH_CLUTCH_VERTICAL_CLEARANCE
+            + e;
 
         translate([-e, y, -e]) {
             cube([wall + e * 2, length, height]);
