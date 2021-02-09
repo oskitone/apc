@@ -78,18 +78,22 @@ SHOW_SWITCH_CLUTCH = true;
 SHOW_BATTERY = true;
 SHOW_DFM = false;
 
-intersection() {
-    assembly(
-        show_enclosure_top = SHOW_ENCLOSURE_TOP,
-        show_enclosure_bottom = SHOW_ENCLOSURE_BOTTOM,
-        show_pcb = SHOW_PCB,
-        show_wheels = SHOW_WHEELS,
-        show_switch_clutch = SHOW_SWITCH_CLUTCH,
-        show_battery = SHOW_BATTERY,
-        show_dfm = SHOW_DFM
-    );
+FLIP_VERTICALLY = false;
 
-    /* cube([ENCLOSURE_WIDTH / 2, ENCLOSURE_LENGTH * 2, ENCLOSURE_HEIGHT]); */
-    /* cube([ENCLOSURE_WIDTH, ENCLOSURE_LENGTH * 2, ENCLOSURE_HEIGHT / 2]); */
-    /* cube([ENCLOSURE_WIDTH, ENCLOSURE_LENGTH * .8, ENCLOSURE_HEIGHT]); */
+rotate(FLIP_VERTICALLY ? [0, 180, 0] : [0, 0, 0]) {
+    intersection() {
+        assembly(
+            show_enclosure_top = SHOW_ENCLOSURE_TOP,
+            show_enclosure_bottom = SHOW_ENCLOSURE_BOTTOM,
+            show_pcb = SHOW_PCB,
+            show_wheels = SHOW_WHEELS,
+            show_switch_clutch = SHOW_SWITCH_CLUTCH,
+            show_battery = SHOW_BATTERY,
+            show_dfm = SHOW_DFM
+        );
+
+        /* cube([ENCLOSURE_WIDTH / 2, ENCLOSURE_LENGTH * 2, ENCLOSURE_HEIGHT]); */
+        /* cube([ENCLOSURE_WIDTH, ENCLOSURE_LENGTH * 2, ENCLOSURE_HEIGHT / 2]); */
+        /* cube([ENCLOSURE_WIDTH, ENCLOSURE_LENGTH * .8, ENCLOSURE_HEIGHT]); */
+    }
 }

@@ -18,6 +18,7 @@ mkdir -pv $dir
 function export_stl() {
     stub="$1"
     override="$2"
+    flip_vertically="$3"
 
     filename="$dir/$prefix-$stub-$timestamp-$commit_hash.stl"
 
@@ -32,16 +33,17 @@ function export_stl() {
         -D 'SHOW_SWITCH_CLUTCH=false' \
         -D 'SHOW_BATTERY=false' \
         -D 'SHOW_DFM=true' \
+        -D "FLIP_VERTICALLY=$flip_vertically" \
         -D "$override=true"
 }
 
 start=`date +%s`
 
 # The "& \" runs the next line in parallel!
-export_stl 'enclosure_bottom' 'SHOW_ENCLOSURE_BOTTOM' & \
-export_stl 'enclosure_top' 'SHOW_ENCLOSURE_TOP' & \
-export_stl 'switch_clutch' 'SHOW_SWITCH_CLUTCH' & \
-export_stl 'wheels' 'SHOW_WHEELS'
+export_stl 'enclosure_bottom' 'SHOW_ENCLOSURE_BOTTOM' 'false' & \
+export_stl 'enclosure_top' 'SHOW_ENCLOSURE_TOP' 'true' & \
+export_stl 'switch_clutch' 'SHOW_SWITCH_CLUTCH' 'false' &\
+export_stl 'wheels' 'SHOW_WHEELS' 'false'
 
 end=`date +%s`
 runtime=$((end-start))
