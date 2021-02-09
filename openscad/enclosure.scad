@@ -18,7 +18,7 @@ module _pot_walls(
     y = PCB_Y + PCB_POT_POSITIONS[0][1];
 
     module _well() {
-        diameter = WHEEL_DIAMETER + diameter_bleed * 2;
+        diameter = WELL_DIAMETER + diameter_bleed * 2;
         z = ENCLOSURE_HEIGHT - WHEEL_HEIGHT - ENCLOSURE_FLOOR_CEILING
             - height_bleed;
 
@@ -89,7 +89,6 @@ module enclosure(
 ) {
     e = 0.0321;
 
-    well_diameter = WHEEL_DIAMETER + WHEEL_DIAMETER_CLEARANCE * 2;
     grill_length = (length - grill_gutter * 2) * grill_coverage;
 
     module _half(h, lip) {
@@ -195,7 +194,7 @@ module enclosure(
                 for (xy = PCB_POT_POSITIONS) {
                     translate([xy.x, xy.y, z - e]) {
                         cylinder(
-                            d = well_diameter + grill_ring * 2,
+                            d = WELL_DIAMETER + grill_ring * 2,
                             h = _depth + e * 2
                         );
                     }
@@ -223,7 +222,7 @@ module enclosure(
 
         module _well(_height = height - well_z + e) {
             cylinder(
-                d = well_diameter,
+                d = WELL_DIAMETER,
                 h = _height,
                 $fn = HIDEF_ROUNDING
             );
@@ -236,7 +235,7 @@ module enclosure(
             function get_span(
                 coverage = 0,
                 minimum = exposure_diameter,
-                maximum = well_diameter
+                maximum = WELL_DIAMETER
             ) = (
                 minimum + coverage * (maximum - minimum)
             );
@@ -244,7 +243,7 @@ module enclosure(
             intersection() {
                 translate([0, 0, layer_height * -len(coverages) - e]) {
                     cylinder(
-                        d = well_diameter + e * 2,
+                        d = WELL_DIAMETER + e * 2,
                         h = layer_height * len(coverages) + e * 2,
                         $fn = HIDEF_ROUNDING
                     );
