@@ -316,10 +316,43 @@ module enclosure(
         }
     }
 
-    if (show_bottom) {
-        // TODO: ensure PCB and battery are held into place
+    module _pcb_rails() {
+        _width = inner_wall;
+        _length = 30;
+        _height = PCB_Z - floor_ceiling;
+        _gutter = 25;
 
-        translate([0, ENCLOSURE_LENGTH * enclosure_bottom_position, -e]) {
+        y = PCB_Y + PCB_LENGTH - _length;
+
+        module _rail() {
+            cube([_width, _length, _height + e]);
+
+            translate([0, -_height, 0]) {
+                flat_top_rectangular_pyramid(
+                    top_width = _width,
+                    top_length = 0,
+                    bottom_width = _width,
+                    bottom_length = _height + e,
+                    height = _height + e,
+                    top_weight_y = 1
+                );
+            }
+        }
+
+        for (x = [
+            (width - _width - _gutter) / 2,
+            (width - _width + _gutter) / 2
+        ]) {
+            translate([x, y, floor_ceiling - e]) {
+                _rail();
+            }
+        }
+    }
+
+    if (show_bottom) {
+        _pcb_rails();
+
+        translate([0, ENCLOSURE_LENGTH * enclosure_bottom_position, 0]) {
             _half(ENCLOSURE_BOTTOM_HEIGHT, false);
         }
     }
@@ -327,6 +360,7 @@ module enclosure(
     if (show_top) {
         _switch_clutch_wall();
         // TODO: endstop tabs for PCB -- component walls aren't enough
+        // TODO: hold battery into place
 
         difference() {
             union() {
