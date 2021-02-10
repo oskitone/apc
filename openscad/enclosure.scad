@@ -6,8 +6,7 @@ use <../../poly555/openscad/lib/diagonal_grill.scad>;
 
 include <shared_constants.scad>;
 
-// TODO: expose LIP_BOX_DEFAULT_LIP_HEIGHT
-ENCLOSURE_BOTTOM_HEIGHT = ENCLOSURE_FLOOR_CEILING + 3;
+ENCLOSURE_BOTTOM_HEIGHT = ENCLOSURE_FLOOR_CEILING + LIP_BOX_DEFAULT_LIP_HEIGHT;
 ENCLSOURE_TOP_HEIGHT = ENCLOSURE_HEIGHT - ENCLOSURE_BOTTOM_HEIGHT;
 
 module _pot_walls(
@@ -317,22 +316,23 @@ module enclosure(
         }
     }
 
+    PCB_RAILS_TOTAL_WIDTH = 25 + inner_wall;
+
     module _pcb_rails() {
-        _width = inner_wall;
         _length = 30;
         _height = PCB_Z - floor_ceiling;
-        _gutter = 25;
+        _gutter = PCB_RAILS_TOTAL_WIDTH - inner_wall;
 
         y = PCB_Y + PCB_LENGTH - _length;
 
         module _rail() {
-            cube([_width, _length, _height + e]);
+            cube([inner_wall, _length, _height + e]);
 
             translate([0, -_height, 0]) {
                 flat_top_rectangular_pyramid(
-                    top_width = _width,
+                    top_width = inner_wall,
                     top_length = 0,
-                    bottom_width = _width,
+                    bottom_width = inner_wall,
                     bottom_length = _height + e,
                     height = _height + e,
                     top_weight_y = 1
@@ -341,8 +341,8 @@ module enclosure(
         }
 
         for (x = [
-            (width - _width - _gutter) / 2,
-            (width - _width + _gutter) / 2
+            (width - inner_wall - _gutter) / 2,
+            (width - inner_wall + _gutter) / 2
         ]) {
             translate([x, y, floor_ceiling - e]) {
                 _rail();
@@ -370,15 +370,26 @@ module enclosure(
         }
     }
 
+    module _pcb_rails_lip_cavity() {
+        _width = PCB_RAILS_TOTAL_WIDTH + MISC_CLEARANCE * 2;
+
+        translate([
+            (width - _width) / 2,
+            length - wall - e,
+            ENCLOSURE_BOTTOM_HEIGHT - LIP_BOX_DEFAULT_LIP_HEIGHT - e
+        ]) {
+            cube([_width, wall + e * 2, LIP_BOX_DEFAULT_LIP_HEIGHT + e]);
+        }
+    }
+
     if (show_bottom) {
-        _pcb_rails();
+        translate([0, ENCLOSURE_LENGTH * enclosure_bottom_position, 0]) {
+            _pcb_rails();
 
-        difference() {
-            translate([0, ENCLOSURE_LENGTH * enclosure_bottom_position, 0]) {
+            difference() {
                 _half(ENCLOSURE_BOTTOM_HEIGHT, false);
+                _engraving();
             }
-
-            _engraving();
         }
     }
 
@@ -403,6 +414,7 @@ module enclosure(
             _grill_cavities();
             _wheel_cavities();
             _switch_clutch_cavity();
+            _pcb_rails_lip_cavity();
         }
     }
 }
