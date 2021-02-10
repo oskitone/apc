@@ -1,6 +1,7 @@
 // TODO: extract parts to common repo
 use <../../poly555/openscad/lib/basic_shapes.scad>;
 use <../../poly555/openscad/lib/enclosure.scad>;
+use <../../poly555/openscad/lib/engraving.scad>;
 use <../../poly555/openscad/lib/diagonal_grill.scad>;
 
 include <shared_constants.scad>;
@@ -349,11 +350,35 @@ module enclosure(
         }
     }
 
+    module _engraving(_width = width * .67, depth = .8) {
+        OSKITONE_LENGTH_WIDTH_RATIO = 4.6 / 28; // TODO: extract
+
+        translate([
+            width / 2,
+            length * .67,
+            depth
+        ]) {
+            rotate([0, 180, 0]) {
+                engraving(
+                    svg = "../../branding.svg",
+                    size = [_width, _width * OSKITONE_LENGTH_WIDTH_RATIO],
+                    height = depth + e,
+                    bleed = -tolerance,
+                    chamfer = $preview ? 0 : .2 // engraving_chamfer
+                );
+            }
+        }
+    }
+
     if (show_bottom) {
         _pcb_rails();
 
-        translate([0, ENCLOSURE_LENGTH * enclosure_bottom_position, 0]) {
-            _half(ENCLOSURE_BOTTOM_HEIGHT, false);
+        difference() {
+            translate([0, ENCLOSURE_LENGTH * enclosure_bottom_position, 0]) {
+                _half(ENCLOSURE_BOTTOM_HEIGHT, false);
+            }
+
+            _engraving();
         }
     }
 
