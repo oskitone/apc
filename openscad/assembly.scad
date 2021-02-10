@@ -23,7 +23,6 @@ module assembly(
         show_bottom = show_enclosure_bottom,
         show_top = show_enclosure_top,
         show_dfm = show_dfm,
-        fillet = 2,
         enclosure_bottom_position = enclosure_bottom_position
     );
 

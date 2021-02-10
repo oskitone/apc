@@ -74,11 +74,11 @@ module enclosure(
     grill_gutter = 3,
     grill_ring = 2,
     grill_coverage = .5,
-    grill_fillet = 1,
+    grill_fillet = ACCESSORY_FILLET,
 
     side_overexposure = ENCLOSURE_SIDE_OVEREXPOSURE,
 
-    fillet = 2,
+    fillet = ENCLOSURE_FILLET,
     tolerance = DEFAULT_TOLERANCE,
 
     show_top = true,

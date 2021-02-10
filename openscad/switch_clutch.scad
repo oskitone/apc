@@ -29,7 +29,7 @@ function get_switch_clutch_y(position = 0) = (
 
 module switch_clutch(
     switch_position = 0,
-    fillet = 1, // TODO: extract w/ grill_fillet
+    fillet = ACCESSORY_FILLET,
     side_overexposure = ENCLOSURE_SIDE_OVEREXPOSURE,
     tolerance = DEFAULT_TOLERANCE,
     floor_ceiling = ENCLOSURE_FLOOR_CEILING,
