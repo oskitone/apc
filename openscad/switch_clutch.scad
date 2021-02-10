@@ -4,6 +4,8 @@ use <../../poly555/openscad/lib/basic_shapes.scad>;
 include <enclosure.scad>;
 include <shared_constants.scad>;
 
+// Length is arbitrary but height's intentional -- middle of clutch should align
+// to the switch's actuator.
 SWITCH_CLUTCH_LENGTH = SWITCH_ACTUATOR_LENGTH + ENCLOSURE_WALL * 2;
 SWITCH_CLUTCH_HEIGHT = SWITCH_BASE_HEIGHT * 2 + SWITCH_ACTUATOR_HEIGHT;
 
