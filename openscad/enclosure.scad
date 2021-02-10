@@ -363,7 +363,7 @@ module enclosure(
                     svg = "../../branding.svg",
                     size = [_width, _width * OSKITONE_LENGTH_WIDTH_RATIO],
                     height = depth + e,
-                    bleed = -tolerance,
+                    bleed = tolerance,
                     chamfer = $preview ? 0 : .2 // engraving_chamfer
                 );
             }
