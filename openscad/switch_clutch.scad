@@ -153,7 +153,11 @@ module switch_clutch(
                 _clutch();
             }
 
-            _pot_walls(ENCLOSURE_INNER_WALL + tolerance * 2, tolerance * 2);
+            _pot_walls(
+                diameter_bleed = ENCLOSURE_INNER_WALL
+                    + SWITCH_CLUTCH_SLIDE_CLEARANCE,
+                height_bleed = tolerance * 2
+            );
         }
     }
 }
