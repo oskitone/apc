@@ -393,19 +393,27 @@ module enclosure_top(
         }
     }
 
-    module _switch_clutch_wall() {
-        width = inner_wall;
-        length = SWITCH_BASE_LENGTH;
-        _height = ENCLSOURE_TOP_HEIGHT - SWITCH_CLUTCH_HEIGHT
-            - floor_ceiling - grill_depth;
+    module _switch_clutch_web_wall() {
+        width = ENCLOSURE_INNER_WALL;
+        length = SWITCH_CLUTCH_WEB_LENGTH + SWITCH_ACTUATOR_TRAVEL;
+        height = SWITCH_CLUTCH_WEB_HEIGHT;
+
+        cavity_length = SWITCH_BASE_LENGTH + tolerance * 2;
 
         translate([
-            SWITCH_CLUTCH_WEB_X - side_overexposure
-                + SWITCH_CLUTCH_WEB_WIDTH + tolerance * 2,
-            PCB_Y + PCB_SWITCH_POSITION[1] - SWITCH_ORIGIN[1],
-            height - floor_ceiling - _height - grill_depth
+            SWITCH_CLUTCH_WEB_X - ENCLOSURE_SIDE_OVEREXPOSURE
+                + SWITCH_CLUTCH_WEB_WIDTH + DEFAULT_TOLERANCE * 2,
+            get_switch_clutch_y(.5) - (length - SWITCH_CLUTCH_LENGTH) / 2,
+            ENCLOSURE_HEIGHT - ENCLOSURE_FLOOR_CEILING - height
+                - ENCLOSURE_GRILL_DEPTH
         ]) {
-            cube([width, length, _height + e]);
+            difference() {
+                cube([width, length, height + e]);
+
+                translate([-e, (length - cavity_length) / 2, -e]) {
+                    cube([width + e * 2, cavity_length, height + e * 3]);
+                }
+            }
         }
     }
 
@@ -422,7 +430,6 @@ module enclosure_top(
     }
 
     module _output() {
-        _switch_clutch_wall();
         // TODO: endstop tabs for PCB -- component walls aren't enough
         // TODO: hold battery into place
 
@@ -436,6 +443,7 @@ module enclosure_top(
 
                 _component_walls();
                 _grill_cavities_plate();
+                _switch_clutch_web_wall();
             }
 
             _component_walls(is_cavity = true);

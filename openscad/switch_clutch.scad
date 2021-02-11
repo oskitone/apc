@@ -6,18 +6,24 @@ include <shared_constants.scad>;
 
 // Length is arbitrary but height's intentional -- middle of clutch should align
 // to the switch's actuator.
-SWITCH_CLUTCH_LENGTH = SWITCH_ACTUATOR_LENGTH + ENCLOSURE_WALL * 2;
-SWITCH_CLUTCH_HEIGHT = SWITCH_BASE_HEIGHT * 2 + SWITCH_ACTUATOR_HEIGHT;
-
 SWITCH_CLUTCH_WIDTH =  PCB_X + PCB_SWITCH_POSITION[0]
     + SWITCH_BASE_WIDTH / 2
     + ENCLOSURE_SIDE_OVEREXPOSURE
     + ENCLOSURE_INNER_WALL;
+SWITCH_CLUTCH_LENGTH = SWITCH_ACTUATOR_LENGTH + ENCLOSURE_WALL * 2;
+SWITCH_CLUTCH_HEIGHT = SWITCH_BASE_HEIGHT * 2 + SWITCH_ACTUATOR_HEIGHT;
+
 SWITCH_CLUTCH_WEB_X = ENCLOSURE_SIDE_OVEREXPOSURE + ENCLOSURE_WALL
     + DEFAULT_TOLERANCE * 2;
+
 SWITCH_CLUTCH_WEB_WIDTH = SWITCH_CLUTCH_WIDTH
     - SWITCH_BASE_WIDTH - DEFAULT_TOLERANCE - SWITCH_CLUTCH_WEB_X
     - ENCLOSURE_INNER_WALL;
+SWITCH_CLUTCH_WEB_LENGTH = SWITCH_BASE_LENGTH + SWITCH_ACTUATOR_TRAVEL
+    + 4 * 2;
+SWITCH_CLUTCH_WEB_HEIGHT = ENCLOSURE_HEIGHT - Z_PCB_TOP - ENCLOSURE_FLOOR_CEILING
+    - ENCLOSURE_GRILL_DEPTH
+    - DEFAULT_FDM_LAYER_HEIGHT; // just to be safe
 
 function get_switch_clutch_y(position = 0) = (
     PCB_Y + PCB_SWITCH_POSITION[1] - SWITCH_ORIGIN[1]
@@ -32,28 +38,21 @@ module switch_clutch(
     fillet = ACCESSORY_FILLET,
     side_overexposure = ENCLOSURE_SIDE_OVEREXPOSURE,
     tolerance = DEFAULT_TOLERANCE,
-    floor_ceiling = ENCLOSURE_FLOOR_CEILING,
-    web_overlap = 4
+    floor_ceiling = ENCLOSURE_FLOOR_CEILING
 ) {
     e = .045321;
 
     module _clutch() {
         module _web() {
-            length = SWITCH_BASE_LENGTH + SWITCH_ACTUATOR_TRAVEL
-                + web_overlap * 2;
-            height = ENCLOSURE_HEIGHT - Z_PCB_TOP - ENCLOSURE_FLOOR_CEILING
-                - ENCLOSURE_GRILL_DEPTH
-                - DEFAULT_FDM_LAYER_HEIGHT; // just to be safe
-
             translate([
                 SWITCH_CLUTCH_WEB_X,
-                (SWITCH_CLUTCH_LENGTH - length) / 2,
+                (SWITCH_CLUTCH_LENGTH - SWITCH_CLUTCH_WEB_LENGTH) / 2,
                 0
             ]) {
                 cube([
                     SWITCH_CLUTCH_WEB_WIDTH,
-                    length,
-                    height
+                    SWITCH_CLUTCH_WEB_LENGTH,
+                    SWITCH_CLUTCH_WEB_HEIGHT
                 ]);
             }
         }
