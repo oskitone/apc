@@ -183,8 +183,6 @@ module enclosure_top(
 ) {
     e = 0.0321;
 
-    grill_length = (length - grill_gutter * 2) * grill_coverage;
-
     module _component_walls(is_cavity = false) {
         $fn = is_cavity ? HIDEF_ROUNDING : DEFAULT_ROUNDING;
 
@@ -240,7 +238,7 @@ module enclosure_top(
     module _grill_cavities_plate() {
         x = wall - e;
         _width = width - x * 2;
-        _length = grill_length - wall + grill_gutter * 2 + e;
+        _length = GRILL_LENGTH - wall + grill_gutter * 2 + e;
         y = length - _length - wall + e;
         z = height - grill_depth - floor_ceiling;
 
@@ -252,7 +250,7 @@ module enclosure_top(
     // TODO: extend grill to full speaker cavity height
     module _grill_cavities() {
         _depth = grill_depth + e;
-        _length = grill_length;
+        _length = GRILL_LENGTH;
 
         y = length - _length - grill_gutter;
         z = height - grill_depth;

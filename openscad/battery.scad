@@ -1,6 +1,6 @@
 BATTERY_WIDTH = 48.6;
-BATTERY_LENGTH = 25.8;
-BATTERY_HEIGHT = 17.1;
+BATTERY_LENGTH = 17.1;
+BATTERY_HEIGHT = 25.8;
 BATTERY_SNAP_WIDTH = 4.2;
 
 module battery(include_snap = true) {
