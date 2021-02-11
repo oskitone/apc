@@ -39,33 +39,6 @@ module wheel(
     e = 0.043;
 
     module _hub() {
-        pot_z = height - hub_ceiling -
-            PTV09A_POT_BASE_HEIGHT - PTV09A_POT_ACTUATOR_HEIGHT;
-
-        module _chamfer() {
-            translate([0, 0, -e]) {
-                cylinder(
-                    d1 = PTV09A_POT_ACTUATOR_DIAMETER + tolerance * 2
-                        + chamfer * 2,
-                    d2 = PTV09A_POT_ACTUATOR_DIAMETER + tolerance * 2
-                        - PTV09A_POT_ACTUATOR_D_SHAFT_DEPTH * 2,
-                    h = chamfer + PTV09A_POT_ACTUATOR_D_SHAFT_DEPTH + e
-                );
-            }
-        }
-
-        difference() {
-            cylinder_grip(
-                diameter = PTV09A_POT_ACTUATOR_DIAMETER + tolerance * 2,
-                height = height - hub_ceiling,
-                count = shim_count,
-                rotation_offset = 180,
-                size = shim_size
-            );
-
-            _chamfer();
-        }
-
         if (!test_fit) {
             translate([0, 0, height - ring / 2]) {
                 hull() {
@@ -78,22 +51,10 @@ module wheel(
             }
         }
 
-        difference() {
-            cylinder(
-                d = hub_diameter,
-                h = height - ring / 2
-            );
-
-            _chamfer();
-
-            translate([0, 0, pot_z]) {
-                pot(
-                    show_base = false,
-                    diameter_bleed = tolerance,
-                    $fn = HIDEF_ROUNDING
-                );
-            }
-        }
+        cylinder(
+            d = hub_diameter,
+            h = height - ring / 2
+        );
     }
 
     module _tire() {
@@ -134,8 +95,48 @@ module wheel(
         }
     }
 
+    module _pot_cavity() {
+        module _chamfer() {
+            translate([0, 0, -e]) {
+                cylinder(
+                    d1 = PTV09A_POT_ACTUATOR_DIAMETER + tolerance * 2
+                        + chamfer * 2,
+                    d2 = PTV09A_POT_ACTUATOR_DIAMETER + tolerance * 2
+                        - PTV09A_POT_ACTUATOR_D_SHAFT_DEPTH * 2,
+                    h = chamfer + PTV09A_POT_ACTUATOR_D_SHAFT_DEPTH + e
+                );
+            }
+        }
+
+        module _grips() {
+            cylinder_grip(
+                diameter = PTV09A_POT_ACTUATOR_DIAMETER + tolerance * 2,
+                height = height - hub_ceiling,
+                count = shim_count,
+                rotation_offset = 180,
+                size = shim_size
+            );
+        }
+
+        pot_z = height - hub_ceiling -
+            PTV09A_POT_BASE_HEIGHT - PTV09A_POT_ACTUATOR_HEIGHT;
+
+        _chamfer();
+        difference() {
+            translate([0, 0, pot_z]) {
+                pot(
+                    show_base = false,
+                    diameter_bleed = tolerance,
+                    $fn = HIDEF_ROUNDING
+                );
+            }
+
+            _grips();
+        }
+    }
+
     module _spokes() {
-        overlap = ENCLOSURE_INNER_WALL / 2; // nominal
+        overlap = ring / 2;
 
         x = spokes_width / -2;
         y = hub_diameter / 2 - overlap;
@@ -171,12 +172,18 @@ module wheel(
         }
     }
 
-    _hub();
+    difference() {
+        union() {
+            _hub();
 
-    if (!test_fit) {
-        _tire();
-        _spokes();
-        _brodie_knobs();
+            if (!test_fit) {
+                _tire();
+                _spokes();
+                _brodie_knobs();
+            }
+        }
+
+        _pot_cavity();
     }
 }
 
