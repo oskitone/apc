@@ -371,7 +371,7 @@ module enclosure_top(
             + SWITCH_ACTUATOR_TRAVEL
             + SWITCH_CLUTCH_SLIDE_CLEARANCE * 2;
         height = SWITCH_CLUTCH_HEIGHT + Z_PCB_TOP
-            + SWITCH_CLUTCH_VERTICAL_CLEARANCE
+            + SWITCH_CLUTCH_TOP_CLEARANCE
             + e;
 
         translate([-e, y, -e]) {
