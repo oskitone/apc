@@ -28,7 +28,7 @@ module wheel(
     spokes_height = WHEEL_HEIGHT * .5,
 
     chamfer = .4,
-    shim_size = .4,
+    shim_size = .5,
     shim_count = 3,
 
     test_fit = false,
@@ -56,7 +56,7 @@ module wheel(
 
         difference() {
             cylinder_grip(
-                diameter = PTV09A_POT_ACTUATOR_DIAMETER,
+                diameter = PTV09A_POT_ACTUATOR_DIAMETER + tolerance * 2,
                 height = height - hub_ceiling,
                 count = shim_count,
                 rotation_offset = 180,
@@ -66,13 +66,15 @@ module wheel(
             _chamfer();
         }
 
-        translate([0, 0, height - ring / 2]) {
-            hull() {
-                donut(
-                    diameter = hub_diameter,
-                    thickness = ring,
-                    segments = $preview ? 24 : 36
-                );
+        if (!test_fit) {
+            translate([0, 0, height - ring / 2]) {
+                hull() {
+                    donut(
+                        diameter = hub_diameter,
+                        thickness = ring,
+                        segments = $preview ? 24 : 36
+                    );
+                }
             }
         }
 
@@ -201,19 +203,22 @@ module wheels(
     }
 }
 
-// .4 doesn't register in slicer but still seems best w/ DEFAULT_TOLERANCE
-// shrug
-/* shim_sizes = [.4, .5, .6];
-tolerances = [0, DEFAULT_TOLERANCE, DEFAULT_TOLERANCE * 2];
+/* shim_sizes = [.5, .6, .8];
+shim_counts = [2, 3, 4, 5, 6];
 
 for (i = [0 : len(shim_sizes) - 1]) {
-    for (ii = [0 : len(tolerances) - 1]) {
+    for (ii = [0 : len(shim_counts) - 1]) {
+        is_needle = i == 0 && ii == 1;
+
         translate([i * 7.8, ii * 7.8, 0]) {
-            wheel(
-                test_fit = true,
-                shim_size = shim_sizes[i],
-                tolerance = tolerances[ii]
-            );
+            color(is_needle ? "red" : undef) {
+                wheel(
+                    shim_size = shim_sizes[i],
+                    shim_count = shim_counts[ii],
+                    test_fit = true,
+                    tolerance = DEFAULT_TOLERANCE // TODO: try DEFAULT_TOLERANCE * 2,
+                );
+            }
         }
     }
 } */
