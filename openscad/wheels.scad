@@ -180,19 +180,23 @@ module wheel(
     }
 }
 
+function slice(list, start = 0, end) =
+    end == 0
+        ? []
+        : [for (i = [start : (end == undef ? len(list) : end) - 1]) list[i]]
+;
+
 module wheels(
     diameter = WHEEL_DIAMETER,
     height = WHEEL_HEIGHT,
     y = 0,
     z = 0,
-    test_fit = false
+    test_fit = false,
+    count = undef
 ) {
     e = .04321;
 
-    // Only output one for STL
-    positions = $preview ? PCB_POT_POSITIONS : [PCB_POT_POSITIONS[0]];
-
-    for (xy = PCB_POT_POSITIONS) {
+    for (xy = slice(PCB_POT_POSITIONS, 0, count)) {
         translate([
             ENCLOSURE_WALL + ENCLOSURE_INTERNAL_GUTTER + xy.x,
             y + xy.y,

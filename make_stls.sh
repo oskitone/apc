@@ -33,6 +33,7 @@ function export_stl() {
         -D 'SHOW_SWITCH_CLUTCH=false' \
         -D 'SHOW_BATTERY=false' \
         -D 'SHOW_DFM=true' \
+        -D 'WHEELS_COUNT=1' \
         -D "FLIP_VERTICALLY=$flip_vertically" \
         -D "$override=true"
 }

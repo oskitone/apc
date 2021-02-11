@@ -14,6 +14,8 @@ module assembly(
 
     show_dfm = true,
 
+    wheels_count = undef,
+
     switch_position = round($t),
     enclosure_bottom_position = 0 // abs($t - .5) * 2
 ) {
@@ -55,7 +57,8 @@ module assembly(
             diameter = WHEEL_DIAMETER,
             height = WHEEL_HEIGHT,
             y = PCB_Y,
-            z = ENCLOSURE_HEIGHT - WHEEL_HEIGHT + WHEEL_VERTICAL_EXPOSURE - e
+            z = ENCLOSURE_HEIGHT - WHEEL_HEIGHT + WHEEL_VERTICAL_EXPOSURE - e,
+            count = wheels_count
         );
     }
 
@@ -81,6 +84,7 @@ SHOW_WHEELS = true;
 SHOW_SWITCH_CLUTCH = true;
 SHOW_BATTERY = true;
 SHOW_DFM = false;
+WHEELS_COUNT = undef;
 
 FLIP_VERTICALLY = false;
 
@@ -93,7 +97,8 @@ rotate(FLIP_VERTICALLY ? [0, 180, 0] : [0, 0, 0]) {
             show_wheels = SHOW_WHEELS,
             show_switch_clutch = SHOW_SWITCH_CLUTCH,
             show_battery = SHOW_BATTERY,
-            show_dfm = SHOW_DFM
+            show_dfm = SHOW_DFM,
+            wheels_count = WHEELS_COUNT
         );
 
         /* cube([ENCLOSURE_WIDTH / 2, ENCLOSURE_LENGTH * 2, ENCLOSURE_HEIGHT]); */
