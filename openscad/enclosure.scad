@@ -285,7 +285,7 @@ module enclosure_top(
                     z - e
                 ]) {
                     cylinder(
-                        d = LED_DIAMETER + grill_ring * 2,
+                        d = LED_BASE_DIAMETER + grill_ring * 2,
                         h = _depth + e * 2
                     );
                 }
