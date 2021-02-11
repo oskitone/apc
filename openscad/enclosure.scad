@@ -297,7 +297,7 @@ module enclosure_top(
         well_z = ENCLOSURE_HEIGHT - WHEEL_HEIGHT - e;
         shaft_to_base_z = PCB_Z + PCB_HEIGHT + PTV09A_POT_BASE_HEIGHT - e;
 
-        exposure_diameter = PTV09A_POT_ACTUATOR_BASE_DIAMETER + tolerance * 2;
+        exposure_diameter = PTV09A_POT_ACTUATOR_DIAMETER + tolerance * 2;
 
         module _well(_height = height - well_z + e) {
             cylinder(
@@ -357,6 +357,12 @@ module enclosure_top(
                     cylinder(
                         d = exposure_diameter,
                         h = height - shaft_to_base_z + e,
+                        $fn = HIDEF_ROUNDING
+                    );
+
+                    cylinder(
+                        d = PTV09A_POT_ACTUATOR_BASE_DIAMETER + tolerance * 2,
+                        h = PTV09A_POT_ACTUATOR_BASE_HEIGHT,
                         $fn = HIDEF_ROUNDING
                     );
                 }
