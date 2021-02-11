@@ -169,9 +169,9 @@ module enclosure_top(
     gutter = ENCLOSURE_INTERNAL_GUTTER,
 
     grill_depth = ENCLOSURE_GRILL_DEPTH,
-    grill_gutter = 3,
-    grill_ring = 2,
-    grill_coverage = .5,
+    grill_gutter = ENCLOSURE_GRILL_GUTTER,
+    grill_ring = ENCLOSURE_GRILL_RING,
+    grill_coverage = ENCLOSURE_GRILL_COVERAGE,
     grill_fillet = ACCESSORY_FILLET,
 
     side_overexposure = ENCLOSURE_SIDE_OVEREXPOSURE,
