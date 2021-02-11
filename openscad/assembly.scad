@@ -55,7 +55,7 @@ module assembly(
             diameter = WHEEL_DIAMETER,
             height = WHEEL_HEIGHT,
             y = PCB_Y,
-            z = ENCLOSURE_HEIGHT - WHEEL_HEIGHT- e
+            z = ENCLOSURE_HEIGHT - WHEEL_HEIGHT + WHEEL_VERTICAL_EXPOSURE - e
         );
     }
 

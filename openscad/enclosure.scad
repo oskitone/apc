@@ -21,8 +21,8 @@ module _pot_walls(
 
     module _well() {
         diameter = WELL_DIAMETER + diameter_bleed * 2;
-        z = ENCLOSURE_HEIGHT - WHEEL_HEIGHT - ENCLOSURE_FLOOR_CEILING
-            - height_bleed;
+        z = ENCLOSURE_HEIGHT - WHEEL_HEIGHT + WHEEL_VERTICAL_EXPOSURE
+            - ENCLOSURE_FLOOR_CEILING - height_bleed;
 
         intersection() {
             translate([ENCLOSURE_WALL - e, y - diameter / 2 - e, 0]) {
@@ -294,7 +294,7 @@ module enclosure_top(
     }
 
     module _wheel_cavities() {
-        well_z = ENCLOSURE_HEIGHT - WHEEL_HEIGHT - e;
+        well_z = ENCLOSURE_HEIGHT - WHEEL_HEIGHT + WHEEL_VERTICAL_EXPOSURE - e;
         shaft_to_base_z = PCB_Z + PCB_HEIGHT + PTV09A_POT_BASE_HEIGHT - e;
 
         exposure_diameter = PTV09A_POT_ACTUATOR_DIAMETER + tolerance * 2;

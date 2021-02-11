@@ -6,7 +6,8 @@ include <shared_constants.scad>;
 
 WHEEL_DIAMETER = 2 *
     (PCB_X + PCB_POT_POSITIONS[0][0] + ENCLOSURE_SIDE_OVEREXPOSURE);
-WHEEL_HEIGHT = ENCLOSURE_HEIGHT - Z_POT;
+WHEEL_VERTICAL_EXPOSURE = 2;
+WHEEL_HEIGHT = ENCLOSURE_HEIGHT - Z_POT + WHEEL_VERTICAL_EXPOSURE;
 WHEEL_DIAMETER_CLEARANCE = 1;
 WELL_DIAMETER = WHEEL_DIAMETER + WHEEL_DIAMETER_CLEARANCE * 2;
 
@@ -19,11 +20,12 @@ module wheel(
     hub_diameter = PTV09A_POT_ACTUATOR_DIAMETER + ENCLOSURE_INNER_WALL * 2,
 
     brodie_knob_diameter = ENCLOSURE_WALL * 2,
-    brodie_knob_height = ENCLOSURE_WALL / 2,
+    brodie_knob_height = ENCLOSURE_WALL * -.75,
+    brodie_knob_count = 3,
 
     spokes_count = 6,
     spokes_width = 2,
-    spokes_height = WHEEL_HEIGHT * .67,
+    spokes_height = WHEEL_HEIGHT * .5,
 
     chamfer = .4,
     shim_size = .4,
@@ -145,18 +147,22 @@ module wheel(
         }
     }
 
-    module _brodie_knob() {
-        translate([0, diameter / 2 - brodie_knob_diameter / 2, 0]) {
-            cylinder(
-                h = height + brodie_knob_height,
-                d1 = 0,
-                d2 = brodie_knob_diameter
-            );
+    module _brodie_knobs() {
+        for (i = [0 : brodie_knob_count - 1]) {
+            rotate([0, 0, i * (360 / brodie_knob_count)]) {
+                translate([0, diameter / 2 - brodie_knob_diameter / 2, 0]) {
+                    cylinder(
+                        h = height + brodie_knob_height,
+                        d1 = 0,
+                        d2 = brodie_knob_diameter
+                    );
 
-            translate([0, 0, height + brodie_knob_height]) {
-                sphere(
-                    d = brodie_knob_diameter
-                );
+                    translate([0, 0, height + brodie_knob_height]) {
+                        sphere(
+                            d = brodie_knob_diameter
+                        );
+                    }
+                }
             }
         }
     }
@@ -166,7 +172,7 @@ module wheel(
     if (!test_fit) {
         _tire();
         _spokes();
-        /* _brodie_knob(); */
+        _brodie_knobs();
     }
 }
 
