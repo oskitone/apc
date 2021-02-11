@@ -9,6 +9,8 @@ include <shared_constants.scad>;
 ENCLOSURE_BOTTOM_HEIGHT = ENCLOSURE_FLOOR_CEILING + LIP_BOX_DEFAULT_LIP_HEIGHT;
 ENCLSOURE_TOP_HEIGHT = ENCLOSURE_HEIGHT - ENCLOSURE_BOTTOM_HEIGHT;
 
+PCB_RAILS_TOTAL_WIDTH = 25 + ENCLOSURE_INNER_WALL;
+
 module _pot_walls(
     diameter_bleed = 0,
     height_bleed = 0
@@ -59,7 +61,104 @@ module _pot_walls(
     _shaft_to_base();
 }
 
-module enclosure(
+module _half(h, lip) {
+    enclosure_half(
+        width = ENCLOSURE_WIDTH, length = ENCLOSURE_LENGTH, height = h,
+        wall = ENCLOSURE_WALL,
+        floor_ceiling = ENCLOSURE_FLOOR_CEILING,
+        add_lip = lip,
+        remove_lip = !lip,
+        fillet = ENCLOSURE_FILLET,
+        tolerance = DEFAULT_TOLERANCE,
+        include_tongue_and_groove = true,
+        tongue_and_groove_end_length = undef,
+        $fn = DEFAULT_ROUNDING
+    );
+}
+
+module enclosure_bottom(
+    width = ENCLOSURE_WIDTH,
+    length = ENCLOSURE_LENGTH,
+    height = ENCLOSURE_HEIGHT,
+
+    wall = ENCLOSURE_WALL,
+    inner_wall = ENCLOSURE_INNER_WALL,
+    floor_ceiling = ENCLOSURE_FLOOR_CEILING,
+    gutter = ENCLOSURE_INTERNAL_GUTTER,
+
+    tolerance = DEFAULT_TOLERANCE,
+
+    enclosure_bottom_position = 0
+) {
+    e = 0.0321;
+
+    module _pcb_rails() {
+        _length = 30;
+        _height = PCB_Z - floor_ceiling;
+        _gutter = PCB_RAILS_TOTAL_WIDTH - inner_wall;
+
+        y = PCB_Y + PCB_LENGTH - _length;
+
+        module _rail() {
+            cube([inner_wall, _length, _height + e]);
+
+            translate([0, -_height, 0]) {
+                flat_top_rectangular_pyramid(
+                    top_width = inner_wall,
+                    top_length = 0,
+                    bottom_width = inner_wall,
+                    bottom_length = _height + e,
+                    height = _height + e,
+                    top_weight_y = 1
+                );
+            }
+        }
+
+        for (x = [
+            (width - inner_wall - _gutter) / 2,
+            (width - inner_wall + _gutter) / 2
+        ]) {
+            translate([x, y, floor_ceiling - e]) {
+                _rail();
+            }
+        }
+    }
+
+    module _engraving(_width = width * .67, depth = .8) {
+        OSKITONE_LENGTH_WIDTH_RATIO = 4.6 / 28; // TODO: extract
+
+        translate([
+            width / 2,
+            length * .67,
+            depth
+        ]) {
+            rotate([0, 180, 0]) {
+                engraving(
+                    svg = "../../branding.svg",
+                    size = [_width, _width * OSKITONE_LENGTH_WIDTH_RATIO],
+                    height = depth + e,
+                    bleed = tolerance,
+                    chamfer = $preview ? 0 : .2 // engraving_chamfer
+                );
+            }
+        }
+    }
+
+    module _output() {
+        translate([0, ENCLOSURE_LENGTH * enclosure_bottom_position, 0]) {
+            _pcb_rails();
+
+            difference() {
+                _half(ENCLOSURE_BOTTOM_HEIGHT, false);
+                _engraving();
+            }
+        }
+    }
+
+    _output();
+}
+
+module enclosure_top(
     width = ENCLOSURE_WIDTH,
     length = ENCLOSURE_LENGTH,
     height = ENCLOSURE_HEIGHT,
@@ -80,31 +179,11 @@ module enclosure(
     fillet = ENCLOSURE_FILLET,
     tolerance = DEFAULT_TOLERANCE,
 
-    show_top = true,
-    show_bottom = true,
-
-    show_dfm = true,
-
-    enclosure_bottom_position = 0
+    show_dfm = true
 ) {
     e = 0.0321;
 
     grill_length = (length - grill_gutter * 2) * grill_coverage;
-
-    module _half(h, lip) {
-        enclosure_half(
-            width = width, length = length, height = h,
-            wall = wall,
-            floor_ceiling = floor_ceiling,
-            add_lip = lip,
-            remove_lip = !lip,
-            fillet = fillet,
-            tolerance = tolerance,
-            include_tongue_and_groove = true,
-            tongue_and_groove_end_length = undef,
-            $fn = DEFAULT_ROUNDING
-        );
-    }
 
     // TODO: fix PCB sitting unevenly on walls -- should be perfectly flat
     module _component_walls(is_cavity = false) {
@@ -316,60 +395,6 @@ module enclosure(
         }
     }
 
-    PCB_RAILS_TOTAL_WIDTH = 25 + inner_wall;
-
-    module _pcb_rails() {
-        _length = 30;
-        _height = PCB_Z - floor_ceiling;
-        _gutter = PCB_RAILS_TOTAL_WIDTH - inner_wall;
-
-        y = PCB_Y + PCB_LENGTH - _length;
-
-        module _rail() {
-            cube([inner_wall, _length, _height + e]);
-
-            translate([0, -_height, 0]) {
-                flat_top_rectangular_pyramid(
-                    top_width = inner_wall,
-                    top_length = 0,
-                    bottom_width = inner_wall,
-                    bottom_length = _height + e,
-                    height = _height + e,
-                    top_weight_y = 1
-                );
-            }
-        }
-
-        for (x = [
-            (width - inner_wall - _gutter) / 2,
-            (width - inner_wall + _gutter) / 2
-        ]) {
-            translate([x, y, floor_ceiling - e]) {
-                _rail();
-            }
-        }
-    }
-
-    module _engraving(_width = width * .67, depth = .8) {
-        OSKITONE_LENGTH_WIDTH_RATIO = 4.6 / 28; // TODO: extract
-
-        translate([
-            width / 2,
-            length * .67,
-            depth
-        ]) {
-            rotate([0, 180, 0]) {
-                engraving(
-                    svg = "../../branding.svg",
-                    size = [_width, _width * OSKITONE_LENGTH_WIDTH_RATIO],
-                    height = depth + e,
-                    bleed = tolerance,
-                    chamfer = $preview ? 0 : .2 // engraving_chamfer
-                );
-            }
-        }
-    }
-
     module _pcb_rails_lip_cavity() {
         _width = PCB_RAILS_TOTAL_WIDTH + MISC_CLEARANCE * 2;
 
@@ -382,18 +407,7 @@ module enclosure(
         }
     }
 
-    if (show_bottom) {
-        translate([0, ENCLOSURE_LENGTH * enclosure_bottom_position, 0]) {
-            _pcb_rails();
-
-            difference() {
-                _half(ENCLOSURE_BOTTOM_HEIGHT, false);
-                _engraving();
-            }
-        }
-    }
-
-    if (show_top) {
+    module _output() {
         _switch_clutch_wall();
         // TODO: endstop tabs for PCB -- component walls aren't enough
         // TODO: hold battery into place
@@ -417,4 +431,6 @@ module enclosure(
             _pcb_rails_lip_cavity();
         }
     }
+
+    _output();
 }

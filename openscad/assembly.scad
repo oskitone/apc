@@ -19,12 +19,17 @@ module assembly(
 ) {
     e = .0123;
 
-    enclosure(
-        show_bottom = show_enclosure_bottom,
-        show_top = show_enclosure_top,
-        show_dfm = show_dfm,
-        enclosure_bottom_position = enclosure_bottom_position
-    );
+    if (show_enclosure_bottom) {
+        enclosure_bottom(
+            enclosure_bottom_position = enclosure_bottom_position
+        );
+    }
+
+    if (show_enclosure_top) {
+        enclosure_top(
+            show_dfm = show_dfm
+        );
+    }
 
     if (show_pcb) {
         translate([
