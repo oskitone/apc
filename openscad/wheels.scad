@@ -185,6 +185,9 @@ module wheels(
 ) {
     e = .04321;
 
+    // Only output one for STL
+    positions = $preview ? PCB_POT_POSITIONS : [PCB_POT_POSITIONS[0]];
+
     for (xy = PCB_POT_POSITIONS) {
         translate([
             ENCLOSURE_WALL + ENCLOSURE_INTERNAL_GUTTER + xy.x,
