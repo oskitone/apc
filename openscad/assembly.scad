@@ -15,7 +15,7 @@ module assembly(
     show_dfm = true,
 
     switch_position = round($t),
-    enclosure_bottom_position = 0
+    enclosure_bottom_position = 0 // abs($t - .5) * 2
 ) {
     e = .0123;
 
