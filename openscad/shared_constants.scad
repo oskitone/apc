@@ -2,6 +2,7 @@
 include <battery.scad>;
 include <pcb.scad>;
 
+FIXED_LODEF_ROUNDING = 6;
 DEFAULT_ROUNDING = $preview ? undef : 24;
 HIDEF_ROUNDING = $preview ? undef : 120;
 

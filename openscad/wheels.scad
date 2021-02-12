@@ -34,7 +34,7 @@ module wheel(
     test_fit = false,
 
     tolerance = DEFAULT_TOLERANCE,
-    $fn = HIDEF_ROUNDING
+    $fn = DEFAULT_ROUNDING
 ) {
     e = 0.043;
 
@@ -87,7 +87,8 @@ module wheel(
             translate([0, 0, pot_z]) {
                 pot(
                     show_base = false,
-                    diameter_bleed = tolerance
+                    diameter_bleed = tolerance,
+                    $fn = HIDEF_ROUNDING
                 );
             }
         }
@@ -95,7 +96,7 @@ module wheel(
 
     module _tire() {
         module _donut() {
-            render() donut(
+            donut(
                 diameter = diameter,
                 thickness = ring,
                 segments = $preview ? 24 : 36
@@ -119,13 +120,14 @@ module wheel(
                 }
             }
 
-            render() cylinder_grip(
+            cylinder_grip(
                 diameter = diameter,
                 height = height,
                 count = round(
                     diameter * PI / (DEFAULT_RIB_LENGTH + DEFAULT_RIB_GUTTER)
                 ),
-                size = .8
+                size = .8,
+                $fn = FIXED_LODEF_ROUNDING
             );
         }
     }
