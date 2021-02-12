@@ -20,8 +20,9 @@ module wheel(
     hub_diameter = PTV09A_POT_ACTUATOR_DIAMETER + ENCLOSURE_INNER_WALL * 2,
 
     brodie_knob_diameter = ENCLOSURE_WALL * 2,
-    brodie_knob_height = ENCLOSURE_WALL * -.75,
-    brodie_knob_count = 3,
+    brodie_knob_stilt = 0,
+    brodie_knob_count = 1,
+    brodie_angle_offset = 180,
 
     spokes_count = 6,
     spokes_width = 2,
@@ -154,15 +155,17 @@ module wheel(
 
     module _brodie_knobs() {
         for (i = [0 : brodie_knob_count - 1]) {
-            rotate([0, 0, i * (360 / brodie_knob_count)]) {
+            rotation = brodie_angle_offset + i * (360 / brodie_knob_count);
+
+            rotate([0, 0, rotation]) {
                 translate([0, diameter / 2 - brodie_knob_diameter / 2, 0]) {
                     cylinder(
-                        h = height + brodie_knob_height,
+                        h = height + brodie_knob_stilt,
                         d1 = 0,
                         d2 = brodie_knob_diameter
                     );
 
-                    translate([0, 0, height + brodie_knob_height]) {
+                    translate([0, 0, height + brodie_knob_stilt]) {
                         sphere(
                             d = brodie_knob_diameter
                         );
