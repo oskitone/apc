@@ -185,14 +185,15 @@ module enclosure_top(
 
     grill_length = (length - grill_gutter * 2) * grill_coverage;
 
-    // TODO: fix PCB sitting unevenly on walls -- should be perfectly flat
     module _component_walls(is_cavity = false) {
         $fn = is_cavity ? HIDEF_ROUNDING : DEFAULT_ROUNDING;
 
-        Z_PCB_TOP = Z_PCB_TOP + (is_cavity ? -e : 0);
+        pcb_top_z = Z_PCB_TOP + (is_cavity ? -e : 0);
+        volume_pot_access_z = Z_PCB_TOP + VOLUME_POT_ACTUATOR_HEIGHT
+            + MISC_CLEARANCE;
 
         led_bleed = is_cavity ? tolerance : 3;
-        speaker_bleed = is_cavity ? tolerance : inner_wall;
+        default_bleed = is_cavity ? tolerance : inner_wall;
 
         function get_height(z, expose = is_cavity) =
             height - z + (expose ? e : e - floor_ceiling);
@@ -200,22 +201,33 @@ module enclosure_top(
         translate([
             PCB_X + PCB_LED_POSITION.x,
             PCB_Y + PCB_LED_POSITION.y,
-            Z_PCB_TOP
+            pcb_top_z
         ]) {
             cylinder(
                 d = LED_BASE_DIAMETER + led_bleed * 2,
-                h = get_height(Z_PCB_TOP)
+                h = get_height(pcb_top_z)
+            );
+        }
+
+        translate([
+            PCB_X + PCB_VOLUME_POT_POSITION.x,
+            PCB_Y + PCB_VOLUME_POT_POSITION.y,
+            volume_pot_access_z
+        ]) {
+            cylinder(
+                d = VOLUME_POT_SCREWDRIVER_ACCESS_DIAMETER + default_bleed * 2,
+                h = get_height(volume_pot_access_z)
             );
         }
 
         translate([
             PCB_X + PCB_SPEAKER_POSITION.x,
             PCB_Y + PCB_SPEAKER_POSITION.y,
-            Z_PCB_TOP
+            pcb_top_z
         ]) {
             cylinder(
-                d = SPEAKER_DIAMETER + speaker_bleed * 2,
-                h = get_height(Z_PCB_TOP, false) +
+                d = SPEAKER_DIAMETER + default_bleed * 2,
+                h = get_height(pcb_top_z, false) +
                     (is_cavity ? floor_ceiling - grill_depth : 0)
             );
         }
@@ -261,6 +273,15 @@ module enclosure_top(
             );
         }
 
+        module _ring(xy, diameter) {
+            translate([xy.x, xy.y, z - e]) {
+                cylinder(
+                    d = diameter + grill_ring * 2,
+                    h = _depth + e * 2
+                );
+            }
+        }
+
         difference() {
             translate([grill_gutter, y, z]) {
                 intersection() {
@@ -271,24 +292,11 @@ module enclosure_top(
 
             translate([PCB_X, PCB_Y, 0]) {
                 for (xy = PCB_POT_POSITIONS) {
-                    translate([xy.x, xy.y, z - e]) {
-                        cylinder(
-                            d = WELL_DIAMETER + grill_ring * 2,
-                            h = _depth + e * 2
-                        );
-                    }
+                    _ring(xy, WELL_DIAMETER);
                 };
-
-                translate([
-                    PCB_LED_POSITION.x,
-                    PCB_LED_POSITION.y,
-                    z - e
-                ]) {
-                    cylinder(
-                        d = LED_BASE_DIAMETER + grill_ring * 2,
-                        h = _depth + e * 2
-                    );
-                }
+                _ring(PCB_LED_POSITION, LED_BASE_DIAMETER);
+                _ring(PCB_VOLUME_POT_POSITION,
+                    VOLUME_POT_SCREWDRIVER_ACCESS_DIAMETER);
             }
         }
     }
