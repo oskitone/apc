@@ -234,7 +234,7 @@ module enclosure_top(
             cylinder(
                 d = SPEAKER_DIAMETER + default_bleed * 2,
                 h = get_height(pcb_top_z, false) +
-                    (is_cavity ? floor_ceiling - grill_depth : 0)
+                    (is_cavity ? -grill_depth : 0)
             );
         }
 
@@ -271,11 +271,11 @@ module enclosure_top(
             );
         }
 
-        module _diagonal_grill(height = _depth) {
+        module _diagonal_grill(height = _depth, angle = 45) {
             diagonal_grill(
                 width - grill_gutter * 2, _length, height,
                 size = 2,
-                angle = 45
+                angle = angle
             );
         }
 
@@ -284,6 +284,23 @@ module enclosure_top(
                 cylinder(
                     d = diameter + grill_ring * 2,
                     h = _depth + e * 2
+                );
+            }
+        }
+
+        intersection() {
+            translate([grill_gutter, y, z - floor_ceiling - e]) {
+                _diagonal_grill(floor_ceiling + e * 2, angle = -45);
+            }
+
+            translate([
+                PCB_X + PCB_SPEAKER_POSITION.x,
+                PCB_Y + PCB_SPEAKER_POSITION.y,
+                z - floor_ceiling - e
+            ]) {
+                cylinder(
+                    d = SPEAKER_DIAMETER + e * 2,
+                    h = floor_ceiling + e * 4
                 );
             }
         }
