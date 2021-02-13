@@ -8,6 +8,7 @@ include <shared_constants.scad>;
 
 ENCLOSURE_BOTTOM_HEIGHT = ENCLOSURE_FLOOR_CEILING + LIP_BOX_DEFAULT_LIP_HEIGHT;
 ENCLSOURE_TOP_HEIGHT = ENCLOSURE_HEIGHT - ENCLOSURE_BOTTOM_HEIGHT;
+ENCLOSURE_ENGRAVING_DEPTH = .8;
 
 PCB_RAILS_TOTAL_WIDTH = 25 + ENCLOSURE_INNER_WALL;
 
@@ -59,6 +60,24 @@ module _pot_walls(
 
     _well();
     _shaft_to_base();
+}
+
+module _brand_engraving(
+    width = 10,
+    height = ENCLOSURE_ENGRAVING_DEPTH,
+    tolerance = DEFAULT_TOLERANCE
+) {
+    e = .049;
+
+    OSKITONE_LENGTH_WIDTH_RATIO = 4.6 / 28; // TODO: extract
+
+    engraving(
+        svg = "../../branding.svg",
+        size = [width, width * OSKITONE_LENGTH_WIDTH_RATIO],
+        height = height + e,
+        bleed = 0,
+        chamfer = $preview ? 0 : .2 // engraving_chamfer
+    );
 }
 
 module _half(h, lip) {
@@ -124,33 +143,22 @@ module enclosure_bottom(
         }
     }
 
-    module _engraving(_width = width * .67, depth = .8) {
-        OSKITONE_LENGTH_WIDTH_RATIO = 4.6 / 28; // TODO: extract
-
-        translate([
-            width / 2,
-            length * .67,
-            depth
-        ]) {
-            rotate([0, 180, 0]) {
-                engraving(
-                    svg = "../../branding.svg",
-                    size = [_width, _width * OSKITONE_LENGTH_WIDTH_RATIO],
-                    height = depth + e,
-                    bleed = tolerance,
-                    chamfer = $preview ? 0 : .2 // engraving_chamfer
-                );
-            }
-        }
-    }
-
     module _output() {
         translate([0, ENCLOSURE_LENGTH * enclosure_bottom_position, 0]) {
             _pcb_rails();
 
             difference() {
                 _half(ENCLOSURE_BOTTOM_HEIGHT, false);
-                _engraving();
+
+                translate([
+                    width / 2,
+                    length * .67,
+                    ENCLOSURE_ENGRAVING_DEPTH
+                ]) {
+                    rotate([0, 180, 0]) {
+                        _brand_engraving(width * .67);
+                    }
+                }
             }
         }
     }
@@ -427,6 +435,34 @@ module enclosure_top(
         }
     }
 
+    module _engraving(depth = ENCLOSURE_ENGRAVING_DEPTH) {
+        area_length = length - GRILL_LENGTH - grill_gutter * 3;
+
+        translate([
+            width / 2,
+            grill_gutter + area_length / 2,
+            height - depth - e
+        ]) {
+            // TODO: derive
+            translate([0, 7, 0]) {
+                _brand_engraving(
+                    width = 20,
+                    height = ENCLOSURE_ENGRAVING_DEPTH + e
+                );
+            }
+
+            engraving(
+                string = "APC",
+                font = "Orbitron:style=Black",
+                size = area_length / 2,
+                bleed = -tolerance,
+                height = depth + e,
+                center = true,
+                chamfer = $preview ? 0 : .2
+            );
+        }
+    }
+
     module _output() {
         // TODO: endstop tabs for PCB -- component walls aren't enough
         // TODO: hold battery into place
@@ -449,6 +485,7 @@ module enclosure_top(
             _wheel_cavities();
             _switch_clutch_cavity();
             _pcb_rails_lip_cavity();
+            _engraving();
         }
     }
 
