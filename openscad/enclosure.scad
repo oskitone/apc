@@ -196,7 +196,7 @@ module enclosure_top(
 
         pcb_top_z = Z_PCB_TOP + (is_cavity ? -e : 0);
         volume_pot_access_z = Z_PCB_TOP + VOLUME_POT_ACTUATOR_HEIGHT
-            + MISC_CLEARANCE;
+            + MISC_CLEARANCE + (is_cavity ? -e : 0);
 
         led_bleed = is_cavity ? tolerance : 3;
         default_bleed = is_cavity ? tolerance : inner_wall;
