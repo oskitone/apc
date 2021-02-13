@@ -322,7 +322,7 @@ module enclosure_top(
         }
 
         module _well_dfm(
-            coverages = [1, 0, 0],
+            coverages = [1, .5, 0, 0],
             layer_height = DEFAULT_FDM_LAYER_HEIGHT
         ) {
             function get_span(
