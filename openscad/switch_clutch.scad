@@ -24,6 +24,8 @@ SWITCH_CLUTCH_WEB_HEIGHT = ENCLOSURE_HEIGHT - Z_PCB_TOP - ENCLOSURE_FLOOR_CEILIN
     - ENCLOSURE_GRILL_DEPTH
     - DEFAULT_FDM_LAYER_HEIGHT; // just to be safe
 
+BREAKAWAY_SUPPORT_DEPTH = .5;
+
 function get_switch_clutch_y(position = 0) = (
     PCB_Y + PCB_SWITCH_POSITION[1] - SWITCH_ORIGIN[1]
         + SWITCH_BASE_LENGTH / 2
@@ -105,10 +107,15 @@ module switch_clutch(
                 - SWITCH_BASE_WIDTH;
 
             if (show_dfm) {
-                translate([fillet, 0, -skirt_height]) {
+                translate([
+                    fillet + BREAKAWAY_SUPPORT_DEPTH / 2,
+                    0,
+                    -skirt_height
+                ]) {
                     breakaway_support(
                         length = SWITCH_CLUTCH_LENGTH,
-                        height = skirt_height
+                        height = skirt_height,
+                        include_raft = true
                     );
                 }
             }
@@ -167,10 +174,15 @@ module switch_clutch(
             }
 
             if (show_dfm) {
-                translate([SWITCH_CLUTCH_WIDTH, 0, -skirt_height]) {
+                translate([
+                    SWITCH_CLUTCH_WIDTH - BREAKAWAY_SUPPORT_DEPTH / 2,
+                    0,
+                    -skirt_height
+                ]) {
                     breakaway_support(
                         length = SWITCH_CLUTCH_LENGTH,
-                        height = SWITCH_BASE_HEIGHT + skirt_height
+                        height = SWITCH_BASE_HEIGHT + skirt_height,
+                        include_raft = true
                     );
                 }
             }
