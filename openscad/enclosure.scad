@@ -481,7 +481,7 @@ module enclosure_top(
             }
 
             _component_walls(is_cavity = true);
-            _grill_cavities();
+            render() _grill_cavities();
             _wheel_cavities();
             _switch_clutch_cavity();
             _pcb_rails_lip_cavity();
