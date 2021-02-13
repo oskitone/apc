@@ -63,7 +63,10 @@ module assembly(
     }
 
     if (show_switch_clutch) {
-        switch_clutch(switch_position);
+        switch_clutch(
+            position = switch_position,
+            show_dfm = show_dfm
+        );
     }
 
     if (show_battery) {
