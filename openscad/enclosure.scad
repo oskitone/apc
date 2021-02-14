@@ -75,7 +75,7 @@ module _brand_engraving(
         svg = "../../branding.svg",
         size = [width, width * OSKITONE_LENGTH_WIDTH_RATIO],
         height = height + e,
-        bleed = 0,
+        bleed = -tolerance,
         chamfer = $preview ? 0 : .2 // engraving_chamfer
     );
 }
