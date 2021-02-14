@@ -9,6 +9,7 @@ include <shared_constants.scad>;
 ENCLOSURE_BOTTOM_HEIGHT = ENCLOSURE_FLOOR_CEILING + LIP_BOX_DEFAULT_LIP_HEIGHT;
 ENCLSOURE_TOP_HEIGHT = ENCLOSURE_HEIGHT - ENCLOSURE_BOTTOM_HEIGHT;
 ENCLOSURE_ENGRAVING_DEPTH = .8;
+ENCLOSURE_SIDE_ENGRAVING_SIZE = 3;
 
 PCB_RAILS_TOTAL_WIDTH = 25 + ENCLOSURE_INNER_WALL;
 
@@ -77,6 +78,26 @@ module _brand_engraving(
         height = height + e,
         bleed = -tolerance,
         chamfer = $preview ? 0 : .2 // engraving_chamfer
+    );
+}
+
+module _text_engraving(
+    string,
+    size = ENCLOSURE_SIDE_ENGRAVING_SIZE,
+    tolerance = DEFAULT_TOLERANCE,
+    depth = ENCLOSURE_ENGRAVING_DEPTH,
+    bleed = .2
+) {
+    e = .09421;
+
+    engraving(
+        string = string,
+        font = "Orbitron:style=Black",
+        size = size,
+        bleed = -tolerance + bleed,
+        height = depth + e,
+        center = true,
+        chamfer = $preview ? 0 : .2
     );
 }
 
@@ -190,6 +211,10 @@ module enclosure_top(
     show_dfm = true
 ) {
     e = 0.0321;
+
+    switch_clutch_cavity_length = SWITCH_CLUTCH_LENGTH
+        + SWITCH_ACTUATOR_TRAVEL
+        + SWITCH_CLUTCH_SLIDE_CLEARANCE * 2;
 
     module _component_walls(is_cavity = false) {
         $fn = is_cavity ? HIDEF_ROUNDING : DEFAULT_ROUNDING;
@@ -404,15 +429,12 @@ module enclosure_top(
     module _switch_clutch_cavity() {
         y = get_switch_clutch_y(0) - SWITCH_CLUTCH_SLIDE_CLEARANCE;
 
-        length = SWITCH_CLUTCH_LENGTH
-            + SWITCH_ACTUATOR_TRAVEL
-            + SWITCH_CLUTCH_SLIDE_CLEARANCE * 2;
         height = SWITCH_CLUTCH_HEIGHT + Z_PCB_TOP
             + SWITCH_CLUTCH_TOP_CLEARANCE
             + e;
 
         translate([-e, y, -e]) {
-            cube([wall + e * 2, length, height]);
+            cube([wall + e * 2, switch_clutch_cavity_length, height]);
         }
     }
 
@@ -452,7 +474,7 @@ module enclosure_top(
         }
     }
 
-    module _engraving(depth = ENCLOSURE_ENGRAVING_DEPTH) {
+    module _top_engraving(depth = ENCLOSURE_ENGRAVING_DEPTH) {
         area_length = length - GRILL_LENGTH - grill_gutter * 3;
 
         translate([
@@ -468,15 +490,39 @@ module enclosure_top(
                 );
             }
 
-            engraving(
-                string = "APC",
-                font = "Orbitron:style=Black",
-                size = area_length / 2,
-                bleed = -tolerance,
-                height = depth + e,
-                center = true,
-                chamfer = $preview ? 0 : .2
+            _text_engraving(
+                "APC",
+                area_length / 2,
+                bleed = 0
             );
+        }
+    }
+
+    module _power_switch_engraving(depth = ENCLOSURE_ENGRAVING_DEPTH) {
+        ys = [
+            get_switch_clutch_y(0) - ENCLOSURE_SIDE_ENGRAVING_SIZE * 1.5,
+            get_switch_clutch_y(0) + switch_clutch_cavity_length
+                + ENCLOSURE_SIDE_ENGRAVING_SIZE / 2
+        ];
+        z = PCB_Z + SWITCH_CLUTCH_HEIGHT / 2;
+
+        for (i = [0 : len(ys) - 1]) {
+            translate([depth - e, ys[i], z]) {
+                rotate([270, 180, 90]) {
+                    _text_engraving(["0", "1"][i]);
+                }
+            }
+        }
+    }
+
+    module _volume_engraving(depth = ENCLOSURE_ENGRAVING_DEPTH) {
+        y = PCB_Y + PCB_VOLUME_POT_POSITION[1];
+        z = height - ENCLOSURE_GRILL_GUTTER - ENCLOSURE_SIDE_ENGRAVING_SIZE / 2;
+
+        translate([width - depth, y, z]) {
+            rotate([270, 180, 270]) {
+                _text_engraving("V");
+            }
         }
     }
 
@@ -502,7 +548,9 @@ module enclosure_top(
             _wheel_cavities();
             _switch_clutch_cavity();
             _pcb_rails_lip_cavity();
-            _engraving();
+            _top_engraving();
+            _power_switch_engraving();
+            _volume_engraving();
         }
     }
 
