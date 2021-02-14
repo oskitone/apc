@@ -44,6 +44,7 @@ module switch_clutch(
 ) {
     e = .045321;
 
+    // TODO: narrow this if we need more clearance
     skirt_width = side_overexposure + PCB_X - SWITCH_CLUTCH_WEB_X
         - tolerance * 2;
     skirt_height = PCB_HEIGHT + MISC_CLEARANCE;

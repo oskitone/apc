@@ -421,11 +421,11 @@ module enclosure_top(
         length = SWITCH_CLUTCH_WEB_LENGTH + SWITCH_ACTUATOR_TRAVEL;
         height = SWITCH_CLUTCH_WEB_HEIGHT;
 
-        cavity_length = SWITCH_BASE_LENGTH + tolerance * 2;
+        cavity_length = SWITCH_BASE_LENGTH + SWITCH_CLUTCH_SLIDE_CLEARANCE * 2;
 
         translate([
             SWITCH_CLUTCH_WEB_X - ENCLOSURE_SIDE_OVEREXPOSURE
-                + SWITCH_CLUTCH_WEB_WIDTH + DEFAULT_TOLERANCE * 2,
+                + SWITCH_CLUTCH_WEB_WIDTH + MISC_CLEARANCE,
             get_switch_clutch_y(.5) - (length - SWITCH_CLUTCH_LENGTH) / 2,
             ENCLOSURE_HEIGHT - ENCLOSURE_FLOOR_CEILING - height
                 - ENCLOSURE_GRILL_DEPTH
