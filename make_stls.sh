@@ -15,6 +15,20 @@ dir="local/3d-models/$timestamp-$commit_hash"
 
 mkdir -pv $dir
 
+function confirm_poly555_branch() {
+    pushd ../poly555  > /dev/null
+    poly555_branch=$(git branch --show-current)
+    popd > /dev/null
+
+    read -p "poly555 is on branch $poly555_branch. Continue? " -n 1 -r
+
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+        echo
+    else
+        exit
+    fi
+}
+
 function export_stl() {
     stub="$1"
     override="$2"
@@ -38,6 +52,8 @@ function export_stl() {
         -D "$override=true"
 }
 
+confirm_poly555_branch
+
 start=`date +%s`
 
 # The "& \" runs the next line in parallel!
@@ -45,6 +61,8 @@ export_stl 'enclosure_bottom' 'SHOW_ENCLOSURE_BOTTOM' 'false' & \
 export_stl 'enclosure_top' 'SHOW_ENCLOSURE_TOP' 'true' & \
 export_stl 'switch_clutch' 'SHOW_SWITCH_CLUTCH' 'false' &\
 export_stl 'wheels' 'SHOW_WHEELS' 'false'
+
+# TODO: kill zombie processes if script ends prematurely
 
 end=`date +%s`
 runtime=$((end-start))
