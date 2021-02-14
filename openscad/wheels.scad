@@ -22,7 +22,7 @@ module wheel(
     brodie_knob_diameter = ENCLOSURE_WALL * 2,
     brodie_knob_stilt = 0,
     brodie_knob_count = 1,
-    brodie_angle_offset = 180,
+    brodie_angle_offset = 0,
 
     spokes_count = 6,
     spokes_width = 2,
