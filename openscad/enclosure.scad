@@ -63,18 +63,20 @@ module _pot_walls(
     _shaft_to_base();
 }
 
+OSKITONE_LENGTH_WIDTH_RATIO = 4.6 / 28; // TODO: extract
 module _brand_engraving(
     width = 10,
     height = ENCLOSURE_ENGRAVING_DEPTH,
-    tolerance = DEFAULT_TOLERANCE
+    tolerance = DEFAULT_TOLERANCE,
+    resize = undef
 ) {
     e = .049;
 
-    OSKITONE_LENGTH_WIDTH_RATIO = 4.6 / 28; // TODO: extract
-
     engraving(
         svg = "../../branding.svg",
-        size = [width, width * OSKITONE_LENGTH_WIDTH_RATIO],
+        resize = resize !=undef
+            ? resize
+            : [width, width * OSKITONE_LENGTH_WIDTH_RATIO],
         height = height + e,
         bleed = -tolerance,
         chamfer = $preview ? 0 : .2 // engraving_chamfer
@@ -86,7 +88,8 @@ module _text_engraving(
     size = ENCLOSURE_SIDE_ENGRAVING_SIZE,
     tolerance = DEFAULT_TOLERANCE,
     depth = ENCLOSURE_ENGRAVING_DEPTH,
-    bleed = .2
+    bleed = .2,
+    resize = undef
 ) {
     e = .09421;
 
@@ -97,7 +100,8 @@ module _text_engraving(
         bleed = -tolerance + bleed,
         height = depth + e,
         center = true,
-        chamfer = $preview ? 0 : .2
+        chamfer = $preview ? 0 : .2,
+        resize = resize
     );
 }
 
@@ -493,27 +497,51 @@ module enclosure_top(
         }
     }
 
-    module _top_engraving(depth = ENCLOSURE_ENGRAVING_DEPTH) {
-        area_length = length - GRILL_LENGTH - grill_gutter * 3;
+    module _top_engraving(
+        depth = ENCLOSURE_ENGRAVING_DEPTH,
+        top_outer_gutter = grill_gutter,
+        bottom_outer_gutter = grill_gutter * 1.5,
+        side_outer_gutter = grill_gutter * 1.5,
+        inner_gutter = grill_gutter / 3,
+        debug = false
+    ) {
+        area_width = width - side_outer_gutter * 2;
+        area_length = length - GRILL_LENGTH - grill_gutter
+            - top_outer_gutter - bottom_outer_gutter;
+
+        brand_width = 35;
+        brand_length = brand_width * OSKITONE_LENGTH_WIDTH_RATIO;
+
+        MODEL_LENGTH_WIDTH_RATIO = .25;
+        model_length = area_length - brand_length - inner_gutter;
+        model_width = model_length / MODEL_LENGTH_WIDTH_RATIO;
+
+        if (debug) {
+            translate([side_outer_gutter, bottom_outer_gutter, height]) {
+                # cube([area_width, area_length, e]);
+            }
+        }
 
         translate([
             width / 2,
-            grill_gutter + area_length / 2,
+            bottom_outer_gutter + area_length / 2,
             height - depth - e
         ]) {
-            // TODO: derive
-            translate([0, 7, 0]) {
+            translate([0, area_length / 2 - brand_length / 2, 0]) {
                 _brand_engraving(
-                    width = 20,
+                    width = brand_width,
                     height = ENCLOSURE_ENGRAVING_DEPTH + e
                 );
             }
 
-            _text_engraving(
-                "APC",
-                area_length / 2,
-                bleed = 0
-            );
+            translate([0, area_length / -2 + model_length / 2, 0]) {
+                _text_engraving(
+                    "APC",
+                    area_length / 2,
+                    bleed = 0,
+                    resize = [model_width, model_length]
+                );
+            }
         }
     }
 
