@@ -251,21 +251,40 @@ module enclosure_top(
             );
         }
 
-        translate([
-            PCB_X + PCB_SPEAKER_POSITION.x,
-            PCB_Y + PCB_SPEAKER_POSITION.y,
-            pcb_top_z
-        ]) {
-            cylinder(
-                d = SPEAKER_DIAMETER + default_bleed * 2,
-                h = get_height(pcb_top_z, false) +
-                    (is_cavity ? -grill_depth : 0)
-            );
-        }
-
         if (!is_cavity) {
+            translate([
+                PCB_X + PCB_SPEAKER_POSITION.x,
+                PCB_Y + PCB_SPEAKER_POSITION.y,
+                pcb_top_z
+            ]) {
+                cylinder(
+                    d = SPEAKER_DIAMETER + default_bleed * 2,
+                    h = get_height(pcb_top_z) - grill_depth
+                );
+            }
+
             _pot_walls(inner_wall);
         }
+    }
+
+    module _speaker_cavity() {
+        full_height = height - grill_depth - floor_ceiling - Z_PCB_TOP;
+
+        module _cavity(height, diameter) {
+            translate([
+                PCB_X + PCB_SPEAKER_POSITION.x,
+                PCB_Y + PCB_SPEAKER_POSITION.y,
+                Z_PCB_TOP
+            ]) {
+                cylinder(
+                    d = diameter + tolerance * 2,
+                    h = height
+                );
+            }
+        }
+
+        _cavity(SPEAKER_HEIGHT, SPEAKER_DIAMETER);
+        _cavity(full_height, SPEAKER_DIAMETER - SPEAKER_RIM * 2);
     }
 
     module _grill_cavities_plate() {
@@ -546,6 +565,7 @@ module enclosure_top(
             _component_walls(is_cavity = true);
             render() _grill_cavities();
             _wheel_cavities();
+            _speaker_cavity();
             _switch_clutch_cavity();
             _pcb_rails_lip_cavity();
             _top_engraving();
