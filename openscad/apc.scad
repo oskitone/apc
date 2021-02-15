@@ -3,7 +3,7 @@ include <enclosure.scad>;
 include <switch_clutch.scad>;
 include <wheels.scad>;
 
-module assembly(
+module apc(
     show_enclosure_top = true,
     show_enclosure_bottom = true,
 
@@ -93,7 +93,7 @@ FLIP_VERTICALLY = false;
 
 rotate(FLIP_VERTICALLY ? [0, 180, 0] : [0, 0, 0]) {
     intersection() {
-        assembly(
+        apc(
             show_enclosure_top = SHOW_ENCLOSURE_TOP,
             show_enclosure_bottom = SHOW_ENCLOSURE_BOTTOM,
             show_pcb = SHOW_PCB,

@@ -38,7 +38,7 @@ function export_stl() {
 
     echo "Exporting $filename..."
 
-    $openscad "openscad/assembly.scad" \
+    $openscad "openscad/apc.scad" \
         -o "$filename" \
         -D 'SHOW_ENCLOSURE_TOP=false' \
         -D 'SHOW_ENCLOSURE_BOTTOM=false' \
