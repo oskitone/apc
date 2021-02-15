@@ -24,6 +24,7 @@ function confirm_poly555_branch() {
 
     if [[ $REPLY =~ ^[Yy]$ ]]; then
         echo
+        echo
     else
         exit
     fi
@@ -38,6 +39,7 @@ function export_stl() {
 
     echo "Exporting $filename..."
 
+    # The "& \" at the end runs everything in parallel!
     $openscad "openscad/apc.scad" \
         -o "$filename" \
         -D 'SHOW_ENCLOSURE_TOP=false' \
@@ -49,20 +51,25 @@ function export_stl() {
         -D 'SHOW_DFM=true' \
         -D 'WHEELS_COUNT=1' \
         -D "FLIP_VERTICALLY=$flip_vertically" \
-        -D "$override=true"
+        -D "$override=true" \
+        & \
 }
+
+function finish() {
+    # Kill descendent processes
+    pkill -P "$$"
+}
+trap finish EXIT
 
 confirm_poly555_branch
 
 start=`date +%s`
 
-# The "& \" runs the next line in parallel!
-export_stl 'enclosure_bottom' 'SHOW_ENCLOSURE_BOTTOM' 'false' & \
-export_stl 'enclosure_top' 'SHOW_ENCLOSURE_TOP' 'true' & \
-export_stl 'switch_clutch' 'SHOW_SWITCH_CLUTCH' 'false' &\
+export_stl 'enclosure_bottom' 'SHOW_ENCLOSURE_BOTTOM' 'false'
+export_stl 'enclosure_top' 'SHOW_ENCLOSURE_TOP' 'true'
+export_stl 'switch_clutch' 'SHOW_SWITCH_CLUTCH' 'false'
 export_stl 'wheels' 'SHOW_WHEELS' 'false'
-
-# TODO: kill zombie processes if script ends prematurely
+wait
 
 end=`date +%s`
 runtime=$((end-start))
