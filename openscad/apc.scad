@@ -16,21 +16,27 @@ module apc(
 
     wheels_count = undef,
 
+    enclosure_color = "hotpink",
+    wheels_color = "white",
+    switch_clutch_color = "white",
+
     switch_position = round($t),
     enclosure_bottom_position = 0 // abs($t - .5) * 2
 ) {
     e = .0123;
 
-    if (show_enclosure_bottom) {
-        enclosure_bottom(
-            enclosure_bottom_position = enclosure_bottom_position
-        );
-    }
+    color(enclosure_color) {
+        if (show_enclosure_bottom) {
+            enclosure_bottom(
+                enclosure_bottom_position = enclosure_bottom_position
+            );
+        }
 
-    if (show_enclosure_top) {
-        enclosure_top(
-            show_dfm = show_dfm
-        );
+        if (show_enclosure_top) {
+            enclosure_top(
+                show_dfm = show_dfm
+            );
+        }
     }
 
     if (show_pcb) {
@@ -52,21 +58,26 @@ module apc(
         }
     }
 
-    if (show_wheels) {
-        wheels(
-            diameter = WHEEL_DIAMETER,
-            height = WHEEL_HEIGHT,
-            y = PCB_Y,
-            z = ENCLOSURE_HEIGHT - WHEEL_HEIGHT + WHEEL_VERTICAL_EXPOSURE - e,
-            count = wheels_count
-        );
+    color (wheels_color) {
+        if (show_wheels) {
+            wheels(
+                diameter = WHEEL_DIAMETER,
+                height = WHEEL_HEIGHT,
+                y = PCB_Y,
+                z = ENCLOSURE_HEIGHT - WHEEL_HEIGHT + WHEEL_VERTICAL_EXPOSURE
+                    - e,
+                count = wheels_count
+            );
+        }
     }
 
     if (show_switch_clutch) {
-        switch_clutch(
-            position = switch_position,
-            show_dfm = show_dfm
-        );
+        color(switch_clutch_color) {
+            switch_clutch(
+                position = switch_position,
+                show_dfm = show_dfm
+            );
+        }
     }
 
     if (show_battery) {
