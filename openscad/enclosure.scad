@@ -278,11 +278,11 @@ module enclosure_top(
             translate([
                 PCB_X + PCB_SPEAKER_POSITION.x,
                 PCB_Y + PCB_SPEAKER_POSITION.y,
-                Z_PCB_TOP
+                Z_PCB_TOP - e
             ]) {
                 cylinder(
                     d = diameter + tolerance * 2,
-                    h = height
+                    h = height + e
                 );
             }
         }
