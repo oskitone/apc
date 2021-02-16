@@ -118,6 +118,8 @@ rotate(FLIP_VERTICALLY ? [0, 180, 0] : [0, 0, 0]) {
             wheels_count = WHEELS_COUNT
         );
 
-        cross_section(CROSS_SECTION);
+        if (CROSS_SECTION) {
+            cross_section(CROSS_SECTION);
+        }
     }
 }
