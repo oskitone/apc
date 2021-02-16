@@ -10,6 +10,7 @@ ENCLOSURE_BOTTOM_HEIGHT = ENCLOSURE_FLOOR_CEILING + LIP_BOX_DEFAULT_LIP_HEIGHT;
 ENCLSOURE_TOP_HEIGHT = ENCLOSURE_HEIGHT - ENCLOSURE_BOTTOM_HEIGHT;
 ENCLOSURE_ENGRAVING_DEPTH = 1.2;
 ENCLOSURE_SIDE_ENGRAVING_SIZE = 3;
+ENCLOSURE_CHAMFER = .6;
 
 PCB_RAILS_TOTAL_WIDTH = 25 + ENCLOSURE_INNER_WALL;
 
@@ -220,6 +221,16 @@ module enclosure_top(
         + SWITCH_ACTUATOR_TRAVEL
         + SWITCH_CLUTCH_SLIDE_CLEARANCE * 2;
 
+    module _chamfer(z, diameter) {
+        translate([0, 0, z - ENCLOSURE_CHAMFER]) {
+            cylinder(
+                d1 = diameter,
+                d2 = diameter + ENCLOSURE_CHAMFER * 2,
+                h = ENCLOSURE_CHAMFER + e
+            );
+        }
+    }
+
     module _component_walls(is_cavity = false) {
         $fn = is_cavity ? HIDEF_ROUNDING : DEFAULT_ROUNDING;
 
@@ -242,6 +253,13 @@ module enclosure_top(
                 d = LED_BASE_DIAMETER + led_bleed * 2,
                 h = get_height(pcb_top_z)
             );
+
+            if (is_cavity) {
+                _chamfer(
+                    get_height(pcb_top_z),
+                    LED_BASE_DIAMETER + led_bleed * 2
+                );
+            }
         }
 
         translate([
@@ -253,6 +271,13 @@ module enclosure_top(
                 d = VOLUME_POT_SCREWDRIVER_ACCESS_DIAMETER + default_bleed * 2,
                 h = get_height(volume_pot_access_z)
             );
+
+            if (is_cavity) {
+                _chamfer(
+                    get_height(volume_pot_access_z),
+                    VOLUME_POT_SCREWDRIVER_ACCESS_DIAMETER + default_bleed * 2
+                );
+            }
         }
 
         if (!is_cavity) {
@@ -388,6 +413,8 @@ module enclosure_top(
                 h = _height,
                 $fn = HIDEF_ROUNDING
             );
+
+            _chamfer(_height, WELL_DIAMETER);
         }
 
         module _well_dfm(
