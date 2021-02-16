@@ -347,7 +347,7 @@ module enclosure_top(
                 z - floor_ceiling - e
             ]) {
                 cylinder(
-                    d = SPEAKER_DIAMETER + e * 2,
+                    d = SPEAKER_DIAMETER - SPEAKER_RIM * 2,
                     h = floor_ceiling + e * 4
                 );
             }
