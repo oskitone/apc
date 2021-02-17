@@ -116,7 +116,6 @@ module _half(h, lip) {
         fillet = ENCLOSURE_FILLET,
         tolerance = DEFAULT_TOLERANCE,
         include_tongue_and_groove = true,
-        tongue_and_groove_end_length = undef,
         $fn = DEFAULT_ROUNDING
     );
 }
