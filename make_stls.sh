@@ -58,6 +58,7 @@ function export_stl() {
 
         # The "& \" at the end runs everything in parallel!
         $openscad "openscad/apc.scad" \
+            --quiet \
             -o "$filename" \
             -D 'SHOW_ENCLOSURE_TOP=false' \
             -D 'SHOW_ENCLOSURE_BOTTOM=false' \
@@ -106,7 +107,7 @@ function run() {
     end=`date +%s`
     runtime=$((end-start))
 
-    if [[ -z $found_matches ]]; then
+    if [[ "$query" && -z $found_matches ]]; then
         echo "Found no matches for query '$query'"
     fi
 
