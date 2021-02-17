@@ -366,7 +366,7 @@ module enclosure_top(
 
         intersection() {
             translate([grill_gutter, y, z - floor_ceiling - e]) {
-                _diagonal_grill(floor_ceiling + e * 2, angle = -45);
+                _diagonal_grill(floor_ceiling + e * 2, angle = 0);
             }
 
             translate([
