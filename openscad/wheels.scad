@@ -32,12 +32,20 @@ module wheel(
     shim_size = .5,
     shim_count = 3,
 
+    grip_count = undef,
+
     test_fit = false,
 
     tolerance = DEFAULT_TOLERANCE,
     $fn = DEFAULT_ROUNDING
 ) {
     e = 0.043;
+
+    grip_count = grip_count != undef
+        ? grip_count
+        : round(
+            diameter * PI / (DEFAULT_RIB_LENGTH + DEFAULT_RIB_GUTTER)
+        );
 
     module _hub() {
         if (!test_fit) {
@@ -87,9 +95,7 @@ module wheel(
             cylinder_grip(
                 diameter = diameter,
                 height = height,
-                count = round(
-                    diameter * PI / (DEFAULT_RIB_LENGTH + DEFAULT_RIB_GUTTER)
-                ),
+                count = grip_count,
                 size = .8,
                 $fn = FIXED_LODEF_ROUNDING
             );
