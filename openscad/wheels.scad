@@ -22,7 +22,7 @@ module wheel(
     brodie_knob_diameter = ENCLOSURE_WALL * 2,
     brodie_knob_stilt = 0,
     brodie_knob_count = 1,
-    brodie_angle_offset = 0,
+    brodie_knob_angle_offset = 0,
 
     spokes_count = 6,
     spokes_width = 2,
@@ -155,7 +155,7 @@ module wheel(
 
     module _brodie_knobs() {
         for (i = [0 : brodie_knob_count - 1]) {
-            rotation = brodie_angle_offset + i * (360 / brodie_knob_count);
+            rotation = brodie_knob_angle_offset + i * (360 / brodie_knob_count);
 
             rotate([0, 0, rotation]) {
                 translate([0, diameter / 2 - brodie_knob_diameter / 2, 0]) {
