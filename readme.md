@@ -17,13 +17,20 @@ Nope (and yep!), it's an [APC](https://en.wikipedia.org/wiki/Atari_Punk_Console)
 | C103        | CP_Radial_D4.0mm_P2.00mm                          | 1        | 10uF        |
 | U101        | DIP-14_W7.62mm_LongPads                           | 1        | LM556       |
 | S101        | SW_Slide_1P2T_CK_OS102011MS2Q                     | 2        | EG1218      |
-| RV103       | Potentiometer_Piher_PT-6-V_Vertical               | 1        | 5k          |
+| RV103       | Potentiometer_Piher_PT-6-V_Vertical               | 1        | 1k          |
 | D101        | LED_D5.0mm                                        | 1        | LED         |
 | C102        | C_Disc_D5.0mm_W2.5mm_P5.00mm                      | 1        | .1uF        |
 | C101        | C_Disc_D5.0mm_W2.5mm_P5.00mm                      | 1        | .01uF       |
 | BT101       | PinHeader_1x02_P2.54mm_Vertical                   | 1        | 9v          |
 | R101        | R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal | 1        | 330         |
 | R102        | R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal | 1        | 1k          |
+
+#### Notes:
+
+- Don't bend the speaker leads because that may break it internally.
+- One way to solder components that don't want to stay in place is to [bring the board to the solder instead of the other way around](https://www.instagram.com/p/BdvbqTtloH5/). You can also try taping them in place or use "mounting putty."
+- The switch, speaker, and pots are all exposed in the enclosure. Make sure each is perfectly straight against the PCB before you solder solder _all_ their leads. De-soldering a crooked component is no fun!
+- When done soldering, trim all leads as close to the PCB as you can. The enclosure only leaves a couple millimeters of clearance.
 
 ### Schematic
 
