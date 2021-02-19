@@ -28,11 +28,11 @@ module wheel(
     spokes_width = 2,
     spokes_height = WHEEL_HEIGHT * .5,
 
-    chamfer = .4,
-    shim_size = .5,
-    shim_count = 3,
+    chamfer = ENCLOSURE_INNER_WALL - BREAKAWAY_SUPPORT_DEPTH / 2,
+    shim_size = .6,
+    shim_count = 5,
 
-    shaft_type = POT_SHAFT_TYPE_FLATTED,
+    shaft_type = POT_SHAFT_TYPE_DEFAULT,
 
     grip_count = undef,
 
@@ -211,6 +211,7 @@ function slice(list, start = 0, end) =
 module wheels(
     diameter = WHEEL_DIAMETER,
     height = WHEEL_HEIGHT,
+    shaft_type = POT_SHAFT_TYPE_DEFAULT,
     y = 0,
     z = 0,
     test_fit = false,
@@ -224,25 +225,42 @@ module wheels(
             y + xy.y,
             z
         ]) {
-            wheel(test_fit = test_fit);
+            wheel(
+                shaft_type = shaft_type,
+                test_fit = test_fit
+            );
         };
     }
 }
 
-/* shim_sizes = [.5, .6, .8];
-shim_counts = [2, 3, 4, 5, 6];
+// shim .5 * 3 is still good
+// .6 * 3 could be good w/ bigger chamfer
+// .6 * 4 feels even better
+// 5 shims is whatever and 6 is too many
+// .8 is too big, regardless
+
+// all of these work
+/* shim_sizes = [.5, .6];
+shim_counts = [3, 5];
+
+plot = 7.8;
 
 for (i = [0 : len(shim_sizes) - 1]) {
     for (ii = [0 : len(shim_counts) - 1]) {
-        is_needle = i == 0 && ii == 1;
+        shim_size = shim_sizes[i];
+        shim_count = shim_counts[ii];
 
-        translate([i * 7.8, ii * 7.8, 0]) {
+        is_needle = shim_size == .5 && shim_count == 3;
+
+        translate([i * plot, ii * plot, 0]) {
             color(is_needle ? "red" : undef) {
                 wheel(
-                    shim_size = shim_sizes[i],
-                    shim_count = shim_counts[ii],
+                    height = 8,
+                    shim_size = shim_size,
+                    shim_count = shim_count,
                     test_fit = true,
-                    tolerance = DEFAULT_TOLERANCE // TODO: try DEFAULT_TOLERANCE * 2,
+                    shaft_type = POT_SHAFT_TYPE_SPLINED,
+                    chamfer = .8
                 );
             }
         }

@@ -51,6 +51,7 @@ SWITCH_ORIGIN = [SWITCH_BASE_WIDTH / 2, 6.36];
 POT_SHAFT_TYPE_SPLINED = "pot_shaft_type_splined";
 POT_SHAFT_TYPE_PLAIN = "pot_shaft_type_plain";
 POT_SHAFT_TYPE_FLATTED = "pot_shaft_type_flatted";
+POT_SHAFT_TYPE_DEFAULT = POT_SHAFT_TYPE_SPLINED;
 
 module pot(
     show_base = true,
@@ -62,7 +63,7 @@ module pot(
     actuator_diameter = PTV09A_POT_ACTUATOR_DIAMETER,
     actuator_height = PTV09A_POT_ACTUATOR_HEIGHT,
 
-    shaft_type = POT_SHAFT_TYPE_FLATTED,
+    shaft_type = POT_SHAFT_TYPE_DEFAULT,
     actuator_d_shaft_height = PTV09A_POT_ACTUATOR_D_SHAFT_HEIGHT,
     actuator_d_shaft_depth = PTV09A_POT_ACTUATOR_D_SHAFT_DEPTH,
 

@@ -45,8 +45,6 @@ module switch_clutch(
         - tolerance * 2;
     skirt_height = PCB_HEIGHT + MISC_CLEARANCE;
 
-    BREAKAWAY_SUPPORT_DEPTH = .5;
-
     module _breakaway_support(height) {
         cube([
             BREAKAWAY_SUPPORT_DEPTH,
