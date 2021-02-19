@@ -41,14 +41,12 @@ module switch_clutch(
 ) {
     e = .045321;
 
-    // TODO: narrow this if we need more clearance
     skirt_width = side_overexposure + PCB_X - SWITCH_CLUTCH_WEB_X
         - tolerance * 2;
     skirt_height = PCB_HEIGHT + MISC_CLEARANCE;
 
     BREAKAWAY_SUPPORT_DEPTH = .5;
 
-    // TODO: think about moving them _in_ and allow overhangs for extra support
     module _breakaway_support(height) {
         cube([
             BREAKAWAY_SUPPORT_DEPTH,
@@ -179,11 +177,10 @@ module switch_clutch(
             }
 
             if (show_dfm) {
-                translate([
-                    SWITCH_CLUTCH_WIDTH - BREAKAWAY_SUPPORT_DEPTH,
-                    0,
-                    -skirt_height
-                ]) {
+                inset = 1; // try to prevent loose hangs
+                x = SWITCH_CLUTCH_WIDTH - BREAKAWAY_SUPPORT_DEPTH - inset;
+
+                translate([x, 0, -skirt_height]) {
                     _breakaway_support(SWITCH_BASE_HEIGHT + skirt_height);
                 }
             }
