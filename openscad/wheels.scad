@@ -188,7 +188,10 @@ module wheel(
             if (!test_fit) {
                 _tire();
                 _spokes();
-                _brodie_knobs();
+
+                if (brodie_knob_count > 0) {
+                    _brodie_knobs();
+                }
             }
         }
 
