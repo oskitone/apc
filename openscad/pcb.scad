@@ -48,6 +48,10 @@ SWITCH_ACTUATOR_HEIGHT = 3.8;
 SWITCH_ACTUATOR_TRAVEL = 1.5;
 SWITCH_ORIGIN = [SWITCH_BASE_WIDTH / 2, 6.36];
 
+POT_SHAFT_TYPE_SPLINED = "pot_shaft_type_splined";
+POT_SHAFT_TYPE_PLAIN = "pot_shaft_type_plain";
+POT_SHAFT_TYPE_FLATTED = "pot_shaft_type_flatted";
+
 module pot(
     show_base = true,
     show_actator = true,
@@ -57,6 +61,8 @@ module pot(
 
     actuator_diameter = PTV09A_POT_ACTUATOR_DIAMETER,
     actuator_height = PTV09A_POT_ACTUATOR_HEIGHT,
+
+    shaft_type = POT_SHAFT_TYPE_FLATTED,
     actuator_d_shaft_height = PTV09A_POT_ACTUATOR_D_SHAFT_HEIGHT,
     actuator_d_shaft_depth = PTV09A_POT_ACTUATOR_D_SHAFT_DEPTH,
 
@@ -79,16 +85,18 @@ module pot(
                     h = actuator_height + actuator_height_bleed
                 );
 
-                translate([
-                    actuator_diameter / -2 - diameter_bleed,
-                    actuator_diameter / -2 - e - diameter_bleed,
-                    actuator_height - actuator_d_shaft_height
-                ]) {
-                    cube([
-                        actuator_diameter + diameter_bleed * 2,
-                        actuator_d_shaft_depth + e,
-                        actuator_d_shaft_height + actuator_height_bleed + e
-                    ]);
+                if (shaft_type == POT_SHAFT_TYPE_FLATTED) {
+                    translate([
+                        actuator_diameter / -2 - diameter_bleed,
+                        actuator_diameter / -2 - e - diameter_bleed,
+                        actuator_height - actuator_d_shaft_height
+                    ]) {
+                        cube([
+                            actuator_diameter + diameter_bleed * 2,
+                            actuator_d_shaft_depth + e,
+                            actuator_d_shaft_height + actuator_height_bleed + e
+                        ]);
+                    }
                 }
             }
         }

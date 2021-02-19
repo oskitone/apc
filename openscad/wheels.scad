@@ -32,6 +32,8 @@ module wheel(
     shim_size = .5,
     shim_count = 3,
 
+    shaft_type = POT_SHAFT_TYPE_FLATTED,
+
     grip_count = undef,
 
     test_fit = false,
@@ -134,6 +136,7 @@ module wheel(
                 pot(
                     show_base = false,
                     diameter_bleed = tolerance,
+                    shaft_type = shaft_type,
                     $fn = HIDEF_ROUNDING
                 );
             }
