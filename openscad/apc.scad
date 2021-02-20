@@ -104,8 +104,17 @@ WHEELS_COUNT = undef;
 CROSS_SECTION = undef;
 
 FLIP_VERTICALLY = false;
+CENTER = false;
 
-rotate(FLIP_VERTICALLY ? [0, 180, 0] : [0, 0, 0]) {
+position = CENTER
+    ? [
+        ENCLOSURE_WIDTH / -2,
+        ENCLOSURE_LENGTH / -2,
+        ENCLOSURE_HEIGHT / -2
+    ] : [0, 0, 0];
+rotation = FLIP_VERTICALLY ? [0, 180, 0] : [0, 0, 0];
+
+translate(position) rotate(rotation) {
     intersection() {
         apc(
             show_enclosure_top = SHOW_ENCLOSURE_TOP,

@@ -68,6 +68,7 @@ function export_stl() {
             -D 'SHOW_BATTERY=false' \
             -D 'SHOW_DFM=true' \
             -D 'WHEELS_COUNT=1' \
+            -D "CENTER=true" \
             -D "FLIP_VERTICALLY=$flip_vertically" \
             -D "$override=true" \
             & \
