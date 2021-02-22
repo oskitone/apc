@@ -123,3 +123,6 @@ rotate(FLIP_VERTICALLY ? [0, 180, 0] : [0, 0, 0]) {
         }
     }
 }
+
+echo(str("ENCLOSURE: ", ENCLOSURE_WIDTH, " x ", ENCLOSURE_LENGTH, " x ", ENCLOSURE_HEIGHT));
+echo(str("WHEELS: ", WHEEL_DIAMETER, " diameter, ", WHEEL_HEIGHT, " height"));

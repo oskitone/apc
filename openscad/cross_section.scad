@@ -3,6 +3,7 @@ include <shared_constants.scad>;
 CROSS_SECTION_WIDTH = "cross_section_width";
 CROSS_SECTION_HEIGHT = "cross_section_length";
 CROSS_SECTION_BRANDING = "cross_section_branding";
+CROSS_SECTION_WHEEL = "cross_section_wheel";
 
 module cross_section(cross_section_name) {
     if (cross_section_name == CROSS_SECTION_WIDTH) {
@@ -21,5 +22,8 @@ module cross_section(cross_section_name) {
                 ENCLOSURE_FLOOR_CEILING
             ]);
         }
+    } else if (cross_section_name == CROSS_SECTION_WHEEL) {
+        width = PCB_X + PCB_POT_POSITIONS[1][0];
+        cube([width, ENCLOSURE_LENGTH, ENCLOSURE_HEIGHT + 10]);
     }
 }
