@@ -85,6 +85,10 @@ function export_stl() {
     fi
 }
 
+function bonk() {
+    printf "\a"
+}
+
 function run() {
     mkdir -pv $dir
 
@@ -109,6 +113,9 @@ function run() {
 
     if [[ "$query" && -z $found_matches ]]; then
         echo "Found no matches for query '$query'"
+    else
+        bonk
+        open $dir
     fi
 
     echo
