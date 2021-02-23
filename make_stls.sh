@@ -60,6 +60,7 @@ function export_stl() {
         $openscad "openscad/apc.scad" \
             --quiet \
             -o "$filename" \
+            --export-format "binstl" \
             -D 'SHOW_ENCLOSURE_TOP=false' \
             -D 'SHOW_ENCLOSURE_BOTTOM=false' \
             -D 'SHOW_PCB=false' \
