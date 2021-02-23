@@ -311,11 +311,7 @@ module enclosure_top(
             }
         }
 
-        difference() {
-            _cavity(SPEAKER_HEIGHT, SPEAKER_DIAMETER);
-            _pot_walls(inner_wall);
-        }
-
+        _cavity(SPEAKER_HEIGHT, SPEAKER_DIAMETER);
         _cavity(full_height, SPEAKER_DIAMETER - SPEAKER_RIM * 2);
     }
 

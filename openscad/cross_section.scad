@@ -4,6 +4,7 @@ CROSS_SECTION_WIDTH = "cross_section_width";
 CROSS_SECTION_HEIGHT = "cross_section_length";
 CROSS_SECTION_BRANDING = "cross_section_branding";
 CROSS_SECTION_WHEEL = "cross_section_wheel";
+CROSS_SECTION_TOP_Z = "cross_section_top_z";
 
 module cross_section(cross_section_name) {
     if (cross_section_name == CROSS_SECTION_WIDTH) {
@@ -25,5 +26,20 @@ module cross_section(cross_section_name) {
     } else if (cross_section_name == CROSS_SECTION_WHEEL) {
         width = PCB_X + PCB_POT_POSITIONS[1][0];
         cube([width, ENCLOSURE_LENGTH, ENCLOSURE_HEIGHT + 10]);
+    } else if (cross_section_name == CROSS_SECTION_TOP_Z) {
+        z = 13.2;
+        offset = 5;
+
+        translate([
+            -offset,
+            -offset,
+            ENCLOSURE_HEIGHT - z
+        ]) {
+            cube([
+                ENCLOSURE_WIDTH + offset * 2,
+                ENCLOSURE_LENGTH + offset * 2,
+                z + offset
+            ]);
+        }
     }
 }
