@@ -7,6 +7,7 @@ set -o errexit
 set -o errtrace
 
 prefix="apc"
+zip_prefix="oskitone"
 query=
 openscad="/Applications/OpenSCAD.app/Contents/MacOS/OpenSCAD"
 timestamp=$(git --no-pager log -1 --date=unix --format="%ad")
@@ -23,17 +24,18 @@ Usage:
 ./make_stls.sh [-h] [-p PREFIX] [-q comma,separated,query]
 
 Usage:
-./make_stls.sh                      Export all STLs
-./make_stls.sh -h                   Show this message
-./make_stls.sh -p <prefix>          Set filename prefix. Default is 'apc'
-./make_stls.sh -q <query>           Export all STLs whose filename stubs match
-                                    comma-separated query
+./make_stls.sh                    Export all STLs
+./make_stls.sh -h                 Show this message
+./make_stls.sh -p <stl_prefix>    Set STL filename prefix. Default is 'apc'
+./make_stls.sh -z <zip_prefix>    Set ZIP filename prefix. Default is 'oskitone'
+./make_stls.sh -q <query>         Export all STLs whose filename stubs match
+                                  comma-separated query
 
 Examples:
-./make_stls.sh -p test -q switch    Exports test-switch_clutch-....stl
-./make_stls.sh -p wheels,enc        Exports apc-wheels-....stl,
-                                    apc-enclosure_bottom-....stl,
-                                    and apc-enclosure_top-....stl
+./make_stls.sh -p test -q switch  Exports test-switch_clutch-....stl
+./make_stls.sh -p wheels,enc      Exports apc-wheels-....stl,
+                                  apc-enclosure_bottom-....stl,
+                                  and apc-enclosure_top-....stl
 "
 }
 
@@ -87,6 +89,15 @@ function export_stl() {
     fi
 }
 
+function create_zip() {
+    if [[ -z "$query" ]]; then
+        echo "Creating zip"
+        pushd $dir
+        zip "$zip_prefix-$prefix-$timestamp-$commit_hash.zip" *.stl
+        popd > /dev/null
+    fi
+}
+
 function bonk() {
     printf "\a"
 }
@@ -116,6 +127,7 @@ function run() {
     if [[ "$query" && -z $found_matches ]]; then
         echo "Found no matches for query '$query'"
     else
+        create_zip
         bonk
         open $dir
     fi
@@ -124,10 +136,11 @@ function run() {
     echo "Finished in $runtime seconds"
 }
 
-while getopts "h?p:q:" opt; do
+while getopts "h?p:z:q:" opt; do
     case "$opt" in
         h) help; exit ;;
         p) prefix="$OPTARG" ;;
+        z) zip_prefix="$OPTARG" ;;
         q) IFS="," read -r -a query <<< "$OPTARG" ;;
         *) help; exit ;;
     esac
