@@ -1,6 +1,6 @@
 # APC
 
-[![APC](apc-24-600-256.gif)](apc-24-600-256.gif)
+[![APC](apc-10-60-838-450-32.gif)](apc-10-60-838-450-32.gif)
 
 A decapitated robot head? An extraterrestrial communicator? A specter summoner?
 
