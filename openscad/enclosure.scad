@@ -6,8 +6,6 @@ use <../../poly555/openscad/lib/diagonal_grill.scad>;
 
 include <shared_constants.scad>;
 
-ENCLOSURE_BOTTOM_HEIGHT = ENCLOSURE_FLOOR_CEILING + LIP_BOX_DEFAULT_LIP_HEIGHT;
-ENCLSOURE_TOP_HEIGHT = ENCLOSURE_HEIGHT - ENCLOSURE_BOTTOM_HEIGHT;
 ENCLOSURE_ENGRAVING_DEPTH = 1.2;
 ENCLOSURE_SIDE_ENGRAVING_SIZE = 3;
 ENCLOSURE_CHAMFER = .8;
@@ -116,6 +114,8 @@ module _half(h, lip) {
         fillet = ENCLOSURE_FILLET,
         tolerance = DEFAULT_TOLERANCE,
         include_tongue_and_groove = true,
+        tongue_and_groove_endstop_height = ENCLOSURE_BOTTOM_HEIGHT
+            - (ENCLOSURE_FLOOR_CEILING + LIP_BOX_DEFAULT_LIP_HEIGHT),
         $fn = DEFAULT_ROUNDING
     );
 }
