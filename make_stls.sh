@@ -8,8 +8,8 @@ set -o errtrace
 
 # Constants
 openscad="/Applications/OpenSCAD.app/Contents/MacOS/OpenSCAD"
-timestamp=$(git --no-pager log -1 --date=unix --format="%ad")
-commit_hash=$(git rev-parse --short HEAD)
+timestamp=$(git log -n1 --date=unix --format="%ad" openscad)
+commit_hash=$(git log -n1 --format="%h" openscad)
 
 # Flags
 bonk=
@@ -36,6 +36,7 @@ Usage:
 ./make_stls.sh -d <directory>     Set output directory
                                   Default is local/3d-models/<prefix>...
 ./make_stls.sh -e                 Echo out output directory and quit
+./make_stls.sh -c                 Echo out commit hash and quit
 ./make_stls.sh -q <query>         Export only STLs whose filename stubs match
                                   comma-separated query
 
@@ -144,13 +145,14 @@ function run() {
     echo "Finished in $runtime seconds"
 }
 
-while getopts "h?b?p:d:e?q:" opt; do
+while getopts "h?b?p:d:e?c?q:" opt; do
     case "$opt" in
         h) help; exit ;;
         b) bonk=true ;;
         p) prefix="$OPTARG" ;;
         d) dir="$OPTARG" ;;
         e) echo "$dir"; exit ;;
+        c) echo "$commit_hash"; exit ;;
         q) IFS="," read -r -a query <<< "$OPTARG" ;;
         *) help; exit ;;
     esac
