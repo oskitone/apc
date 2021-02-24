@@ -34,7 +34,9 @@ function run() {
     confirm_git_clean_status
 
     dir=$(./make_stls.sh -e)
-    commit=$(./make_stls.sh -c)
+    commit_hash=$(./make_stls.sh -c)
+    commit_timestamp=$(./make_stls.sh -t)
+
     mkdir -pv $dir
 
     # TODO: fail if STLs aren't being made or already made
@@ -51,7 +53,10 @@ function run() {
     echo "BUILDING SITE"
     echo "-------------"
     echo
-    python downloads/build.py --directory "$dir" --commit "$commit"
+    python downloads/build.py \
+        --directory "$dir" \
+        --commit_hash "$commit_hash" \
+        --commit_timestamp "$commit_timestamp"
     echo "Done!"
     echo
 

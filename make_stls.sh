@@ -25,18 +25,19 @@ function help() {
 Renders APC STL models.
 
 Usage:
-./make_stls.sh [-h] [-b] [-p PREFIX] [-d DIRECTORY] [-q COMMA,SEPARATED,QUERY]
+./make_stls.sh [-hectb] [-p PREFIX] [-d DIRECTORY] [-q COMMA,SEPARATED,QUERY]
 
 Usage:
 ./make_stls.sh                    Export all STLs
 ./make_stls.sh -h                 Show this message and quit
+./make_stls.sh -e                 Echo out output directory and quit
+./make_stls.sh -c                 Echo out commit hash and quit
+./make_stls.sh -t                 Echo out timestamp and quit
 ./make_stls.sh -b                 Bonk and open folder when done
 ./make_stls.sh -p <prefix>        Set filename prefix
                                   Default is 'oskitone-apc'
 ./make_stls.sh -d <directory>     Set output directory
                                   Default is local/3d-models/<prefix>...
-./make_stls.sh -e                 Echo out output directory and quit
-./make_stls.sh -c                 Echo out commit hash and quit
 ./make_stls.sh -q <query>         Export only STLs whose filename stubs match
                                   comma-separated query
 
@@ -145,7 +146,7 @@ function run() {
     echo "Finished in $runtime seconds"
 }
 
-while getopts "h?b?p:d:e?c?q:" opt; do
+while getopts "h?b?p:d:e?c?t?q:" opt; do
     case "$opt" in
         h) help; exit ;;
         b) bonk=true ;;
@@ -153,6 +154,7 @@ while getopts "h?b?p:d:e?c?q:" opt; do
         d) dir="$OPTARG" ;;
         e) echo "$dir"; exit ;;
         c) echo "$commit_hash"; exit ;;
+        t) echo "$timestamp"; exit ;;
         q) IFS="," read -r -a query <<< "$OPTARG" ;;
         *) help; exit ;;
     esac

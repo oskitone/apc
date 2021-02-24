@@ -25,6 +25,11 @@
             text-align: left;
             padding: 0 1rem 0 0;
         }
+
+        footer {
+            font-size: .75rem;
+            font-style: italic;
+        }
     </style>
 </head>
 
@@ -59,9 +64,10 @@
 
     <footer>
         <p>
-            Last updated {{ last_updated }} from commit
-            <a href="https://github.com/oskitone/apc/commit/{{ commit }}">{{
-                commit }}</a>.
+            Last updated on {{ commit_date }} from commit
+            <a href="https://github.com/oskitone/apc/commit/{{ commit_hash }}">
+                {{ commit_hash }}
+            </a>.
         </p>
     </footer>
 </body>

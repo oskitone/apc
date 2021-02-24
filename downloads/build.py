@@ -24,12 +24,12 @@ def get_files(directory):
     )
 
 
-def get_html(directory, commit):
+def get_html(directory, commit_hash, commit_date):
     today = datetime.date.today()
     values = {
         "files": get_files(directory),
-        "last_updated": today.strftime("%B %d, %Y"),
-        "commit": commit,
+        "commit_hash": commit_hash,
+        "commit_date": commit_date,
     }
 
     return chevron.render(template, values)
@@ -39,7 +39,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     # TODO: explain
     parser.add_argument("--directory", type=str, required=True)
-    parser.add_argument("--commit", type=str, required=True)
+    parser.add_argument("--commit_hash", type=str, required=True)
+    parser.add_argument("--commit_timestamp", type=int, required=True)
     arguments = parser.parse_args()
 
     dir_path = os.path.dirname(os.path.realpath(__file__))
@@ -49,5 +50,13 @@ if __name__ == "__main__":
 
     with open(dir_path + "/template.mustache", "r") as template:
         output = open(arguments.directory + "/index.html", "w")
-        output.write(get_html(directory=arguments.directory, commit=arguments.commit))
+        output.write(
+            get_html(
+                directory=arguments.directory,
+                commit_hash=arguments.commit_hash,
+                commit_date=datetime.datetime.utcfromtimestamp(
+                    arguments.commit_timestamp
+                ).strftime("%B %d, %Y"),
+            )
+        )
         output.close()
