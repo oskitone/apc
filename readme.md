@@ -6,7 +6,24 @@ A decapitated robot head? An extraterrestrial communicator? A specter summoner?
 
 Nope (and yep!), it's an [APC](https://en.wikipedia.org/wiki/Atari_Punk_Console)!
 
-## Assembly
+## 3D-Printing
+
+(If you bought a kit with 3D-printed parts included, you can skip this!)
+
+Download STLs of the models at [https://oskitone.github.io/apc/](https://oskitone.github.io/apc/). There are four files to print:
+
+- Enclosure bottom
+- Enclosure top
+- Switch clutch
+- Wheels (the model contains one wheel, so you'll print this twice)
+
+**Notes:**
+
+- Models have any supports they'll need baked right in, so you won't need to do anything extra in your slicer. They should also already be rotated to the correct position for printing.
+- Watch the first couple layers of the enclosure pieces while printing, especially around the text engravings -- if you see bad adhesion, stop the print to remedy the situation and start again.
+- If the prints aren't fitting together well, check to see that the corners aren't bulging. See if your slicer has settings for "coasting" or "linear advance."
+
+## PCB Assembly
 
 ### BOM
 
