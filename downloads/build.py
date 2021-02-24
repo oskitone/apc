@@ -1,9 +1,10 @@
+from glob import glob
 import argparse
 import chevron
 import datetime
-from glob import glob
 import humanize
 import os
+import sys
 
 
 def get_size(path):
@@ -42,6 +43,9 @@ if __name__ == "__main__":
     arguments = parser.parse_args()
 
     dir_path = os.path.dirname(os.path.realpath(__file__))
+
+    if not os.path.isdir(arguments.directory):
+        sys.exit("ERROR: " + arguments.directory + " directory does not exist")
 
     with open(dir_path + "/template.mustache", "r") as template:
         output = open(arguments.directory + "/index.html", "w")
