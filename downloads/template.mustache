@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>Oskitone APC - Downloads</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Work+Sans:400,600,700" type="text/css" title="Google Fonts" />
+    <style>
+        body {
+            font-family: Work Sans, sans-serif;
+        }
+
+        a {
+            color: inherit;
+        }
+
+        .size {
+            font-style: italic;
+        }
+
+        th,
+        td {
+            text-align: left;
+            padding: 0 1rem 0 0;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Oskitone APC</h1>
+        <h2>Downloads</h2>
+    </header>
+
+    <table>
+        <thead>
+            <tr>
+                <th>File</th>
+                <th>Size</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#files}}
+                <tr>
+                    <td>
+                        <a href="{{filename}}">
+                            {{filename}}
+                        </a>
+                    </td>
+                    <td class="size">
+                        {{size}}
+                    </td>
+                </tr>
+            {{/files}}
+        </tbody>
+    </table>
+
+    <footer>
+        <p>Last updated {{ last_updated }}.</p>
+    </footer>
+</body>
+
+</html>
