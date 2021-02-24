@@ -23,6 +23,7 @@ function run() {
     # TODO: fail if git status is dirty
 
     dir=$(./make_stls.sh -e)
+    commit=$(./make_stls.sh -c)
     mkdir -pv $dir
 
     # TODO: fail if STLs aren't being made or already made
@@ -39,7 +40,7 @@ function run() {
     echo "BUILDING SITE"
     echo "-------------"
     echo
-    python downloads/build.py --directory "$dir"
+    python downloads/build.py --directory "$dir" --commit "$commit"
     echo "Done!"
     echo
 

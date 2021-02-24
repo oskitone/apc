@@ -58,7 +58,11 @@
     </table>
 
     <footer>
-        <p>Last updated {{ last_updated }}.</p>
+        <p>
+            Last updated {{ last_updated }} from commit
+            <a href="https://github.com/oskitone/apc/commit/{{ commit }}">{{
+                commit }}</a>.
+        </p>
     </footer>
 </body>
 
