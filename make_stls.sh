@@ -6,36 +6,44 @@
 set -o errexit
 set -o errtrace
 
-prefix="apc"
-zip_prefix="oskitone"
-query=
+# Constants
 openscad="/Applications/OpenSCAD.app/Contents/MacOS/OpenSCAD"
 timestamp=$(git --no-pager log -1 --date=unix --format="%ad")
 commit_hash=$(git rev-parse --short HEAD)
-dir="local/3d-models/$timestamp-$commit_hash"
 
-found_matches=""
+# Flags
+bonk=
+prefix="oskitone-apc"
+dir="local/3d-models/$prefix-$timestamp-$commit_hash"
+query=
+
+# Internal variables
+_found_matches=
 
 function help() {
     echo "\
 Renders APC STL models.
 
 Usage:
-./make_stls.sh [-h] [-p PREFIX] [-q comma,separated,query]
+./make_stls.sh [-h] [-b] [-p PREFIX] [-d DIRECTORY] [-q COMMA,SEPARATED,QUERY]
 
 Usage:
 ./make_stls.sh                    Export all STLs
-./make_stls.sh -h                 Show this message
-./make_stls.sh -p <stl_prefix>    Set STL filename prefix. Default is 'apc'
-./make_stls.sh -z <zip_prefix>    Set ZIP filename prefix. Default is 'oskitone'
-./make_stls.sh -q <query>         Export all STLs whose filename stubs match
+./make_stls.sh -h                 Show this message and quit
+./make_stls.sh -b                 Bonk and open folder when done
+./make_stls.sh -p <prefix>        Set filename prefix
+                                  Default is 'oskitone-apc'
+./make_stls.sh -d <directory>     Set output directory
+                                  Default is local/3d-models/<prefix>...
+./make_stls.sh -e                 Echo out output directory and quit
+./make_stls.sh -q <query>         Export only STLs whose filename stubs match
                                   comma-separated query
 
 Examples:
-./make_stls.sh -p test -q switch  Exports test-switch_clutch-....stl
-./make_stls.sh -p wheels,enc      Exports apc-wheels-....stl,
-                                  apc-enclosure_bottom-....stl,
-                                  and apc-enclosure_top-....stl
+./make_stls.sh -p test -q switch  Exports test-...-switch_clutch.stl
+./make_stls.sh -p wheels,enc      Exports oskitone-apc-...-wheels.stl,
+                                  oskitone-apc-...-enclosure_bottom.stl,
+                                  and oskitone-apc-...-enclosure_top.stl
 "
 }
 
@@ -54,7 +62,7 @@ function export_stl() {
     flip_vertically="$3"
 
     function _run() {
-        filename="$dir/$prefix-$stub-$timestamp-$commit_hash.stl"
+        filename="$dir/$prefix-$timestamp-$commit_hash-$stub.stl"
 
         echo "Exporting $filename..."
 
@@ -82,7 +90,7 @@ function export_stl() {
     else
         for query_iterm in "${query[@]}"; do
             if [[ "$stub" == *"$query_iterm"* ]]; then
-                found_matches=true
+                _found_matches=true
                 _run
             fi
         done
@@ -91,15 +99,12 @@ function export_stl() {
 
 function create_zip() {
     if [[ -z "$query" ]]; then
+        echo
         echo "Creating zip"
         pushd $dir
-        zip "$zip_prefix-$prefix-$timestamp-$commit_hash.zip" *.stl
+        zip "$prefix-$timestamp-$commit_hash-ALL.zip" *.stl
         popd > /dev/null
     fi
-}
-
-function bonk() {
-    printf "\a"
 }
 
 function run() {
@@ -124,23 +129,28 @@ function run() {
     end=`date +%s`
     runtime=$((end-start))
 
-    if [[ "$query" && -z $found_matches ]]; then
+    if [[ "$query" && -z $_found_matches ]]; then
         echo "Found no matches for query '$query'"
     else
         create_zip
-        bonk
-        open $dir
+
+        if [[ $bonk ]]; then
+            printf "\a"
+            open $dir
+        fi
     fi
 
     echo
     echo "Finished in $runtime seconds"
 }
 
-while getopts "h?p:z:q:" opt; do
+while getopts "h?b?p:d:e?q:" opt; do
     case "$opt" in
         h) help; exit ;;
+        b) bonk=true ;;
         p) prefix="$OPTARG" ;;
-        z) zip_prefix="$OPTARG" ;;
+        d) dir="$OPTARG" ;;
+        e) echo "$dir"; exit ;;
         q) IFS="," read -r -a query <<< "$OPTARG" ;;
         *) help; exit ;;
     esac
