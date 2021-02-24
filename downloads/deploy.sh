@@ -19,8 +19,19 @@ function bonk() {
     printf "\a"
 }
 
+function confirm_git_clean_status() {
+    echo "Checking git status for uncommitted changes"
+    if git_clean=$(git status --porcelain) && [ -z "$git_clean" ]; then
+        echo "Clean"
+        echo
+    else
+        echo "ERROR: Dirty."
+        exit
+    fi
+}
+
 function run() {
-    # TODO: fail if git status is dirty
+    confirm_git_clean_status
 
     dir=$(./make_stls.sh -e)
     commit=$(./make_stls.sh -c)
