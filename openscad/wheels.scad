@@ -6,21 +6,22 @@ include <shared_constants.scad>;
 
 WHEEL_DIAMETER = 2 *
     (PCB_X + PCB_POT_POSITIONS[0][0] + ENCLOSURE_SIDE_OVEREXPOSURE);
-WHEEL_VERTICAL_EXPOSURE = 2;
+WHEEL_VERTICAL_EXPOSURE = ENCLOSURE_SIDE_OVEREXPOSURE;
 WHEEL_RECESSED_HEIGHT = 13;
 WHEEL_HEIGHT = WHEEL_RECESSED_HEIGHT + WHEEL_VERTICAL_EXPOSURE;
 WHEEL_DIAMETER_CLEARANCE = 1.2;
 WELL_DIAMETER = WHEEL_DIAMETER + WHEEL_DIAMETER_CLEARANCE * 2;
+WHEEL_RING = ENCLOSURE_FILLET * 2;
 
 module wheel(
     diameter = WHEEL_DIAMETER,
     height = WHEEL_HEIGHT,
-    ring = ENCLOSURE_FILLET * 2,
+    ring = WHEEL_RING,
 
     hub_ceiling = ENCLOSURE_FLOOR_CEILING,
     hub_diameter = PTV09A_POT_ACTUATOR_DIAMETER + ENCLOSURE_INNER_WALL * 2,
 
-    brodie_knob_diameter = ENCLOSURE_WALL * 2,
+    brodie_knob_diameter = WHEEL_RING,
     brodie_knob_stilt = 0,
     brodie_knob_count = 1,
     brodie_knob_angle_offset = 0,
@@ -29,7 +30,7 @@ module wheel(
     spokes_width = 2,
     spokes_height = WHEEL_HEIGHT * .5,
 
-    chamfer = ENCLOSURE_INNER_WALL - BREAKAWAY_SUPPORT_DEPTH / 2,
+    chamfer = ENCLOSURE_INNER_WALL - BREAKAWAY_SUPPORT_DEPTH,
     shim_size = .6,
     shim_count = 5,
 
