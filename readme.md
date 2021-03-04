@@ -160,6 +160,10 @@ Assumes poly555 repo is in a sibling directory. Here's how I've got it:
         \ apc
         \ poly555
 
+### Mods
+
+- For pots with flatted D shafts, use `shaft_type = POT_SHAFT_TYPE_FLATTED` in the call to `wheels()` for a better fit.
+
 ### Building
 
 STLs are generated with `make_stls.sh`. Run `./make_stls.sh -h` for full flags list.
