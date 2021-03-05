@@ -25,17 +25,19 @@ Download STLs of the models at [https://oskitone.github.io/apc/](https://oskiton
 
 ![Exploded CAD view of the four models](assembly_content/3d-printed-parts.png)
 
-1. Wheels (the model contains one wheel, so you'll print this twice)
-2. Enclosure top
-3. Switch clutch
-4. Enclosure bottom
+| Part             | Count | Layer Height | Supports? | Estimated Time |
+| ---------------- | ----- | ------------ | --------- | -------------- |
+| Wheels           | 2     | .2mm         | No        | 1hr 8min       |
+| Enclosure top    | 1     | .2mm         | No        | 4hr            |
+| Switch clutch    | 1     | .2mm         | No        | 20min          |
+| Enclosure bottom | 1     | .2mm         | No        | 48min          |
 
 **Notes:**
 
-- Models have any supports they'll need baked right in, so you won't need to do anything extra in your slicer. They should also already be rotated to the correct position for printing.
+- Models don't need supports and should already be rotated to the correct orientation for printing.
 - Watch the first couple layers of the enclosure pieces while printing, especially around the text engravings -- if you see bad adhesion, stop the print to remedy the situation and start again.
 - If the prints aren't fitting together well, check to see that the corners aren't bulging. See if your slicer has settings for "coasting" or "linear advance."
-- The switch clutch has two narrow supports that will break off when it's done printing.
+- The switch clutch has two narrow support walls that will [break off when it's done printing](https://twitter.com/oskitone/status/1367957529406316545).
 
 ## Detailed Assembly Steps
 
