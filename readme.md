@@ -124,6 +124,21 @@ While not required, it'd be good to have these tools around too.
 1. Slide enclosure bottom onto enclosure top. This will hold the battery and PCB in place.
 1. Fit wheels into their cavities on the enclosure top, onto the pot shafts. They should also fit perfectly without too much force.
 
+### Troubleshooting
+
+* **Enclosure halves aren't sliding together all the way:**<br />
+  First make sure the PCB is pushed into the enclosure top all the way. Then when sliding the enclosure bottom on, try bending it slightly _out_ where its rails meet the PCB.
+* **Wheels aren't popping on all the way:**<br />
+  Use a butter knife (or similar flat tool like a flathead screwdriver or paint spatula) to pop the wheel off its pot, then reassemble. Sometimes it just takes another try!
+
+## Hacks!
+
+The Oskitone APC wants to be hacked and modified! Here are some ideas:
+
+* Add a quick-and-dirty interrupt button by wiring a switch between the battery's positive wire and the PCB "**+**" pad. [It's fun](https://www.instagram.com/p/CMz4yeIjg4J/)!
+* Want an output jack? Try connecting the speaker pins to a 1/8" or 1/4" jack, but be careful about connecting directly to sensitive equipment -- the output voltage is the battery's 9v, which is much higher than a typical line-level 1v!
+    * [There _is_ a way to make an Atari Punk Console have line-level output](https://compiler.kaustic.net/machines/apc.html), but it doesn't account for a built-in speaker, so you may have to sacrifice it.
+
 ---
 
 ## Electronics
