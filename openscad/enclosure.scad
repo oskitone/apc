@@ -5,6 +5,7 @@ use <../../poly555/openscad/lib/engraving.scad>;
 use <../../poly555/openscad/lib/diagonal_grill.scad>;
 
 include <shared_constants.scad>;
+include <floating_hole_cavity.scad>;
 
 ENCLOSURE_ENGRAVING_DEPTH = 1.2;
 ENCLOSURE_SIDE_ENGRAVING_SIZE = 3;
@@ -412,49 +413,16 @@ module enclosure_top(
             _chamfer(_height, WELL_DIAMETER);
         }
 
-        module _well_dfm(
-            coverages = [1, .5, 0, 0],
-            layer_height = DEFAULT_FDM_LAYER_HEIGHT
-        ) {
-            function get_span(
-                coverage = 0,
-                minimum = exposure_diameter,
-                maximum = WELL_DIAMETER
-            ) = (
-                minimum + coverage * (maximum - minimum)
-            );
-
-            intersection() {
-                translate([0, 0, layer_height * -len(coverages) - e]) {
-                    cylinder(
-                        d = WELL_DIAMETER + e * 2,
-                        h = layer_height * len(coverages) + e * 2,
-                        $fn = HIDEF_ROUNDING
-                    );
-                }
-
-                for (i = [0 : len(coverages) - 1]) {
-                    width = get_span(coverage = coverages[max(0, i - 1)]);
-                    length = get_span(coverage = coverages[i]);
-
-                    translate([0, 0, (i + 1) * -layer_height]) {
-                        rotate([0, 0, (i % 2) * 90]) {
-                            translate([width / -2, length / -2, 0]) {
-                                cube([width, length, layer_height + e]);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
         for (xy = PCB_POT_POSITIONS) {
             translate([wall + gutter + xy.x, PCB_Y + xy.y, 0]) {
                 translate([0, 0, well_z]) {
                     _well();
 
                     if (show_dfm) {
-                        _well_dfm();
+                        floating_hole_cavity(
+                            exposure_diameter,
+                            WELL_DIAMETER
+                        );
                     }
                 }
 
