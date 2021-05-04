@@ -43,6 +43,9 @@ module wheel(
 
     test_fit = false,
 
+    color = undef,
+    cavity_color = undef,
+
     tolerance = DEFAULT_TOLERANCE,
     $fn = DEFAULT_ROUNDING
 ) {
@@ -224,28 +227,32 @@ module wheel(
     }
 
     difference() {
-        union() {
-            if (spokes_count > 0) {
-                _hub();
-            }
-
-            if (!test_fit) {
-                _tire();
-
+        color(color) {
+            union() {
                 if (spokes_count > 0) {
-                    _spokes();
+                    _hub();
                 }
 
-                if (brodie_knob_count > 0) {
-                    _brodie_knobs();
+                if (!test_fit) {
+                    _tire();
+
+                    if (spokes_count > 0) {
+                        _spokes();
+                    }
+
+                    if (brodie_knob_count > 0) {
+                        _brodie_knobs();
+                    }
                 }
             }
         }
 
-        _pot_cavity();
+        color(cavity_color) {
+            _pot_cavity();
 
-        if (dimple_count > 0) {
-            _dimple_cavities();
+            if (dimple_count > 0) {
+                _dimple_cavities();
+            }
         }
     }
 }
