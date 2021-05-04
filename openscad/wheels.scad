@@ -26,6 +26,9 @@ module wheel(
     brodie_knob_count = 1,
     brodie_knob_angle_offset = 0,
 
+    dimple_count = 0,
+    dimple_depth = 1,
+
     spokes_count = 6,
     spokes_width = 2,
     spokes_height = WHEEL_HEIGHT * .5,
@@ -194,6 +197,32 @@ module wheel(
         }
     }
 
+    module _dimple_cavities(dimple_diameter = diameter / 3) {
+        assert(
+            brodie_knob_count == 0,
+            "Dimples and brodie knobs can't be used together. Set brodie_knob_count to 0."
+        );
+
+        assert(
+            spokes_count == 0,
+            "Dimples and spokes can't be used together. Set spokes_count to 0."
+        );
+
+        for (i = [0 : dimple_count - 1]) {
+            y = diameter / 2 - dimple_diameter / 2 - ring / 2;
+            rotation = i * (360 / dimple_count);
+
+            rotate([0, 0, rotation]) {
+                translate([0, y, height - dimple_depth]) {
+                    cylinder(
+                        h = dimple_depth + e,
+                        d = dimple_diameter
+                    );
+                }
+            }
+        }
+    }
+
     difference() {
         union() {
             if (spokes_count > 0) {
@@ -214,6 +243,10 @@ module wheel(
         }
 
         _pot_cavity();
+
+        if (dimple_count > 0) {
+            _dimple_cavities();
+        }
     }
 }
 
