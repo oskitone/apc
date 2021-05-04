@@ -71,19 +71,25 @@ module wheel(
     }
 
     module _tire() {
-        module _donut() {
-            donut(
-                diameter = diameter,
-                thickness = ring,
-                segments = $preview ? 24 : 36
-            );
+        module _donuts() {
+            for (z = [ring / 2, height - ring / 2]) {
+                translate([0, 0, z]) {
+                    donut(
+                        diameter = diameter,
+                        thickness = ring,
+                        segments = $preview ? 24 : 36
+                    );
+                }
+            }
         }
 
         difference() {
             union() {
-                for (z = [ring / 2, height - ring / 2]) {
-                    translate([0, 0, z]) {
-                        _donut();
+                if (spokes_count > 0) {
+                    _donuts();
+                } else {
+                    hull() {
+                        _donuts();
                     }
                 }
 
@@ -190,11 +196,16 @@ module wheel(
 
     difference() {
         union() {
-            _hub();
+            if (spokes_count > 0) {
+                _hub();
+            }
 
             if (!test_fit) {
                 _tire();
-                _spokes();
+
+                if (spokes_count > 0) {
+                    _spokes();
+                }
 
                 if (brodie_knob_count > 0) {
                     _brodie_knobs();
