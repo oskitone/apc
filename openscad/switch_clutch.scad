@@ -21,7 +21,7 @@ SWITCH_CLUTCH_WEB_LENGTH = SWITCH_BASE_LENGTH + SWITCH_ACTUATOR_TRAVEL
     + 4 * 2;
 SWITCH_CLUTCH_WEB_HEIGHT = ENCLOSURE_HEIGHT - Z_PCB_TOP - ENCLOSURE_FLOOR_CEILING
     - ENCLOSURE_GRILL_DEPTH
-    - DEFAULT_FDM_LAYER_HEIGHT; // just to be safe
+    - DEFAULT_DFM_LAYER_HEIGHT; // just to be safe
 
 function get_switch_clutch_y(position = 0) = (
     PCB_Y + PCB_SWITCH_POSITION[1] - SWITCH_ORIGIN[1]
@@ -49,13 +49,13 @@ module switch_clutch(
         cube([
             BREAKAWAY_SUPPORT_DEPTH,
             SWITCH_CLUTCH_LENGTH,
-            height - DEFAULT_FDM_LAYER_HEIGHT
+            height - DEFAULT_DFM_LAYER_HEIGHT
         ]);
     }
 
     module _clutch() {
         module _web() {
-            fdm_cavity_depth = SWITCH_CLUTCH_WEB_WIDTH - skirt_width;
+            dfm_cavity_depth = SWITCH_CLUTCH_WEB_WIDTH - skirt_width;
 
             translate([
                 SWITCH_CLUTCH_WEB_X,
@@ -74,9 +74,9 @@ module switch_clutch(
                             flat_top_rectangular_pyramid(
                                 top_width = 0,
                                 top_length = SWITCH_CLUTCH_WEB_LENGTH + e * e,
-                                bottom_width = fdm_cavity_depth + e,
+                                bottom_width = dfm_cavity_depth + e,
                                 bottom_length = SWITCH_CLUTCH_WEB_LENGTH + e * e,
-                                height = fdm_cavity_depth + e,
+                                height = dfm_cavity_depth + e,
                                 top_weight_x = 1
                             );
                         }

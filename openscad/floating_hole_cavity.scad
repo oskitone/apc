@@ -5,7 +5,7 @@ module floating_hole_cavity(
     maximum_diameter,
 
     coverages = [1, .5, 0, 0],
-    layer_height = DEFAULT_FDM_LAYER_HEIGHT,
+    layer_height = DEFAULT_DFM_LAYER_HEIGHT,
 
     $fn = HIDEF_ROUNDING
 ) {
