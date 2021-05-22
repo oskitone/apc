@@ -28,6 +28,7 @@ module wheel(
 
     dimple_count = 0,
     dimple_depth = 1,
+    dimple_y = undef,
 
     spokes_count = 6,
     spokes_width = 2,
@@ -212,7 +213,9 @@ module wheel(
         );
 
         for (i = [0 : dimple_count - 1]) {
-            y = diameter / 2 - dimple_diameter / 2 - ring / 2;
+            y = dimple_y != undef
+                ? dimple_y
+                : diameter / 2 - dimple_diameter / 2 - ring / 2;
             rotation = i * (360 / dimple_count);
 
             rotate([0, 0, rotation]) {
