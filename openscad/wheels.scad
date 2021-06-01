@@ -144,8 +144,7 @@ module wheel(
 
         // Cavity is full available height, regardless of actual usage
         pot_cavity_z = height - hub_ceiling
-            - PTV09A_POT_BASE_HEIGHT - PTV09A_POT_ACTUATOR_HEIGHT
-            - ENCLOSURE_FLOOR_CEILING;
+            - PTV09A_POT_BASE_HEIGHT - PTV09A_POT_ACTUATOR_HEIGHT;
 
         _chamfer();
         difference() {
