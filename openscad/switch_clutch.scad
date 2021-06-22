@@ -2,6 +2,7 @@
 use <../../poly555/openscad/lib/basic_shapes.scad>;
 
 include <enclosure.scad>;
+include <rib_cavities.scad>;
 include <shared_constants.scad>;
 
 // Length is arbitrary but height's intentional -- middle of clutch should align
@@ -86,28 +87,6 @@ module switch_clutch(
         }
 
         module _exposed_grip() {
-            module _rib_cavities(
-                rib_length = DEFAULT_RIB_LENGTH,
-                rib_gutter = DEFAULT_RIB_GUTTER,
-                depth = DEFAULT_RIB_LENGTH,
-            ) {
-                available_length = SWITCH_CLUTCH_LENGTH
-                    - rib_gutter * 2 - rib_length;
-                count = round(available_length / (rib_length + rib_gutter));
-
-                for (i = [0 : count - 0]) {
-                    y = rib_gutter + i * (available_length / count);
-
-                    translate([-e, y, -e]) {
-                        cube([
-                            depth + e,
-                            rib_length,
-                            SWITCH_CLUTCH_HEIGHT + e * 2
-                        ]);
-                    }
-                }
-            }
-
             width = SWITCH_CLUTCH_WIDTH - SWITCH_CLUTCH_WEB_WIDTH
                 - SWITCH_BASE_WIDTH;
 
@@ -132,7 +111,10 @@ module switch_clutch(
                     $fn = DEFAULT_ROUNDING
                 );
 
-                _rib_cavities();
+                rib_cavities(
+                    length = SWITCH_CLUTCH_LENGTH,
+                    height = SWITCH_CLUTCH_HEIGHT
+                );
             }
         }
 
