@@ -37,7 +37,8 @@ Download STLs of the models at [https://oskitone.github.io/apc/](https://oskiton
 
 **Notes:**
 
-- Models don't need supports and should already be rotated to the correct orientation for printing.
+- Models assume Fused Deposition Modeling with a standard .4mm nozzle. Using a bigger nozzle will likely result in a loss of detail and possibly missing internal walls.
+- They also don't need supports and should already be rotated to the correct orientation for printing.
 - Watch the first couple layers of the enclosure pieces while printing, especially around the text engravings -- if you see bad adhesion, stop the print to remedy the situation and start again.
 - If the prints aren't fitting together well, check to see that the corners aren't bulging. See if your slicer has settings for "coasting" or "linear advance."
 - The switch clutch has two narrow support walls that will [break off when it's done printing](https://twitter.com/oskitone/status/1367957529406316545).
