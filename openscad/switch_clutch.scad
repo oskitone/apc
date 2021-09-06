@@ -38,6 +38,8 @@ module switch_clutch(
     side_overexposure = ENCLOSURE_SIDE_OVEREXPOSURE,
     tolerance = DEFAULT_TOLERANCE,
     floor_ceiling = ENCLOSURE_FLOOR_CEILING,
+    brim_height = DEFAULT_DFM_LAYER_HEIGHT,
+    brim_depth = 1,
     show_dfm = true
 ) {
     e = .045321;
@@ -52,6 +54,14 @@ module switch_clutch(
             SWITCH_CLUTCH_LENGTH,
             height - DEFAULT_DFM_LAYER_HEIGHT
         ]);
+
+        translate([-brim_depth, -brim_depth, 0]) {
+            cube([
+                BREAKAWAY_SUPPORT_DEPTH + brim_depth * 2,
+                SWITCH_CLUTCH_LENGTH + brim_depth * 2,
+                brim_height
+            ]);
+        }
     }
 
     module _clutch() {
