@@ -11,7 +11,10 @@ function help() {
 Deploys STLs to GitHub pages.
 
 Usage:
-./deploy.sh
+downloads/deploy.sh
+downloads/deploy.sh -b                 Make STLs and ZIP
+downloads/deploy.sh --do-it-live       Actually deploy
+downloads/deploy.sh -b --do-it-live    All of the above
 "
 }
 
@@ -31,6 +34,11 @@ function confirm_git_clean_status() {
 }
 
 function run() {
+    if [[ "$1" == *"-h"* ]]; then
+        help
+        exit
+    fi
+
     confirm_git_clean_status
 
     dir=$(./make_stls.sh -e)
