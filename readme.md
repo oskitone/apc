@@ -173,6 +173,11 @@ The PCB and its schematic are actually part of [poly555](https://github.com/oski
 
 The APC's 3D-printed models are written in OpenSCAD.
 
+### Changelog
+
+- September 6, 2021: Add brim to switch_clutch for better DFM (2d0a1d0)
+- February 25, 2021: Init (8df1dc4)
+
 ### Dependencies
 
 Assumes poly555 repo is in a sibling directory. Here's how I've got it:
