@@ -175,8 +175,8 @@ The APC's 3D-printed models are written in OpenSCAD.
 
 ### Changelog
 
-- September 6, 2021: Add brim to switch_clutch for better DFM (2d0a1d0)
-- February 25, 2021: Init (8df1dc4)
+- **September 6, 2021:** Add brim to switch_clutch for better DFM (2d0a1d0), Loosen wheel fit (7e2dab7)
+- **February 25, 2021:** Init (8df1dc4)
 
 ### Dependencies
 
