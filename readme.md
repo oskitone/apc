@@ -75,7 +75,7 @@ While not required, it'd be good to have these tools around too.
       2. While pushing the **LED** _into_ the **PCB** from the other side, remelt the solder -- the **LED** may wiggle a little -- and allow to cool before releasing pressure.
       3. Check the other side of the board to inspect. Repeat until there's no gap between the **LED** and the **PCB**, then solder the other leg.
    3. The **slider switch** goes to **S101**.
-      - This also needs to be perfectly flat against the PCB, so do like you did for the **LED** and don't solder all of its pins until it looks good.
+      - It doesn't have polarity and can go in either direction. This also needs to be perfectly flat against the PCB, so do like you did for the **LED** and don't solder all of its pins until it looks good.
    4. Next up is the **9v battery snap**.
       1. Feed its wires through the hole by **BT101**. This acts as a stress relief, preventing strain at the solder joints whenever you replace the battery.
       2. Insert and solder wires into place: red to **+** and black to **-**.
