@@ -79,11 +79,11 @@ module pot(
     }
 
     if (show_actator) {
-        translate([0, 0, base_height]) {
+        translate([0, 0, base_height - e]) {
             difference() {
                 cylinder(
                     d = actuator_diameter + diameter_bleed * 2,
-                    h = actuator_height + actuator_height_bleed
+                    h = actuator_height + actuator_height_bleed + e
                 );
 
                 if (shaft_type == POT_SHAFT_TYPE_FLATTED) {
