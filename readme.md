@@ -10,11 +10,7 @@ Nope (and yep!), it's an [APC](https://en.wikipedia.org/wiki/Atari_Punk_Console)
 **Purchase:** [APC (fully assembled)](https://www.oskitone.com/product/apc), [APC DIY Electronics Kit](https://www.oskitone.com/product/apc-diy-electronics-kit)<br />
 **Blog post:** [https://blog.tommy.sh/posts/oskitone-makes-an-atari-punk-console/](https://blog.tommy.sh/posts/oskitone-makes-an-atari-punk-console/)
 
----
-
-### KiCad Source
-
-![A soldered APC PCB](assembly_content/apc-pcb-16x9.jpg)
+## KiCad Source
 
 The PCB and its schematic are actually part of [poly555](https://github.com/oskitone/poly555), so head over there to its KiCad project to dig deeper into the electronics. (That the APC is a part of a bigger project may also help to explain why the component numbers start at 100!)
 
@@ -42,8 +38,6 @@ Assumes poly555 repo is in a sibling directory. Here's how I've got it:
 ### Building
 
 STLs are generated with `make_stls.sh`. Run `./make_stls.sh -h` for full flags list.
-
----
 
 ## License
 
