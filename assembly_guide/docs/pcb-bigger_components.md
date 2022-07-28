@@ -19,3 +19,5 @@ Last is the bigger components: pots, speaker, and IC.
    1. Place the **IC socket** into **U101**, matching its little indentation to the footprint.
    2. Solder using the same technique you did for the **speaker** to hold it in place.
    3. Insert the **556 chip** into the **socket**, matching its indentation.
+
+<!-- TODO: hint about bending socket pins -->
