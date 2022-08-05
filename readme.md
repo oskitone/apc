@@ -160,7 +160,7 @@ The Oskitone APC wants to be hacked and modified! Here are some ideas:
 | R102         | Resistor                            | 1        | 1k           | Brown Black Red     |
 | RV101, RV102 | PTV09 Vertical Pot                  | 2        | 500k-1M      |                     |
 | RV103        | Potentiometer Piher_PT-6-V_Vertical | 1        | 1k           | 102                 |
-| S101         | EG1218 slider switch                | 2        |              |                     |
+| S101         | SS12D02 slider switch               | 1        |              |                     |
 | U101         | DIP-14_W7.62mm_LongPads             | 1        | LM556        |                     |
 
 ### Schematic
