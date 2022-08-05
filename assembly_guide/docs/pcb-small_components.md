@@ -15,4 +15,5 @@ Next we'll do the remaining small, passive components.
 3. The remaining resistor is **1k ohms**, colored _Brown Black Red_. Solder to **R102**.
 4. The small, blue **1k trim potentiometer** goes to **RV103**. It's marked _102_.
    - We want it perfectly flat against the PCB, so, just like the LED and switch, make sure it's all the way in there before soldering all of its legs.
+     ![Volume potentiometer, flat against PCB](/img/assembly/vol-flat.jpg)
 5. Nothing to test here, but check all solder joints and trim leads before moving on. We're almost done!

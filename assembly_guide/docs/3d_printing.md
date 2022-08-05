@@ -12,6 +12,8 @@ slug: 3d-printing
 
 <!-- TODO: update URL -->
 
+You can assemble the electronics w/o the prints, etc
+
 ## Models
 
 Download STLs of the models from:
