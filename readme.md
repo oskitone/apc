@@ -24,7 +24,9 @@ I wrote a lot of words about this particular Atari Punk Console here, its design
 
 (If you bought a kit with 3D-printed parts included, you can skip this!)
 
-Download STLs of the models at [https://oskitone.github.io/apc/](https://oskitone.github.io/apc/). There are four files to print:
+Download STLs of the models at [https://www.printables.com/model/224313-apc-atari-punk-console](https://www.printables.com/model/224313-apc-atari-punk-console)
+
+There are four files to print:
 
 ![Exploded CAD view of the four models](assembly_content/3d-printed-parts.png)
 
