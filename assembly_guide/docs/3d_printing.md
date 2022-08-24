@@ -10,8 +10,6 @@ slug: 3d-printing
 (If you bought a kit with 3D-printed parts included, you can skip this!)
 :::
 
-<!-- TODO: update URL -->
-
 You can assemble the electronics w/o the prints, etc
 
 ## Models

@@ -24,4 +24,4 @@ The Oskitone APC is the function of the classic circuit in an Oskitone form. It'
 
 I wrote a lot of words about this particular Atari Punk Console here, its design and history with the POLY555, and some other stuff here: [Oskitone Makes an Atari Punk Console](https://blog.tommy.sh/posts/oskitone-makes-an-atari-punk-console/)
 
-<!-- ![TODO: image of APC w/ labelled controls](https://dummyimage.com/600x400/000/fff) -->
+<!-- ![TODO: image of APC w/ labelled controls](https://dummyimage.com/1920x1080/000/fff) -->
