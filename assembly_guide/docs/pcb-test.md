@@ -10,9 +10,9 @@ All done! Let's test it.
 
 1.  Reconnect the **battery**.
 2.  Slide power **switch**.
-3.  Adjust the volume at **RV103** and the two bigger **potentiometers** until you hear noises coming out of the **speaker**.
+3.  Use a screwdriver to adjust the volume at **RV103** and the two bigger **potentiometers** until you hear noises coming out of the **speaker**.
     - If you hear noise, congrats! You successfully soldered your **Oskitone APC**!
-    - ![TODO: a successfully soldered and working Oskitone APC](https://dummyimage.com/1920x1080/000/fff)
+      ![A successfully soldered and working Oskitone APC](/img/assembly/vol-test.jpg)
 4.  If not, don't worry. It's time to debug:
     - Check all your solder joints again
     - Are the components with polarity (**+** and **-** sides) right?
