@@ -11,11 +11,11 @@ slug: pcb-power
 First, we'll get power to the board and make sure our battery is working.
 
 1. Find the **330 ohm resistor**; its color bands are _Orange Orange Brown_. Solder it into **R101**.
-   ![330 resistor to R101](/img/assembly/r101.jpg)
+   - ![330 resistor to R101](/img/assembly/r101.jpg)
 2. The **LED** goes to **D101** and has polarity (one side is positive, the other negative), so make sure its flat side matches the outline on the PCB. It needs to be perfectly flat against the **PCB**. Here's how I like to do that:
    1. Bend one of the LED's legs to roughly hold it into place, then solder the straight leg to its pad.
       ![Soldering one LED leg](/img/assembly/led-solder.jpg)
-   2. While pushing the **LED** _into_ the **PCB** from the other side, remelt the solder -- the **LED** may wiggle a little -- and allow to cool before releasing pressure.
+   2. While pushing the **LED** _into_ the **PCB** from the other side, remelt the solder &mdash; the **LED** may wiggle a little &mdash; and allow to cool before releasing pressure.
       ![Remelting that solder while pushing in LED](/img/assembly/led-remelt.jpg)
    3. Check the other side of the board to inspect. Repeat until there's no gap between the **LED** and the **PCB**, then solder the other leg.
       ![LED, perfectly flat against PCB, at D101](/img/assembly/led-flat.jpg)
