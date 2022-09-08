@@ -24,7 +24,7 @@ Next we'll do the remaining small, passive components.
 3. The remaining resistor is **1k ohms**, colored _Brown Black Red_.
    - Solder to **R102**.
      ![1k ohms to R102](/img/assembly/r102.jpg)
-4. The small, blue **1k trim potentiometer** goes to **RV103**. It's marked _102_.
+4. The small, blue **1k trim potentiometer** goes to **RV103**. It's marked _102_. Make sure it's flat against the PCB. <!-- TODO: advise on technique -->
    - ![1k trim pot to 102](/img/assembly/vol-flat.jpg)
 5. Nothing to test here, but check all solder joints and trim leads before moving on. We're almost done!
 

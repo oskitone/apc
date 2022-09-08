@@ -7,7 +7,7 @@ slug: pcb-test
 image: /img/assembly/apc.jpg
 ---
 
-All done! Let's test it.
+All done soldering! Let's test it.
 
 1.  Reconnect the **battery**.
 2.  Slide power **switch**.
@@ -21,3 +21,5 @@ All done! Let's test it.
     - Try using a multimeter to confirm power and ground are at all the pins you'd expect, referring to the schematic.
 
 <!-- TODO: consider breaking out test from the rest of the steps -->
+
+Next, let's get the soldered PCB assembled into its enclosure...
