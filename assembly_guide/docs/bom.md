@@ -5,6 +5,7 @@ sidebar_label: BOM
 description: BOM (Bill of Materials)
 slug: bom
 hide_table_of_contents: true
+image: /img/assembly/apc.jpg
 ---
 
 | Part         | Package                             | Quantity | Value        | Marking             |

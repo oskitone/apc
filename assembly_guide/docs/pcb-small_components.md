@@ -4,6 +4,7 @@ title: Small components
 sidebar_label: 2. Small components
 description: Soldering the APC's small components
 slug: pcb-small_components
+image: /img/assembly/apc.jpg
 ---
 
 Next we'll do the remaining small, passive components.

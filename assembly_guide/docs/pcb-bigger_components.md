@@ -4,6 +4,7 @@ title: Bigger components
 sidebar_label: 3. Bigger components
 description: How to solder the APC's pots, speaker, and IC socket
 slug: pcb-bigger_components
+image: /img/assembly/apc.jpg
 ---
 
 Last is the bigger components: pots, speaker, and IC.

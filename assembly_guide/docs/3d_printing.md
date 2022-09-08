@@ -4,6 +4,7 @@ title: 3D-Printing
 sidebar_label: 3D-Printing
 description: How to 3D-print your APC's parts
 slug: 3d-printing
+image: /img/assembly/apc.jpg
 ---
 
 :::note

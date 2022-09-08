@@ -4,6 +4,7 @@ title: Test
 sidebar_label: 4. Test
 description: Testing the APC PCB after soldering
 slug: pcb-test
+image: /img/assembly/apc.jpg
 ---
 
 All done! Let's test it.

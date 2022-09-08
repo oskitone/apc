@@ -4,6 +4,7 @@ title: Final Assembly
 sidebar_label: Final Assembly
 description: Final assembly steps for the APC
 slug: final_assembly
+image: /img/assembly/apc.jpg
 ---
 
 1. Insert switch clutch into its cavity in the enclosure top.

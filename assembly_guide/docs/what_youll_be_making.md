@@ -4,6 +4,7 @@ title: Oskitone APC Assembly Guide
 sidebar_label: What You'll Be Making
 description: How to solder and assemble the Oskitone APC Electronics Kit
 slug: /
+image: /img/assembly/apc.jpg
 ---
 
 [![APC](/img/apc-10-60-838-450-32.gif)](/img/apc-10-60-838-450-32.gif)
@@ -19,6 +20,8 @@ Nope (and yep!), it's an [APC](https://en.wikipedia.org/wiki/Atari_Punk_Console)
 ## Um, WHAT
 
 The APC (Atari Punk Console) is some kind of noise toy. Its circuit was originally described in the early 80s but it was such a hit that it's become something of a go-to project for folks new to electronics and soldering! There are _tons_ of versions of it but they all share the same basic parts.
+
+![An assembled Oskitone APC](/img/assembly/apc.jpg)
 
 The Oskitone APC is the function of the classic circuit in an Oskitone form. It's not very useful or musically pleasant, but it's fun!
 

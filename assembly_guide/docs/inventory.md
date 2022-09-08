@@ -4,6 +4,7 @@ title: Inventory
 sidebar_label: Inventory
 description: What you'll need to assembly your APC
 slug: inventory
+image: /img/assembly/apc.jpg
 ---
 
 ## What You'll Need

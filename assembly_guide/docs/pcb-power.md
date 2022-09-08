@@ -4,6 +4,7 @@ title: Power up
 sidebar_label: 1. Power up
 description: How to get power to the APC PCB
 slug: pcb-power
+image: /img/assembly/apc.jpg
 ---
 
 <!-- TODO: remind that components will look different -->

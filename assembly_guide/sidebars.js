@@ -29,13 +29,7 @@ const sidebars = {
       "pcb-test"
     ]),
     _doc("final_assembly"), // "care"
-    _category("Appendix", [
-      "hacks",
-      "bom",
-      "schematic"
-      // "troubleshooting"
-      // "source-and-license"
-    ])
+    _category("Appendix", ["hacks", "bom", "schematic", "source-and-license"])
   ]
 };
 

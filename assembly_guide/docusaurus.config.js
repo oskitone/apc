@@ -6,7 +6,7 @@ const darkCodeTheme = require("prism-react-renderer/themes/dracula");
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: "Oskitone Scout Assembly Guide",
+  title: "Oskitone APC Assembly Guide",
   // tagline: 'Dinosaurs are cool',
   url: "https://oskitone.github.io",
   baseUrl: "/apc/",

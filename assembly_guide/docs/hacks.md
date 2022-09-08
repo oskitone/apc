@@ -4,6 +4,7 @@ title: Hacks
 sidebar_label: Hacks
 description: Different hacks you can try on the APC
 slug: hacks
+image: /img/assembly/apc.jpg
 ---
 
 The Oskitone APC wants to be hacked and modified!
