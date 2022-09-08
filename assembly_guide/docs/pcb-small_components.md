@@ -7,6 +7,10 @@ slug: pcb-small_components
 image: /img/assembly/apc.jpg
 ---
 
+:::note
+Take your time and make sure the 1k trim pot is perfectly flat against the PCB before soldering all of its pins.
+:::
+
 Next we'll do the remaining small, passive components.
 
 1. There are two small ceramic capacitors:
@@ -21,8 +25,7 @@ Next we'll do the remaining small, passive components.
    - Solder to **R102**.
      ![1k ohms to R102](/img/assembly/r102.jpg)
 4. The small, blue **1k trim potentiometer** goes to **RV103**. It's marked _102_.
-   - We want it perfectly flat against the PCB, so, just like the LED and switch, make sure it's all the way in there before soldering all of its legs.
-     ![1k trim pot to 102](/img/assembly/vol-flat.jpg)
+   - ![1k trim pot to 102](/img/assembly/vol-flat.jpg)
 5. Nothing to test here, but check all solder joints and trim leads before moving on. We're almost done!
 
 <!-- TODO: consider breaking out test from the rest of the steps -->

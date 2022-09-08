@@ -7,13 +7,16 @@ slug: pcb-bigger_components
 image: /img/assembly/apc.jpg
 ---
 
+:::note
+Take your time and make sure the pots and speaker are perfectly flat against the PCB before soldering all of their pins.
+:::
+
 Last is the bigger components: pots, speaker, and IC.
 
-1. Push the two **500k pots** into their footprints at **RV101** and **RV102**
+1. Push the two **500k pots** ("pot" short for "potentiometer"!) into their footprints at **RV101** and **RV102**
    1. A trick to get the pot to snap in better is to _gently_ push its mounting tabs inward before popping it onto the PCB.
       ![Bending the potentiometer tabs](/img/assembly/pot-tabs.jpg)
    2. Check that they're flat against the PCB, then solder into place.
-      <!-- ![TODO: 500k pot flat against PCB at RV101/RV102](https://dummyimage.com/1920x1080/000/fff) -->
    3. You can solder the mounting tabs on the side too, if you want!
 2. Fit the **speaker** into **LS101**, matching its **+** and **-** pins to the right holes.
    1. Don't bend its leads! That can break it.

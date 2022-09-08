@@ -7,7 +7,13 @@ slug: pcb-power
 image: /img/assembly/apc.jpg
 ---
 
-<!-- TODO: remind that components will look different -->
+:::info
+This guide's components' brands and body colors (and even the PCB color itself) may look different from yours, and that's okay! What's important is that the part types and values are in the right spots.
+:::
+
+:::note
+Take your time and make sure the LED and switch are perfectly flat against the PCB before soldering all of their pins.
+:::
 
 First, we'll get power to the board and make sure our battery is working.
 
