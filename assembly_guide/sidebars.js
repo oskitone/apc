@@ -1,34 +1,42 @@
 // @ts-check
 
 /** @type {import('@docusaurus/plugin-content-docs').SidebarsConfig} */
+
+const _doc = id => ({
+  type: "doc",
+  id
+});
+
+const _category = (label, docIds = []) => ({
+  label,
+  type: "category",
+  items: docIds.map(id => _doc(id))
+});
+
 const sidebars = {
-  someSidebar: {
-    "Getting Started": [
+  mySidebar: [
+    _category("Getting Started", [
       "what-youll-be-making",
       "inventory"
       // "how-does-it-work"
-    ],
-    // TODO: parent level link
-    "3D-Printing": ["3d-printing"],
-    "PCB Assembly": [
+    ]),
+    _doc("3d-printing"),
+    _category("PCB Assembly", [
       // "general-tips",
       "pcb-power",
       "pcb-small_components",
       "pcb-bigger_components",
       "pcb-test"
-    ],
-    "Putting it all together": [
-      "final_assembly"
-      // "care"
-    ],
-    Appendix: [
+    ]),
+    _doc("final_assembly"), // "care"
+    _category("Appendix", [
       "hacks",
       "bom",
       "schematic"
       // "troubleshooting"
-      //   "source-and-license"
-    ]
-  }
+      // "source-and-license"
+    ])
+  ]
 };
 
 module.exports = sidebars;
