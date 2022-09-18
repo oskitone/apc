@@ -46,7 +46,7 @@ const config = {
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
       navbar: {
-        title: "Oskitone Scout Assembly Guide"
+        title: "Oskitone APC Assembly Guide"
       },
       footer: {
         style: "dark",

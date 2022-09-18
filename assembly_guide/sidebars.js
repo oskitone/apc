@@ -22,14 +22,20 @@ const sidebars = {
     ]),
     _doc("3d-printing"),
     _category("PCB Assembly", [
-      // "general-tips",
+      "general-tips",
       "pcb-power",
       "pcb-small_components",
       "pcb-bigger_components",
       "pcb-test"
     ]),
     _doc("final_assembly"), // "care"
-    _category("Appendix", ["hacks", "bom", "schematic", "source-and-license"])
+    _category("Appendix", [
+      "hacks",
+      "bom",
+      "schematic",
+      "pcb-troubleshooting",
+      "source-and-license"
+    ])
   ]
 };
 
