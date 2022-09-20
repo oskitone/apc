@@ -6,6 +6,7 @@ A decapitated robot head? An extraterrestrial communicator? A specter summoner?
 
 Nope (and yep!), it's an [APC](https://en.wikipedia.org/wiki/Atari_Punk_Console)!
 
+**Assembly Guide:** [https://oskitone.github.io/apc/](https://oskitone.github.io/apc/)<br />
 **Demo:** [https://vimeo.com/518375593](https://vimeo.com/518375593)<br />
 **Purchase:** [APC (fully assembled)](https://www.oskitone.com/product/apc), [APC DIY Electronics Kit](https://www.oskitone.com/product/apc-diy-electronics-kit)<br />
 **Blog post:** [https://blog.tommy.sh/posts/oskitone-makes-an-atari-punk-console/](https://blog.tommy.sh/posts/oskitone-makes-an-atari-punk-console/)
