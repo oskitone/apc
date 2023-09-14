@@ -8,10 +8,12 @@ image: /img/assembly/apc.jpg
 ---
 
 :::note
-(If you bought a kit with 3D-printed parts included, you can skip this!)
+If you bought a kit with 3D-printed parts included, you can skip this step.
 :::
 
-You can assemble the electronics w/o the prints, etc
+:::info
+If you don't have access to a 3D printer and can't get the parts made, you can still assemble the kit's electronics without them. Continue on to the next step.
+:::
 
 ## Models
 
