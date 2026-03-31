@@ -17,8 +17,7 @@ If you don't have access to a 3D printer and can't get the parts made, you can s
 
 ## Models
 
-Download STLs of the models from:
-[https://www.printables.com/model/224313-apc-atari-punk-console](https://www.printables.com/model/224313-apc-atari-punk-console)
+Download STLs of the models from [Printables](https://www.printables.com/model/224313-apc-atari-punk-console) or [Thingiverse](https://www.thingiverse.com/thing:7326507).
 
 There are four files to print:
 
